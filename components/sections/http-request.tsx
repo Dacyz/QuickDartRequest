@@ -5,14 +5,21 @@ import Title from "../labels/title";
 import ConvertRequest from "./convert-request";
 import LineSeparator from "../other/line-separator";
 import ViewResponse from "../other/view-response";
-import { ParamsTable } from "../other/params-table";
-import { TableRow } from "@/data/models/parameter";
+import { HeaderTable, ParamsTable } from "../other/params-table";
+import { ParameterRow } from "@/data/models/parameter";
 import RequestModel from "@/data/models/request_model";
 import DropDownBox from "../buttons/dropdown";
 import ButtonGroup from "../buttons/button-group";
 import { generateRandomId } from "@/data/helpers/number_extension";
 
 const modes = ["Params", "Authorization", "Headers", "Body"];
+const authModes = [
+  "No auth",
+  "API Key",
+  "Basic Auth",
+  "Bearer Token",
+  "OAuth 2.0",
+]; // Falta "Inherit from parent" y "AWS Signature"
 
 function getContentType(content: string): number {
   if (content && content.includes("application/json")) {
@@ -30,6 +37,7 @@ const HttpRequest: React.FC = () => {
     new RequestModel()
   );
   const [isMode, setMode] = useState(modes[0]);
+  const [isAuthMode, setAuthMode] = useState(authModes[0]);
   const [responseValue, setResponseValue] = useState<ListItem | null>(null);
   const handleClick = async () => {
     try {
@@ -73,9 +81,9 @@ const HttpRequest: React.FC = () => {
         const queryString = input.substring(partes[0].length);
         const paramsString = input.substring(partes[0].length + 1);
         const parameters: string[] = paramsString.split("&");
-        let newRows: TableRow[] = [];
+        let newRows: ParameterRow[] = [];
         parameters.map((parameter) => {
-          const values: string[] = parameter.split("=");          
+          const values: string[] = parameter.split("=");
           newRows.push({
             id: generateRandomId(),
             estado: true,
@@ -121,10 +129,7 @@ const HttpRequest: React.FC = () => {
             value={inputValue.url}
             onChange={handleInputChange}
           ></input>
-          <button
-            className="button rounded-r-[16px]"
-            onClick={handleClick}
-          >
+          <button className="button rounded-r-[16px]" onClick={handleClick}>
             Send
           </button>
         </div>
@@ -160,7 +165,9 @@ const HttpRequest: React.FC = () => {
                 );
               }}
               deleteRow={(id: number) => {
-                const newRows = inputValue.params.filter((row) => row.id !== id);
+                const newRows = inputValue.params.filter(
+                  (row) => row.id !== id
+                );
                 setInputValue(
                   inputValue.copyWith({
                     params: newRows,
@@ -176,8 +183,60 @@ const HttpRequest: React.FC = () => {
                   })
                 );
               }}
-              onChange={(e) => {
-                // inputValue.params = e;
+            />
+          ) : isMode === modes[1] ? (
+            <div className="">
+              <ButtonGroup
+                className="mb-[16px]"
+                value={isAuthMode}
+                items={authModes}
+                onChange={(mode) => {
+                  setAuthMode(mode);
+                }}
+              />
+              {authModes[0] === isAuthMode ? (
+                <div className="">
+                  This request does not use any authorization
+                </div>
+              ) : (
+                <>{isAuthMode}</>
+              )}
+            </div>
+          ) : isMode === modes[2] ? (
+            <HeaderTable
+              rows={inputValue.headers}
+              addRow={() => {
+                setInputValue(
+                  inputValue.copyWith({
+                    headers: [
+                      ...inputValue.headers,
+                      {
+                        id: generateRandomId(),
+                        estado: true,
+                        key: "",
+                        value: "",
+                        hidden: true,
+                      },
+                    ],
+                  })
+                );
+              }}
+              deleteRow={(id: number) => {
+                const newRows = inputValue.headers.filter(
+                  (row) => row.id !== id
+                );
+                setInputValue(
+                  inputValue.copyWith({
+                    headers: newRows,
+                  })
+                );
+              }}
+              setRows={(rows) => {
+                setInputValue(
+                  inputValue.copyWith({
+                    headers: rows,
+                  })
+                );
               }}
             />
           ) : (

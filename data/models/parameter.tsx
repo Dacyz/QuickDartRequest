@@ -1,8 +1,12 @@
-interface TableRow {
+interface ParameterRow {
   id: number;
   estado: boolean;
   key: string;
   value: string;
 }
 
-export type { TableRow };
+interface HeaderRow extends ParameterRow {
+  hidden: boolean;
+}
+
+export type { ParameterRow, HeaderRow };
