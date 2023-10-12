@@ -178,7 +178,7 @@ function List() {
             <li
               key={index}
               className="flex mt-[16px] px-[12px] py-[8px] bg-[#1E1E1E] transition-colors cursor-pointer hover:bg-[#404040] rounded-[16px] items-center"
-              onClick={() => console.log(index)}
+              onClick={() => console.log(item.Enlace)}
             >
               {getMethodDiv(item.Method)}
               <div className="ml-[8px] text-[12px] font-semibold flex w-full justify-between">

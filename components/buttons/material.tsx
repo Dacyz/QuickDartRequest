@@ -13,7 +13,7 @@ const Material: React.FC<MaterialProps> = ({
 }) => {
   return (
     <div
-      className={`bg-white p-2 flex items-center cursor-pointer ${className}`}
+      className={`bg-white p-[10px] flex items-center cursor-pointer ${className}`}
       onClick={onClick}
     >
       {children}

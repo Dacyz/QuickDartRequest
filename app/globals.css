@@ -25,3 +25,13 @@ body {
     )
     rgb(var(--background-start-rgb));
 }
+
+/* styles.css (o .scss) */
+.input-text {
+  @apply border-none bg-[#1E1E1E] p-2 text-base outline-none placeholder:text-[#FFFFFF78] placeholder:text-[12px] placeholder:font-normal text-[12px];
+  /* Aquí puedes aplicar las clases de Tailwind CSS que desees */
+}
+.button {
+  @apply bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 focus:outline-none;
+}
+
