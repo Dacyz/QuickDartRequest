@@ -97,12 +97,17 @@ class RequestModel implements RequestInterface {
     host?: string,
     query?: string,
     params?: ParameterRow[],
-    headers?: HeaderRow[]
+    headers?: HeaderRow[],
+    method?: number
   ) {
     this.host = host ?? ""; // Asignamos parametro1 a uri
     this.include = false;
     this.query = query ?? ""; // Asignamos parametro2 a query
-    this.method = options[0]; // Asignamos parametro
+    if (!method) {
+      this.method = options[0]; // Asignamos parametro
+    } else {
+      this.method = options[method]; // Asignamos parametro
+    }
     this.params = params ?? defaultParameters;
     this.headers = headers ?? defaultHeaders;
   }

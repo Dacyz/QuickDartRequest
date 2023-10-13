@@ -12,25 +12,24 @@ type cas = {
   component: React.ReactNode;
 };
 
-const modules: cas[] = [
-  {
-    id: 1,
-    name: "Http Request",
-    component: <HttpRequest />,
-  },
-  {
-    id: 2,
-    name: "Socket Request",
-    component: <SocketRequest />,
-  },
-  {
-    id: 3,
-    name: "Convert",
-    component: <ConvertRequest/>,
-  },
-];
-
-const QueryPage: React.FC = () => {
+const QueryPage: React.FC<QueryParameters> = ({ query, method }) => {
+  const modules: cas[] = [
+    {
+      id: 1,
+      name: "Http Request",
+      component: <HttpRequest query={query} method={method} />,
+    },
+    {
+      id: 2,
+      name: "Socket Request",
+      component: <SocketRequest />,
+    },
+    {
+      id: 3,
+      name: "Convert",
+      component: <ConvertRequest />,
+    },
+  ];
   const [mode, setMode] = useState<cas>(modules[0]);
 
   const HttpRequestIcon = (

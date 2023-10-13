@@ -31,10 +31,59 @@ function getContentType(content: string): number {
   return 0;
 }
 
-const HttpRequest: React.FC = () => {
-  const { localData, updateLocalStorage } = useDashboardContext();
+function requestFrom(
+  value?: string,
+  method?: number
+): RequestModel | undefined {
+  if (!value) return undefined;
+  if (typeof value !== "string") return undefined;
+  const input: string = value;
+  const unit = input.includes("?") ?? false;
+  try {
+    if (unit) {
+      const partes: string[] = input.split("?");
+      const queryString = input.substring(partes[0].length);
+      const paramsString = input.substring(partes[0].length + 1);
+      const parameters: string[] = paramsString.split("&");
+      let newRows: ParameterRow[] = [];
+      parameters.map((parameter) => {
+        const values: string[] = parameter.split("=");
+        newRows.push({
+          id: generateRandomId(),
+          estado: true,
+          key: values[0] ?? "",
+          value: values[1] ?? "",
+        });
+      });
+      newRows.push({
+        id: generateRandomId(),
+        estado: true,
+        key: "",
+        value: "",
+      });
+      const newValue = new RequestModel(
+        partes[0],
+        `${queryString}`,
+        newRows,
+        undefined,
+        method
+      );
+      console.log(newValue);
+      return newValue;
+    }
+  } catch (error) {
+    console.log(error);
+    return;
+  }
+  const newValue = new RequestModel(input);
+  console.log(newValue);
+  return new RequestModel();
+}
+
+const HttpRequest: React.FC<QueryParameters> = ({ query, method }) => {
+  const { updateLocalStorage } = useDashboardContext();
   const [inputValue, setInputValue] = useState<RequestModel>(
-    new RequestModel()
+    requestFrom(query, method) ?? new RequestModel()
   );
   const [isMode, setMode] = useState(modes[0]);
   const [isAuthMode, setAuthMode] = useState(authModes[0]);

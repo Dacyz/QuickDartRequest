@@ -1,3 +1,4 @@
+'use client';
 import Material from "./material";
 
 interface ButtonGroupInterface<T> {
