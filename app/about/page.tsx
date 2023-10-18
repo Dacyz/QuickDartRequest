@@ -1,8 +1,9 @@
 /* eslint-disable @next/next/no-img-element */
 // Página de inicio en Next.js (pages/index.tsx)
 import Image from "next/image";
+import Link from "next/link";
 import React from "react";
-import { SocialIcon } from 'react-social-icons';
+import { SocialIcon } from "react-social-icons";
 
 const listCards: Card[] = [
   {
@@ -62,10 +63,57 @@ const LandingPage = () => {
           <p className="mt-4 text-xl">
             Una aplicación web para simplificar las solicitudes HTTP.
           </p>
+          <div className="grid gap-3 justify-center align-middle mx-auto md:grid-flow-col pt-6">
+            <Link href="#about">
+              <button className="heroButton">Acerca de</button>
+            </Link>
+            <Link href="#experience">
+              <button className="heroButton">Características</button>
+            </Link>
+            <Link href="#skills">
+              <button className="heroButton">Próximamente</button>
+            </Link>
+            <Link href="#projects">
+              <button className="heroButton">Creador</button>
+            </Link>
+          </div>
         </div>
-        <div className="footer flex">
-          da
-          <div>icon</div>
+        <div className="footer flex justify-between">
+          {/* Social Icons */}
+          <div className="flex flex-row gap-2 items-center">
+            <SocialIcon
+              url="https://twitter.com/DacyNoob"
+              target="_blank"
+              className="opacity-70 hover:opacity-100 transition-opacity"
+            />
+            <SocialIcon
+              url="https://www.linkedin.com/in/diegoyanguam/"
+              target="_blank"
+              className="opacity-70 hover:opacity-100 transition-opacity"
+            />
+            <SocialIcon
+              url="https://github.com/Dacyz"
+              target="_blank"
+              className="opacity-70 hover:opacity-100 transition-opacity"
+            />
+          </div>
+          <div className="flex flex-row gap-2 items-center">
+            <SocialIcon
+              url="https://www.youtube.com/channel/UCGJwZBiP5TyP5tTP0wlFnMQ"
+              target="_blank"
+              className="opacity-70 hover:opacity-100 transition-opacity"
+            />
+            <SocialIcon
+              url="https://www.twitch.tv/dacynoob"
+              target="_blank"
+              className="opacity-70 hover:opacity-100 transition-opacity"
+            />
+            <SocialIcon
+              url="https://www.instagram.com/diegoartcy/"
+              target="_blank"
+              className="opacity-70 hover:opacity-100 transition-opacity"
+            />
+          </div>
         </div>
       </section>
       {/* Leading */}

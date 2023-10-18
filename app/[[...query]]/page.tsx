@@ -1,6 +1,6 @@
 "use client";
 import List from "@/components/sections/list";
-import { DashboardProvider } from "../dashboard-context";
+import { DashboardProvider } from "../../context/context";
 import Home from "../start/page";
 import LineSeparator from "@/components/other/line-separator";
 import QueryPage from "@/components/sections/query";
@@ -10,8 +10,13 @@ const separator: string = ":";
 export default function Page() {
   const origin = window.location.origin;
   const fullURL = window.location.href;
-  const value = fullURL.substring(origin.length + 1);
+  const value = fullURL
+    .substring(origin.length + 1)
+    .replaceAll("http:/", "http://")
+    .replaceAll("https:/", "https://")
+  console.log(fullURL);
   console.log(value);
+  console.log("gaa");
   const parts = value.split(separator);
 
   // Verificar si la URL cumple con el formato esperado y si el método está en el conjunto permitido

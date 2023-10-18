@@ -12,7 +12,7 @@ import {
   DeleteLabel,
 } from "../labels/labels";
 import moment from "moment";
-import { useDashboardContext } from "../../app/dashboard-context";
+import { useDashboardContext } from "../../context/context";
 
 function getMethodDiv(number: number): JSX.Element {
   switch (number) {
