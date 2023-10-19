@@ -10,7 +10,7 @@ interface Item {
   TimeStamp: number;
 }
 
-class ListItem implements Item {
+class ResponseModel implements Item {
   constructor(
     public Enlace: string,
     public Name: string,

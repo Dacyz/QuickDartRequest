@@ -20,6 +20,13 @@ const authModes = [
   "Bearer Token",
   "OAuth 2.0",
 ]; // Falta "Inherit from parent" y "AWS Signature"
+const bodyModes = [
+  "None",
+  "Form-data",
+  "x-www-form-urlencoded",
+  "Raw",
+  "Binary",
+]; // Falta "Inherit from parent" y "GraphQL"
 
 function getContentType(content: string): number {
   if (content && content.includes("application/json")) {
@@ -31,67 +38,19 @@ function getContentType(content: string): number {
   return 0;
 }
 
-function requestFrom(
-  value?: string,
-  method?: number
-): RequestModel | undefined {
-  if (!value) return undefined;
-  if (typeof value !== "string") return undefined;
-  const input: string = value;
-  const unit = input.includes("?") ?? false;
-  try {
-    if (unit) {
-      const partes: string[] = input.split("?");
-      const queryString = input.substring(partes[0].length);
-      const paramsString = input.substring(partes[0].length + 1);
-      const parameters: string[] = paramsString.split("&");
-      let newRows: ParameterRow[] = [];
-      parameters.map((parameter) => {
-        const values: string[] = parameter.split("=");
-        newRows.push({
-          id: generateRandomId(),
-          estado: true,
-          key: values[0] ?? "",
-          value: values[1] ?? "",
-        });
-      });
-      newRows.push({
-        id: generateRandomId(),
-        estado: true,
-        key: "",
-        value: "",
-      });
-      const newValue = new RequestModel(
-        partes[0],
-        `${queryString}`,
-        newRows,
-        undefined,
-        method
-      );
-      console.log(newValue);
-      return newValue;
-    }
-  } catch (error) {
-    console.log(error);
-    return;
-  }
-  const newValue = new RequestModel(input);
-  console.log(newValue);
-  return new RequestModel();
-}
-
-const HttpRequest: React.FC<QueryParameters> = ({ query, method }) => {
-  const { updateLocalStorage } = useDashboardContext();
-  const [inputValue, setInputValue] = useState<RequestModel>(
-    requestFrom(query, method) ?? new RequestModel()
-  );
+const HttpRequest: React.FC = () => {
+  const { updateLocalStorage, setRequestModel, requestModel } =
+    useDashboardContext();
   const [isMode, setMode] = useState(modes[0]);
   const [isAuthMode, setAuthMode] = useState(authModes[0]);
-  const [responseValue, setResponseValue] = useState<ListItem | null>(null);
+  const [isBodyMode, setBodyMode] = useState(bodyModes[0]);
+  const [responseValue, setResponseValue] = useState<ResponseModel | null>(
+    null
+  );
   const handleClick = async () => {
     try {
-      if (inputValue.esEnlaceValido()) {
-        const url = new URL(inputValue.url);
+      if (requestModel.esEnlaceValido()) {
+        const url = new URL(requestModel.url);
         let resp = await fetch(url);
         console.log(resp);
         const contentTypeHeader = resp.headers.get("Content-Type") ?? "*/*";
@@ -103,11 +62,11 @@ const HttpRequest: React.FC<QueryParameters> = ({ query, method }) => {
         } else {
           json = null;
         }
-        const item: ListItem = {
+        const item: ResponseModel = {
           Name: url.host,
           Description: "",
           Method: 0,
-          Enlace: inputValue.url,
+          Enlace: requestModel.url,
           Response: resp,
           Tipo: res,
           jsonResponse: json,
@@ -117,7 +76,7 @@ const HttpRequest: React.FC<QueryParameters> = ({ query, method }) => {
         updateLocalStorage(item); // Actualiza el localStorage con los datos obtenidos
         setResponseValue(item); // Actualiza el estado con los datos obtenidos
       } else {
-        console.error("Invalid url:", inputValue);
+        console.error("Invalid url:", requestModel);
       }
     } catch (error) {}
   };
@@ -148,18 +107,18 @@ const HttpRequest: React.FC<QueryParameters> = ({ query, method }) => {
         });
         const newValue = new RequestModel(partes[0], `${queryString}`, newRows);
         console.log(newValue);
-        setInputValue(newValue); // Actualiza el estado con el valor del input
+        setRequestModel(newValue); // Actualiza el estado con el valor del input
         return;
       }
     } catch (error) {
       const newValue = new RequestModel(input);
-      setInputValue(newValue); // Actualiza el estado con el valor del input
+      setRequestModel(newValue); // Actualiza el estado con el valor del input
       console.log(error, newValue);
       return;
     }
     const newValue = new RequestModel(input);
     console.log(newValue);
-    setInputValue(newValue); // Actualiza el estado con el valor del input
+    setRequestModel(newValue); // Actualiza el estado con el valor del input
   };
 
   return (
@@ -167,7 +126,9 @@ const HttpRequest: React.FC<QueryParameters> = ({ query, method }) => {
       <div className="w-full flex flex-col mr-[16px]">
         <div className="flex items-center mb-[16px]">
           <DropDownBox
-            onChange={(e) => setInputValue(inputValue.copyWith({ method: e }))}
+            onChange={(e) =>
+              setRequestModel(requestModel.copyWith({ method: e }))
+            }
           />
           <input
             className="w-full input-text"
@@ -175,7 +136,7 @@ const HttpRequest: React.FC<QueryParameters> = ({ query, method }) => {
             aria-controls=":rq:"
             aria-labelledby=":rr:"
             type="text"
-            value={inputValue.url}
+            value={requestModel.url}
             onChange={handleInputChange}
           ></input>
           <button className="button rounded-r-[16px]" onClick={handleClick}>
@@ -197,12 +158,12 @@ const HttpRequest: React.FC<QueryParameters> = ({ query, method }) => {
         <div className="p-4 rounded-[16px] bg-[#1E1E1E] min-h-[25vh] max-h-[25vh] overflow-y-auto scrollbar-thin scrollbar-vertical-thin scrollbar-thumb-blue-500 scrollbar-track-blue-200 scrollbar-thumb-rounded">
           {isMode === modes[0] ? (
             <ParamsTable
-              rows={inputValue.params}
+              rows={requestModel.params}
               addRow={() => {
-                setInputValue(
-                  inputValue.copyWith({
+                setRequestModel(
+                  requestModel.copyWith({
                     params: [
-                      ...inputValue.params,
+                      ...requestModel.params,
                       {
                         id: generateRandomId(),
                         estado: true,
@@ -214,21 +175,21 @@ const HttpRequest: React.FC<QueryParameters> = ({ query, method }) => {
                 );
               }}
               deleteRow={(id: number) => {
-                const newRows = inputValue.params.filter(
+                const newRows = requestModel.params.filter(
                   (row) => row.id !== id
                 );
-                setInputValue(
-                  inputValue.copyWith({
+                setRequestModel(
+                  requestModel.copyWith({
                     params: newRows,
-                    query: `${inputValue.toQuery(newRows)}`,
+                    query: `${requestModel.toQuery(newRows)}`,
                   })
                 );
               }}
               setRows={(rows) => {
-                setInputValue(
-                  inputValue.copyWith({
+                setRequestModel(
+                  requestModel.copyWith({
                     params: rows,
-                    query: `${inputValue.toQuery(rows)}`,
+                    query: `${requestModel.toQuery(rows)}`,
                   })
                 );
               }}
@@ -253,12 +214,12 @@ const HttpRequest: React.FC<QueryParameters> = ({ query, method }) => {
             </div>
           ) : isMode === modes[2] ? (
             <HeaderTable
-              rows={inputValue.headers}
+              rows={requestModel.headers}
               addRow={() => {
-                setInputValue(
-                  inputValue.copyWith({
+                setRequestModel(
+                  requestModel.copyWith({
                     headers: [
-                      ...inputValue.headers,
+                      ...requestModel.headers,
                       {
                         id: generateRandomId(),
                         estado: true,
@@ -271,25 +232,46 @@ const HttpRequest: React.FC<QueryParameters> = ({ query, method }) => {
                 );
               }}
               deleteRow={(id: number) => {
-                const newRows = inputValue.headers.filter(
+                const newRows = requestModel.headers.filter(
                   (row) => row.id !== id
                 );
-                setInputValue(
-                  inputValue.copyWith({
+                setRequestModel(
+                  requestModel.copyWith({
                     headers: newRows,
                   })
                 );
               }}
               setRows={(rows) => {
-                setInputValue(
-                  inputValue.copyWith({
+                setRequestModel(
+                  requestModel.copyWith({
                     headers: rows,
                   })
                 );
               }}
             />
           ) : (
-            <>Modulo de {isMode} en desarrollo</>
+            <div className="">
+              <ButtonGroup
+                className="mb-[16px]"
+                value={isBodyMode}
+                items={bodyModes}
+                onChange={(mode) => {
+                  setBodyMode(mode);
+                }}
+              />
+              {bodyModes[0] === isBodyMode ? (
+                <div className="">This request does not have a body</div>
+              ) : bodyModes[1] === isBodyMode ? (
+                <ParamsTable
+                  rows={requestModel.params}
+                  addRow={() => {}}
+                  deleteRow={(id: number) => {}}
+                  setRows={(rows) => {}}
+                />
+              ) : (
+                <>{isBodyMode}</>
+              )}
+            </div>
           )}
         </div>
         <Title className="m-2" text="Response" />

@@ -1,4 +1,9 @@
 @tailwind base;
+
+html {
+  scroll-behavior: smooth;
+}
+
 @tailwind components;
 @tailwind utilities;
 
@@ -18,12 +23,10 @@
 
 body {
   color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
+  background: linear-gradient(to bottom,
       transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+      rgb(var(--background-end-rgb))) rgb(var(--background-start-rgb));
+  scroll-behavior: smooth;
 }
 
 /* styles.css (o .scss) */
@@ -31,10 +34,15 @@ body {
   @apply border-none bg-[#1E1E1E] p-2 text-base outline-none placeholder:text-[#FFFFFF78] placeholder:text-[12px] placeholder:font-normal text-[12px];
   /* Aquí puedes aplicar las clases de Tailwind CSS que desees */
 }
+
 .button {
   @apply bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 focus:outline-none;
 }
 
-.heroButton {
-  @apply px-6 py-2 border border-blue-800 rounded-full uppercase text-sm tracking-widest transition-all hover:text-blue-400 hover:border-blue-400 hover:bg-[#00435c1a] cursor-pointer select-none;
+.heroOutlinedButton {
+  @apply px-6 py-2 border border-blue-800 uppercase text-sm tracking-widest transition-all hover:text-blue-400 hover:border-blue-400 hover:bg-[#00435c1a] cursor-pointer select-none;
+}
+
+.heroFilledButton {
+  @apply px-6 py-2 border bg-blue-800 border-gray-500 uppercase text-sm tracking-widest transition-all hover:text-white hover:border-blue-400 hover:bg-blue-400 cursor-pointer select-none;
 }

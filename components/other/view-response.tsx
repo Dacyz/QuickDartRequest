@@ -4,10 +4,10 @@ import React from "react";
 // import ReactJson from "react-json-view";
 
 interface ResponseProps {
-  item: ListItem | null;
+  item: ResponseModel | null;
 }
 
-function esTamo(response: ListItem): React.ReactNode {
+function esTamo(response: ResponseModel): React.ReactNode {
   let resp = response.Response;
   const contentTypeHeader = resp.headers.get("Content-Type") ?? "*/*";
   if (contentTypeHeader && contentTypeHeader.includes("application/json")) {

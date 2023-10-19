@@ -128,7 +128,7 @@ function List() {
       </svg>
     </Material>
   );
-  const groupedItems: { [key: string]: ListItem[] } = {};
+  const groupedItems: { [key: string]: ResponseModel[] } = {};
 
   data.forEach((item) => {
     const groupKey = !isColleagueActive
@@ -140,7 +140,7 @@ function List() {
     groupedItems[groupKey].push(item);
   });
   // Ordenar los elementos dentro de cada grupo de más reciente a más antiguo
-  const sortedGroupedItems: { [key: string]: ListItem[] } = {};
+  const sortedGroupedItems: { [key: string]: ResponseModel[] } = {};
 
   for (const groupKey in groupedItems) {
     if (groupedItems.hasOwnProperty(groupKey)) {
@@ -160,7 +160,7 @@ function List() {
   });
 
   // Crear un nuevo objeto para almacenar los grupos ordenados
-  const sortedGroupedItem: { [key: string]: ListItem[] } = {};
+  const sortedGroupedItem: { [key: string]: ResponseModel[] } = {};
 
   // Llenar el objeto "sortedGroupedItems" con los grupos ordenados
   groupKeys.forEach((groupKey) => {
