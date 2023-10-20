@@ -1,29 +1,27 @@
+import { useDashboardContext } from "@/context/context";
 import { options } from "@/data/data/methods";
-import { MethodClass } from "@/data/models/method-model";
 import { AnimatePresence, motion } from "framer-motion";
 import { useState } from "react";
 
 interface TitleProps {
   className?: string;
-  onChange: (value: MethodClass) => void | undefined;
 }
 
-const DropDownBox: React.FC<TitleProps> = ({ onChange }) => {
+const DropDownMethodBox: React.FC<TitleProps> = (className) => {
   const [isOpen, setOpen] = useState(false);
-  const [selectedOption, setSelectedOption] = useState<MethodClass>(options[0]);
-
+  const { setRequestModel, requestModel } = useDashboardContext();
   return (
     <div
       className="relative min-w-[72px] text-center text-[12px] justify-center items-center flex-row flex cursor-pointer"
       style={{
-        color: selectedOption?.color,
-        backgroundColor: selectedOption?.backgroundColor,
+        color: requestModel.method.color,
+        backgroundColor: requestModel.method.backgroundColor,
         borderRadius: !isOpen ? "16px 0 0 16px" : "16px 0 0 0",
       }}
       onClick={() => setOpen(!isOpen)}
     >
       <p className="py-[11px] flex text-center items-center justify-center">
-        {selectedOption?.name ?? "Select"}
+        {requestModel.method.name ?? "Select"}
       </p>
       <AnimatePresence initial={false}>
         {isOpen && (
@@ -40,8 +38,7 @@ const DropDownBox: React.FC<TitleProps> = ({ onChange }) => {
                 key={i}
                 onClick={() => {
                   setOpen(false);
-                  setSelectedOption(e);
-                  onChange(e)
+                  setRequestModel(requestModel.copyWith({ method: e }));
                 }}
                 style={{
                   color: e.color,
@@ -60,4 +57,4 @@ const DropDownBox: React.FC<TitleProps> = ({ onChange }) => {
   );
 };
 
-export default DropDownBox;
+export default DropDownMethodBox;

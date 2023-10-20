@@ -8,7 +8,7 @@ import ViewResponse from "../other/view-response";
 import { HeaderTable, ParamsTable } from "../other/params-table";
 import { ParameterRow } from "@/data/models/parameter";
 import RequestModel from "@/data/models/request_model";
-import DropDownBox from "../buttons/dropdown";
+import DropDownMethodBox from "../buttons/dropdown";
 import ButtonGroup from "../buttons/button-group";
 import { generateRandomId } from "@/data/helpers/number_extension";
 
@@ -39,20 +39,18 @@ function getContentType(content: string): number {
 }
 
 const HttpRequest: React.FC = () => {
-  const { updateLocalStorage, setRequestModel, requestModel } =
-    useDashboardContext();
+  const { setRequestModel, requestModel } = useDashboardContext();
   const [isMode, setMode] = useState(modes[0]);
   const [isAuthMode, setAuthMode] = useState(authModes[0]);
   const [isBodyMode, setBodyMode] = useState(bodyModes[0]);
   const [responseValue, setResponseValue] = useState<ResponseModel | null>(
     null
   );
-  const handleClick = async () => {
+  const handleClickGenerate = async () => {
     try {
       if (requestModel.esEnlaceValido()) {
         const url = new URL(requestModel.url);
         let resp = await fetch(url);
-        console.log(resp);
         const contentTypeHeader = resp.headers.get("Content-Type") ?? "*/*";
         let res: number = getContentType(contentTypeHeader);
         let json: object | null;
@@ -73,12 +71,13 @@ const HttpRequest: React.FC = () => {
           Group: "",
           TimeStamp: Date.now(),
         };
-        updateLocalStorage(item); // Actualiza el localStorage con los datos obtenidos
         setResponseValue(item); // Actualiza el estado con los datos obtenidos
       } else {
         console.error("Invalid url:", requestModel);
       }
-    } catch (error) {}
+    } catch (error) {
+      console.error("Error al generar la petición", error);
+    }
   };
   const handleInputChange = (event: any) => {
     const input: string = event.target.value;
@@ -125,11 +124,7 @@ const HttpRequest: React.FC = () => {
     <div className="flex h-[95%]">
       <div className="w-full flex flex-col mr-[16px]">
         <div className="flex items-center mb-[16px]">
-          <DropDownBox
-            onChange={(e) =>
-              setRequestModel(requestModel.copyWith({ method: e }))
-            }
-          />
+          <DropDownMethodBox />
           <input
             className="w-full input-text"
             placeholder="Enter URL or paste text"
@@ -139,7 +134,10 @@ const HttpRequest: React.FC = () => {
             value={requestModel.url}
             onChange={handleInputChange}
           ></input>
-          <button className="button rounded-r-[16px]" onClick={handleClick}>
+          <button
+            className="button rounded-r-[16px]"
+            onClick={handleClickGenerate}
+          >
             Send
           </button>
         </div>

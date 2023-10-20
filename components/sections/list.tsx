@@ -13,6 +13,7 @@ import {
 } from "../labels/labels";
 import moment from "moment";
 import { useDashboardContext } from "../../context/context";
+import RequestModel from "@/data/models/request_model";
 
 function getMethodDiv(number: number): JSX.Element {
   switch (number) {
@@ -79,8 +80,8 @@ function List() {
   const [isColleagueActive, setIsColleagueActive] = useState(true);
   const {
     localData: data,
-    updateLocalStorage,
     removeLocalStorage,
+    setRequestModel,
   } = useDashboardContext();
   const colleagueIcon = (
     <Material
@@ -128,24 +129,24 @@ function List() {
       </svg>
     </Material>
   );
-  const groupedItems: { [key: string]: ResponseModel[] } = {};
+  const groupedItems: { [key: string]: RequestModel[] } = {};
 
   data.forEach((item) => {
-    const groupKey = !isColleagueActive
-      ? getGroupKeyFromDate(item.TimeStamp)
-      : item.Group;
+    const groupKey =
+      (!isColleagueActive ? getGroupKeyFromDate(item.timeStamp) : item.group) ??
+      "";
     if (!groupedItems[groupKey]) {
       groupedItems[groupKey] = [];
     }
     groupedItems[groupKey].push(item);
   });
   // Ordenar los elementos dentro de cada grupo de más reciente a más antiguo
-  const sortedGroupedItems: { [key: string]: ResponseModel[] } = {};
+  const sortedGroupedItems: { [key: string]: RequestModel[] } = {};
 
   for (const groupKey in groupedItems) {
     if (groupedItems.hasOwnProperty(groupKey)) {
       sortedGroupedItems[groupKey] = groupedItems[groupKey].sort(
-        (a, b) => b.TimeStamp - a.TimeStamp
+        (a, b) => b.timeStamp - a.timeStamp
       );
     }
   }
@@ -154,13 +155,13 @@ function List() {
 
   // Ordenar las claves de los grupos según la fecha del primer elemento en cada grupo
   groupKeys.sort((a, b) => {
-    const timestampA = sortedGroupedItems[a][0].TimeStamp;
-    const timestampB = sortedGroupedItems[b][0].TimeStamp;
+    const timestampA = sortedGroupedItems[a][0].timeStamp;
+    const timestampB = sortedGroupedItems[b][0].timeStamp;
     return timestampB - timestampA; // Cambia a "timestampB - timestampA" para ordenar en orden descendente
   });
 
   // Crear un nuevo objeto para almacenar los grupos ordenados
-  const sortedGroupedItem: { [key: string]: ResponseModel[] } = {};
+  const sortedGroupedItem: { [key: string]: RequestModel[] } = {};
 
   // Llenar el objeto "sortedGroupedItems" con los grupos ordenados
   groupKeys.forEach((groupKey) => {
@@ -178,14 +179,19 @@ function List() {
             <li
               key={index}
               className="flex mt-[16px] px-[12px] py-[8px] bg-[#1E1E1E] transition-colors cursor-pointer hover:bg-[#404040] rounded-[16px] items-center"
-              onClick={() => console.log(item.Enlace)}
+              onClick={() => {
+                setRequestModel(item);
+                console.log(item);
+              }}
             >
-              {getMethodDiv(item.Method)}
+              {getMethodDiv(item.method.id)}
               <div className="ml-[8px] text-[12px] font-semibold flex w-full justify-between">
-                <span className="text-[12px] font-semibold">{item.Name}</span>
+                <span className="text-[12px] font-semibold">
+                  {item.name ?? item.host}
+                </span>
                 <div
                   className="text-[12px] font-semibold opacity-0 hover:opacity-100 transition-opacity"
-                  onClick={() => removeLocalStorage(item.TimeStamp)}
+                  onClick={() => removeLocalStorage(item.timeStamp)}
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"

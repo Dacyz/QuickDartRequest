@@ -14,12 +14,25 @@ interface DashboardContextProps {
   children: ReactNode;
 }
 
+interface CategoryType {
+  inputValue?: string;
+  title: string;
+  isSave?: boolean;
+  timeStamp: number;
+}
+
 interface DashboardContextData {
-  localData: ResponseModel[];
+  localData: RequestModel[];
+  categoriesData: CategoryType[];
   requestModel: RequestModel;
   setRequestModel: React.Dispatch<React.SetStateAction<RequestModel>>;
-  updateLocalStorage: (data: ResponseModel) => void;
+  updateLocalStorage: (data: RequestModel) => void;
   removeLocalStorage: (data: number) => void;
+  setRequestName: (newName: string) => void;
+  saveRequestModel: () => void;
+  setRequestCategory: (newName: string | undefined) => void;
+  updateCategoriesStorage: (newData: CategoryType) => void;
+  removeCategoriesStorage: (newData: number) => void;
 }
 
 const DashboardContext = createContext<DashboardContextData | undefined>(
@@ -27,53 +40,76 @@ const DashboardContext = createContext<DashboardContextData | undefined>(
 );
 
 const separator: string = ":";
+const listRequest: string = "ListRequest";
+const listCategories: string = "ListCategories";
 const allowedMethods: string[] = ["get", "post", "put", "delete"];
 
 export const DashboardProvider: React.FC<DashboardContextProps> = ({
   children,
 }) => {
-  const [localData, setLocalData] = useState<ResponseModel[]>([]);
+  const [localData, setLocalData] = useState<RequestModel[]>([]);
+  const [categoriesData, setCategoriesData] = useState<CategoryType[]>([]);
   const [requestModel, setRequestModel] = useState<RequestModel>(
     new RequestModel()
   );
 
-  // const updateRequestModel = (changes: Partial<RequestModel>) => {
-  //   setRequestModel(
-  //     requestModel.copyWith({
-  //       headers: [
-  //         ...requestModel.headers,
-  //         {
-  //           id: generateRandomId(),
-  //           estado: true,
-  //           key: "",
-  //           value: "",
-  //           hidden: true,
-  //         },
-  //       ],
-  //     })
-  //   );
-  // };
-
-  // Función para actualizar y agregar datos al localStorage
-  const updateLocalStorage = (newData: ResponseModel) => {
+  const updateRequestStorage = (newData: RequestModel) => {
     const updatedData = [...localData, newData];
-    localStorage.setItem("miLista", JSON.stringify(updatedData));
+    localStorage.setItem(listRequest, JSON.stringify(updatedData));
     setLocalData(updatedData);
   };
 
-  // Función para actualizar y agregar datos al localStorage
+  const updateCategoriesStorage = (newData: CategoryType) => {
+    const updatedData = [...categoriesData, newData];
+    localStorage.setItem(listCategories, JSON.stringify(updatedData));
+    setCategoriesData(updatedData);
+  };
+
+  // Función para remover datos del localStorage
   const removeLocalStorage = (newData: number) => {
     const updatedData = localData.filter(
-      (objeto) => objeto.TimeStamp !== newData
+      (objeto) => objeto.timeStamp !== newData
     );
-    localStorage.setItem("miLista", JSON.stringify(updatedData));
+    localStorage.setItem(listRequest, JSON.stringify(updatedData));
     setLocalData(updatedData);
+  };
+
+  const removeCategoriesStorage = (newData: number) => {
+    const updatedData = categoriesData.filter(
+      (objeto) => objeto.timeStamp !== newData
+    );
+    localStorage.setItem(listCategories, JSON.stringify(updatedData));
+    setCategoriesData(updatedData);
+  };
+
+  // Función para establecer el nombre del request
+  const setRequestName = (newName: string) => {
+    const updatedRequest = requestModel.copyWith({ name: newName });
+    setRequestModel(updatedRequest);
+  };
+
+  const setRequestCategory = (newName: string | undefined) => {
+    const updatedRequest = requestModel.copyWith({ group: newName });
+    setRequestModel(updatedRequest);
+  };
+
+  // Función para guardar una nueva petición
+  // TODO: VALIDAR MODELOS ANTERIORES
+  const saveRequestModel = () => {
+    try {
+      const newModel = requestModel.copyWith({ timeStamp: Date.now() });
+      updateRequestStorage(newModel); // Actualiza el localStorage con los datos obtenidos
+    } catch (error) {
+      console.error("Error al guardar la petición", error);
+    }
   };
 
   // Cargar datos del localStorage al inicio
   useEffect(() => {
-    const storedDataString = localStorage.getItem("miLista") || "";
+    const storedDataString = localStorage.getItem(listRequest) || "";
+    const storedCategoriesString = localStorage.getItem(listCategories) || "";
     let storedData = [];
+    let storedCategoriesData = [];
     let model: RequestModel = new RequestModel();
     try {
       storedData = JSON.parse(storedDataString) || [];
@@ -81,6 +117,13 @@ export const DashboardProvider: React.FC<DashboardContextProps> = ({
       console.error("Error al analizar los datos de localStorage:", error);
       // Puedes proporcionar un valor predeterminado en caso de un error de análisis.
       storedData = []; // O cualquier otro valor predeterminado que desees.
+    }
+    try {
+      storedCategoriesData = JSON.parse(storedCategoriesString) || [];
+    } catch (error) {
+      console.error("Error al analizar los datos de localStorage:", error);
+      // Puedes proporcionar un valor predeterminado en caso de un error de análisis.
+      storedCategoriesData = []; // O cualquier otro valor predeterminado que desees.
     }
     if (hasProperties()) {
       try {
@@ -93,16 +136,23 @@ export const DashboardProvider: React.FC<DashboardContextProps> = ({
     console.log(`List: [${storedData.length}], Response: ${model}`);
     setLocalData(storedData);
     setRequestModel(model);
+    setCategoriesData(storedCategoriesData);
   }, []);
 
   return (
     <DashboardContext.Provider
       value={{
         localData: localData,
+        categoriesData: categoriesData,
         requestModel: requestModel,
-        updateLocalStorage: updateLocalStorage,
+        updateLocalStorage: updateRequestStorage,
         removeLocalStorage: removeLocalStorage,
         setRequestModel: setRequestModel,
+        setRequestName: setRequestName,
+        saveRequestModel: saveRequestModel,
+        setRequestCategory: setRequestCategory,
+        updateCategoriesStorage: updateCategoriesStorage,
+        removeCategoriesStorage: removeCategoriesStorage,
       }}
     >
       {children}

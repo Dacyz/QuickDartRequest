@@ -32,7 +32,9 @@ function esTamo(response: ResponseModel): React.ReactNode {
       //   displayDataTypes={false}
       //   quotesOnKeys={false}
       // />
-      <div className="flex flex-col flex-grow rounded-[16px] bg-[#1E1E1E] overflow-y-auto scrollbar-thin scrollbar-vertical-thin scrollbar-thumb-blue-500 scrollbar-track-blue-200 scrollbar-thumb-rounded"></div>
+      <div className="flex flex-col flex-grow rounded-[16px] bg-[#1E1E1E] overflow-y-auto scrollbar-thin scrollbar-vertical-thin scrollbar-thumb-blue-500 scrollbar-track-blue-200 scrollbar-thumb-rounded">
+        {JSON.stringify(response.jsonResponse, null, 3)}
+      </div>
     );
   } else if (contentTypeHeader.includes("image/")) {
     return (

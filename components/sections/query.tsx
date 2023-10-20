@@ -10,6 +10,9 @@ import {
   HttpRequestIcon,
   SocketRequestIcon,
 } from "../icons/icon";
+import SaveRequestButton from "../buttons/save-request";
+import NameRequestField from "../inputs/name-request";
+import FreeSoloCreateOption from "../inputs/select-tag";
 
 type module = {
   id: number;
@@ -41,31 +44,39 @@ const modules: module[] = [
 
 const QueryPage: React.FC = () => {
   const [mode, setMode] = useState<module>(modules[0]);
-
   return (
-    <div className="flex flex-col flex-grow p-4">
-      <div className="flex mb-[16px]">
-        {modules.map((item) => (
-          <Material
-            key={item.id}
-            className={`transition-opacity ${
-              modules[0] == item
-                ? "rounded-l-[24px]"
-                : modules[2] == item
-                ? "rounded-r-[24px]"
-                : ""
-            } ${mode == item ? "opacity-100" : "opacity-50"}`}
-            onClick={() => {
-              setMode(item);
-            }}
-          >
-            {item.icon}
-          </Material>
-        ))}
-        <Title className="ml-2" text={mode.name} />
+    <>
+      <div className="flex flex-col flex-grow p-4">
+        <div className="flex mb-[16px] justify-between">
+          <div className="flex">
+            {modules.map((item) => (
+              <Material
+                key={item.id}
+                className={`transition-opacity ${
+                  modules[0] == item
+                    ? "rounded-l-[24px]"
+                    : modules[2] == item
+                    ? "rounded-r-[24px]"
+                    : ""
+                } ${mode == item ? "opacity-100" : "opacity-50"}`}
+                onClick={() => {
+                  setMode(item);
+                }}
+              >
+                {item.icon}
+              </Material>
+            ))}
+            <Title className="ml-2" text={mode.name} />
+          </div>
+          <div className="flex">
+            <NameRequestField />
+            <FreeSoloCreateOption />
+            <SaveRequestButton />
+          </div>
+        </div>
+        {mode.component}
       </div>
-      {mode.component}
-    </div>
+    </>
   );
 };
 

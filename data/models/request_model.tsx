@@ -4,9 +4,12 @@ import { MethodClass } from "./method-model";
 import { ParameterRow, HeaderRow } from "./parameter";
 
 interface RequestInterface {
+  name: string;
   host: string | "";
   query: string | "";
   include: boolean;
+  timeStamp: number;
+  group?: string;
   method: MethodClass;
   params: ParameterRow[];
   headers: HeaderRow[];
@@ -85,8 +88,11 @@ const defaultParameters: ParameterRow[] = [
 class RequestModel implements RequestInterface {
   // Expresión regular para verificar si el string es una URL válida
   // Propiedades de la clase
+  public name: string;
   public host: string;
   public query: string;
+  public timeStamp: number;
+  public group?: string;
   public method: MethodClass;
   public include: boolean;
   public params: ParameterRow[];
@@ -98,7 +104,10 @@ class RequestModel implements RequestInterface {
     query?: string,
     params?: ParameterRow[],
     headers?: HeaderRow[],
-    method?: number
+    method?: number,
+    timeStamp?: number,
+    group?: string,
+    name?: string
   ) {
     this.host = host ?? ""; // Asignamos parametro1 a uri
     this.include = false;
@@ -110,6 +119,9 @@ class RequestModel implements RequestInterface {
     }
     this.params = params ?? defaultParameters;
     this.headers = headers ?? defaultHeaders;
+    this.timeStamp = timeStamp ?? 0;
+    this.group = group;
+    this.name = name ?? "New request";
   }
 
   get url(): string {
@@ -168,8 +180,14 @@ class RequestModel implements RequestInterface {
     copiedRequest.include = this.include;
     copiedRequest.params = this.params;
     copiedRequest.headers = this.headers;
+    copiedRequest.timeStamp = this.timeStamp;
+    copiedRequest.group = this.group;
+    copiedRequest.name = this.name;
 
     // Aplicamos los cambios proporcionados en el objeto `changes`
+    if (changes.host !== undefined) {
+      copiedRequest.host = changes.host;
+    }
     if (changes.query !== undefined) {
       copiedRequest.query = changes.query;
     }
@@ -182,11 +200,17 @@ class RequestModel implements RequestInterface {
     if (changes.params !== undefined) {
       copiedRequest.params = changes.params;
     }
-    if (changes.host !== undefined) {
-      copiedRequest.host = changes.host;
-    }
     if (changes.headers !== undefined) {
       copiedRequest.headers = changes.headers;
+    }
+    if (changes.timeStamp !== undefined) {
+      copiedRequest.timeStamp = changes.timeStamp;
+    }
+    if (changes.group !== undefined) {
+      copiedRequest.group = changes.group;
+    }
+    if (changes.name !== undefined) {
+      copiedRequest.name = changes.name;
     }
 
     return copiedRequest;
