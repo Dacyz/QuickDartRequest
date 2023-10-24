@@ -1,39 +1,43 @@
 "use client";
-import PrecisionManufacturingIcon from "@mui/icons-material/PrecisionManufacturing";
 import CopyAllIcon from "@mui/icons-material/CopyAll";
 import CodeEditor from "@uiw/react-textarea-code-editor";
+import SettingsIcon from "@mui/icons-material/Settings";
 import React from "react";
 
 const ConvertSection: React.FC = () => {
   return (
-    <div className="min-w-[320px] gap-4 max-w-[320px] flex flex-col h-full">
+    <div className="min-w-[560px] gap-4 max-w-[560px] flex flex-col h-full">
       <div className="flex items-center">
+        <button className="button flex rounded-l-2xl">
+          <SettingsIcon />
+        </button>
         <input
-          className="w-full input-text rounded-l-[16px]"
+          className="w-full input-text"
           placeholder="Enter classname"
           aria-controls=":rq:"
           aria-labelledby=":rr:"
           type="text"
         ></input>
+        <button className="button flex rounded-r-2xl">Convert</button>
       </div>
       <ul>
         <li>
-          <input type="checkbox" id="vehicle1" name="vehicle1" value="Bike" />
-          <label htmlFor="vehicle1">
+          <input type="checkbox" id="toJson" name="toJson" value="Bike" />
+          <label htmlFor="toJson">
             {" "}
             Generate <span className="text-blue-400">toJson</span> method
           </label>
         </li>
         <li>
-          <input type="checkbox" id="vehicle1" name="vehicle1" value="Bike" />
-          <label htmlFor="vehicle1">
+          <input type="checkbox" id="copyWith" name="copyWith" value="Bike" />
+          <label htmlFor="copyWith">
             {" "}
             Generate <span className="text-blue-400">copyWith</span> method
           </label>
         </li>
         <li>
-          <input type="checkbox" id="vehicle1" name="vehicle1" value="Bike" />
-          <label htmlFor="vehicle1">
+          <input type="checkbox" id="toString" name="toString" value="Bike" />
+          <label htmlFor="toString">
             {" "}
             Generate <span className="text-blue-400">toString</span> method
           </label>
@@ -42,42 +46,35 @@ const ConvertSection: React.FC = () => {
       <CodeEditor
         value={`import '../../domain/models/config/n_config_model.dart';
 
-          class ApiConstants {
-            ///Constant
-            static const int timeOutSeconds = 75;
-          
-            /// Ambientes:
-            /// - CELER: "https://10.10.1.114:8080"
-            /// - DEV: "https://ubikate.spiralia-team.com"
-            /// - QA: "https://ubikate.aplicacion-team.com"
-            /// - PROD: undefined
-            // static const String NBaseServer = "https://10.10.1.114:8080";
-            // static const String NBaseServer = "https://ubikate.spiralia-team.com";
-            static const String NBaseServer = "https://ubikate.aplicacion-team.com";
-            static late final NConfigModel config;
-          
-            static Uri toUri(String path) => Uri.parse(config.toApi(path));
-          
-            static Uri uri({
-              required String path,
-              Map<String, dynamic>? queryParameters,
-            }) =>
-                Uri(
-                  scheme: 'https',
-                  // host: '10.10.1.114:8080', // CELER
-                  // host: 'ubikate.spiralia-team.com', // DEV
-                  host: 'ubikate.aplicacion-team.com',
-                  path: path,
-                  queryParameters: queryParameters,
-                );
-          }
-          `}
-        onChange={()=> false}
+class ApiConstants {
+  ///Constant
+  static const int timeOutSeconds = 75;
+
+  /// Ambientes:
+  /// - CELER: "https://10.10.1.114:8080"
+  /// - DEV: "https://x.spiralia-team.com"
+  static const String NBaseServer = "https://x.aplicacion-team.com";
+  static late final NConfigModel config;
+
+  static Uri toUri(String path) => Uri.parse(config.toApi(path));
+
+  static Uri uri({
+    required String path,
+    Map<String, dynamic>? queryParameters,
+  }) =>
+    Uri(
+      scheme: 'https',
+      host: 'x.aplicacion-team.com',
+      path: path,
+      queryParameters: queryParameters,
+    );
+}`}
+        onChange={() => false}
         language="dart"
         data-color-mode="dark"
         placeholder="Please enter Dart code."
         contentEditable={false}
-        // disabled
+        disabled
         padding={16}
         style={{
           fontSize: 12,
@@ -94,10 +91,6 @@ const ConvertSection: React.FC = () => {
       <button className="button w-full rounded-2xl">
         {" "}
         <CopyAllIcon /> Copy
-      </button>
-      <button className="button w-full rounded-2xl">
-        {" "}
-        <PrecisionManufacturingIcon /> Convert
       </button>
     </div>
   );

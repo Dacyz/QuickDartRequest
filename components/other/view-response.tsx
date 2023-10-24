@@ -1,5 +1,6 @@
 /* eslint-disable jsx-a11y/alt-text */
 /* eslint-disable @next/next/no-img-element */
+import CodeEditor from "@uiw/react-textarea-code-editor";
 import React from "react";
 // import ReactJson from "react-json-view";
 
@@ -14,27 +15,27 @@ function esTamo(response: ResponseModel): React.ReactNode {
     // Si el Content-Type es JSON, muestra un mensaje en la consola
     // Se ha retirado por ahora por problemas internos
     return (
-      // <ReactJson
-      //   style={{
-      //     color: "white",
-      //     borderRadius: "16px",
-      //     flexGrow: "1",
-      //     padding: "16px",
-      //     background: "transparent",
-      //     flex: "1",
-      //   }}
-      //   src={response.jsonResponse ?? {}}
-      //   theme={"eighties"}
-      //   displayObjectSize={true}
-      //   indentWidth={3}
-      //   collapsed={false}
-      //   shouldCollapse={false}
-      //   displayDataTypes={false}
-      //   quotesOnKeys={false}
-      // />
-      <div className="flex flex-col flex-grow rounded-[16px] bg-[#1E1E1E] overflow-y-auto scrollbar-thin scrollbar-vertical-thin scrollbar-thumb-blue-500 scrollbar-track-blue-200 scrollbar-thumb-rounded">
-        {JSON.stringify(response.jsonResponse, null, 3)}
-      </div>
+      <CodeEditor
+        value={JSON.stringify(response.jsonResponse, null, 3)}
+        onChange={() => false}
+        language="json"
+        data-color-mode="dark"
+        placeholder="Please enter Dart code."
+        contentEditable={false}
+        // disabled
+        padding={16}
+        style={{
+          fontSize: 12,
+          backgroundColor: "#1E1E1E",
+          borderRadius: "16px",
+          overflow: "auto",
+          flexGrow: "1",
+          width: "100%",
+          resize: "none",
+          fontFamily:
+            "ui-monospace,SFMono-Regular,SF Mono,Consolas,Liberation Mono,Menlo,monospace",
+        }}
+      />
     );
   } else if (contentTypeHeader.includes("image/")) {
     return (
@@ -42,8 +43,13 @@ function esTamo(response: ResponseModel): React.ReactNode {
         <img className="rounded-[16px] p-2" src={response.Enlace}></img>
       </div>
     );
-  } else {
+  } else if (contentTypeHeader.includes("video/")) {
     console.log("La respuesta no es JSON");
+    return (
+      <div className="flex items-center justify-center rounded-[16px] bg-[#1E1E1E] flex-grow">
+        <video className="rounded-[16px] p-2" src={response.Enlace}></video>
+      </div>
+    );
   }
   return <>Undefined</>;
 }

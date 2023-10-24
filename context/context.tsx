@@ -9,6 +9,8 @@ import React, {
   useEffect,
   ReactNode,
 } from "react";
+import { Toaster, toast } from "sonner";
+
 
 interface DashboardContextProps {
   children: ReactNode;
@@ -99,6 +101,7 @@ export const DashboardProvider: React.FC<DashboardContextProps> = ({
     try {
       const newModel = requestModel.copyWith({ timeStamp: Date.now() });
       updateRequestStorage(newModel); // Actualiza el localStorage con los datos obtenidos
+      toast.success('Guardado correctamente');
     } catch (error) {
       console.error("Error al guardar la petición", error);
     }
@@ -155,6 +158,7 @@ export const DashboardProvider: React.FC<DashboardContextProps> = ({
         removeCategoriesStorage: removeCategoriesStorage,
       }}
     >
+      <Toaster theme="dark" richColors/>
       {children}
     </DashboardContext.Provider>
   );

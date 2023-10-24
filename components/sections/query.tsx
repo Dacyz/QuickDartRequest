@@ -27,11 +27,11 @@ const modules: module[] = [
     id: 1,
     name: "Http Request",
     component: (
-      <div className="flex h-[90%] gap-4 flex-grow">
+      <>
         <HttpRequest />
         <LineSeparator />
         <ConvertSection />
-      </div>
+      </>
     ),
     icon: <HttpRequestIcon />,
   },
@@ -80,7 +80,7 @@ const QueryPage: React.FC = () => {
           <SaveRequestButton />
         </div>
       </div>
-      {mode.component}
+      <div className="flex h-[90%] gap-4 flex-grow">{mode.component}</div>
     </div>
   );
 };

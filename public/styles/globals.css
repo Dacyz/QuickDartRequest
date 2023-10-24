@@ -36,7 +36,7 @@ body {
 }
 
 .button {
-  @apply bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 focus:outline-none;
+  @apply bg-blue-900 hover:bg-blue-700 text-white py-2 px-4 focus:outline-none transition-all;
 }
 
 .heroOutlinedButton {
