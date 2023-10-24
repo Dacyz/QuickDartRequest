@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { useDashboardContext } from "../../context/context";
 import Title from "../labels/title";
-import ConvertRequest from "./convert-request";
+import ConvertSection from "./convert-request";
 import LineSeparator from "../other/line-separator";
 import ViewResponse from "../other/view-response";
 import { HeaderTable, ParamsTable } from "../other/params-table";
@@ -121,164 +121,156 @@ const HttpRequest: React.FC = () => {
   };
 
   return (
-    <div className="flex h-[95%]">
-      <div className="w-full flex flex-col mr-[16px]">
-        <div className="flex items-center mb-[16px]">
-          <DropDownMethodBox />
-          <input
-            className="w-full input-text"
-            placeholder="Enter URL or paste text"
-            aria-controls=":rq:"
-            aria-labelledby=":rr:"
-            type="text"
-            value={requestModel.url}
-            onChange={handleInputChange}
-          ></input>
-          <button
-            className="button rounded-r-[16px]"
-            onClick={handleClickGenerate}
-          >
-            Send
-          </button>
-        </div>
-
-        <div className="flex justify-between">
-          <Title className="m-2" text={isMode} />
-          <ButtonGroup
-            className="mb-[16px]"
-            value={isMode}
-            items={modes}
-            onChange={(mode) => {
-              setMode(mode);
+    <div className="flex flex-col w-full gap-4">
+      <div className="flex items-center">
+        <DropDownMethodBox />
+        <input
+          className="w-full input-text"
+          placeholder="Enter URL or paste text"
+          aria-controls=":rq:"
+          aria-labelledby=":rr:"
+          type="text"
+          value={requestModel.url}
+          onChange={handleInputChange}
+        ></input>
+        <button
+          className="button rounded-r-[16px]"
+          onClick={handleClickGenerate}
+        >
+          Send
+        </button>
+      </div>
+      <div className="flex justify-between">
+        <Title className="ml-2" text={isMode} />
+        <ButtonGroup
+          value={isMode}
+          items={modes}
+          onChange={(mode) => {
+            setMode(mode);
+          }}
+        />
+      </div>
+      <div className="rounded-[16px] bg-[#1E1E1E] min-h-[25vh] max-h-[25vh] overflow-y-auto scrollbar-thin scrollbar-vertical-thin scrollbar-thumb-blue-500 scrollbar-track-blue-200 scrollbar-thumb-rounded">
+        {isMode === modes[0] ? (
+          <ParamsTable
+            rows={requestModel.params}
+            addRow={() => {
+              setRequestModel(
+                requestModel.copyWith({
+                  params: [
+                    ...requestModel.params,
+                    {
+                      id: generateRandomId(),
+                      estado: true,
+                      key: "",
+                      value: "",
+                    },
+                  ],
+                })
+              );
+            }}
+            deleteRow={(id: number) => {
+              const newRows = requestModel.params.filter(
+                (row) => row.id !== id
+              );
+              setRequestModel(
+                requestModel.copyWith({
+                  params: newRows,
+                  query: `${requestModel.toQuery(newRows)}`,
+                })
+              );
+            }}
+            setRows={(rows) => {
+              setRequestModel(
+                requestModel.copyWith({
+                  params: rows,
+                  query: `${requestModel.toQuery(rows)}`,
+                })
+              );
             }}
           />
-        </div>
-        <div className="p-4 rounded-[16px] bg-[#1E1E1E] min-h-[25vh] max-h-[25vh] overflow-y-auto scrollbar-thin scrollbar-vertical-thin scrollbar-thumb-blue-500 scrollbar-track-blue-200 scrollbar-thumb-rounded">
-          {isMode === modes[0] ? (
-            <ParamsTable
-              rows={requestModel.params}
-              addRow={() => {
-                setRequestModel(
-                  requestModel.copyWith({
-                    params: [
-                      ...requestModel.params,
-                      {
-                        id: generateRandomId(),
-                        estado: true,
-                        key: "",
-                        value: "",
-                      },
-                    ],
-                  })
-                );
-              }}
-              deleteRow={(id: number) => {
-                const newRows = requestModel.params.filter(
-                  (row) => row.id !== id
-                );
-                setRequestModel(
-                  requestModel.copyWith({
-                    params: newRows,
-                    query: `${requestModel.toQuery(newRows)}`,
-                  })
-                );
-              }}
-              setRows={(rows) => {
-                setRequestModel(
-                  requestModel.copyWith({
-                    params: rows,
-                    query: `${requestModel.toQuery(rows)}`,
-                  })
-                );
+        ) : isMode === modes[1] ? (
+          <div className="">
+            <ButtonGroup
+              className="mb-[16px]"
+              value={isAuthMode}
+              items={authModes}
+              onChange={(mode) => {
+                setAuthMode(mode);
               }}
             />
-          ) : isMode === modes[1] ? (
-            <div className="">
-              <ButtonGroup
-                className="mb-[16px]"
-                value={isAuthMode}
-                items={authModes}
-                onChange={(mode) => {
-                  setAuthMode(mode);
-                }}
-              />
-              {authModes[0] === isAuthMode ? (
-                <div className="">
-                  This request does not use any authorization
-                </div>
-              ) : (
-                <>{isAuthMode}</>
-              )}
-            </div>
-          ) : isMode === modes[2] ? (
-            <HeaderTable
-              rows={requestModel.headers}
-              addRow={() => {
-                setRequestModel(
-                  requestModel.copyWith({
-                    headers: [
-                      ...requestModel.headers,
-                      {
-                        id: generateRandomId(),
-                        estado: true,
-                        key: "",
-                        value: "",
-                        hidden: true,
-                      },
-                    ],
-                  })
-                );
-              }}
-              deleteRow={(id: number) => {
-                const newRows = requestModel.headers.filter(
-                  (row) => row.id !== id
-                );
-                setRequestModel(
-                  requestModel.copyWith({
-                    headers: newRows,
-                  })
-                );
-              }}
-              setRows={(rows) => {
-                setRequestModel(
-                  requestModel.copyWith({
-                    headers: rows,
-                  })
-                );
+            {authModes[0] === isAuthMode ? (
+              <div className="">
+                This request does not use any authorization
+              </div>
+            ) : (
+              <>{isAuthMode}</>
+            )}
+          </div>
+        ) : isMode === modes[2] ? (
+          <HeaderTable
+            rows={requestModel.headers}
+            addRow={() => {
+              setRequestModel(
+                requestModel.copyWith({
+                  headers: [
+                    ...requestModel.headers,
+                    {
+                      id: generateRandomId(),
+                      estado: true,
+                      key: "",
+                      value: "",
+                      hidden: true,
+                    },
+                  ],
+                })
+              );
+            }}
+            deleteRow={(id: number) => {
+              const newRows = requestModel.headers.filter(
+                (row) => row.id !== id
+              );
+              setRequestModel(
+                requestModel.copyWith({
+                  headers: newRows,
+                })
+              );
+            }}
+            setRows={(rows) => {
+              setRequestModel(
+                requestModel.copyWith({
+                  headers: rows,
+                })
+              );
+            }}
+          />
+        ) : (
+          <div className="">
+            <ButtonGroup
+              className="mb-[16px]"
+              value={isBodyMode}
+              items={bodyModes}
+              onChange={(mode) => {
+                setBodyMode(mode);
               }}
             />
-          ) : (
-            <div className="">
-              <ButtonGroup
-                className="mb-[16px]"
-                value={isBodyMode}
-                items={bodyModes}
-                onChange={(mode) => {
-                  setBodyMode(mode);
-                }}
+            {bodyModes[0] === isBodyMode ? (
+              <div className="">This request does not have a body</div>
+            ) : bodyModes[1] === isBodyMode ? (
+              <ParamsTable
+                rows={requestModel.params}
+                addRow={() => {}}
+                deleteRow={(id: number) => {}}
+                setRows={(rows) => {}}
               />
-              {bodyModes[0] === isBodyMode ? (
-                <div className="">This request does not have a body</div>
-              ) : bodyModes[1] === isBodyMode ? (
-                <ParamsTable
-                  rows={requestModel.params}
-                  addRow={() => {}}
-                  deleteRow={(id: number) => {}}
-                  setRows={(rows) => {}}
-                />
-              ) : (
-                <>{isBodyMode}</>
-              )}
-            </div>
-          )}
-        </div>
-        <Title className="m-2" text="Response" />
-        <ViewResponse item={responseValue} />
+            ) : (
+              <>{isBodyMode}</>
+            )}
+          </div>
+        )}
       </div>
-      <LineSeparator />
-      <div className="min-w-[320px] ml-[16px] max-w-[320px]">
-        <ConvertRequest />
-      </div>
+      <Title className="ml-2" text="Response" />
+      <ViewResponse item={responseValue} />
     </div>
   );
 };
