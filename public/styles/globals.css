@@ -39,6 +39,11 @@ body {
   @apply bg-blue-900 hover:bg-blue-700 text-white py-2 px-4 focus:outline-none transition-all;
 }
 
+.button-icon {
+  @apply bg-blue-900 hover:bg-blue-700 text-white py-2 px-3 focus:outline-none transition-all;
+}
+
+
 .heroOutlinedButton {
   @apply px-6 py-2 border border-blue-800 uppercase text-sm tracking-widest transition-all hover:text-blue-400 hover:border-blue-400 hover:bg-[#00435c1a] cursor-pointer select-none;
 }

@@ -8,14 +8,14 @@ const SaveRequestButton: React.FC = () => {
   const { saveRequestModel } = useDashboardContext();
 
   return (
-    <IconButton
+    <button
       onClick={saveRequestModel}
       color="primary"
-      size="large"
       aria-label="save"
+      className="button-icon rounded-r-2xl"
     >
-      <Save />
-    </IconButton>
+      <Save  fontSize="small"/>
+    </button>
   );
 };
 

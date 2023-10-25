@@ -14,6 +14,7 @@ import SaveRequestButton from "../buttons/save-request";
 import NameRequestField from "../inputs/name-request";
 import FreeSoloCreateOption from "../inputs/select-tag";
 import LineSeparator from "../other/line-separator";
+import { CategoriesModal } from "../modals/categoriesmodal";
 
 type module = {
   id: number;
@@ -76,7 +77,8 @@ const QueryPage: React.FC = () => {
         </div>
         <div className="flex">
           <NameRequestField />
-          <FreeSoloCreateOption />
+          {/* <FreeSoloCreateOption /> */}
+          <CategoriesModal />
           <SaveRequestButton />
         </div>
       </div>

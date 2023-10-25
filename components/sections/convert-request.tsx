@@ -1,16 +1,14 @@
 "use client";
 import CopyAllIcon from "@mui/icons-material/CopyAll";
 import CodeEditor from "@uiw/react-textarea-code-editor";
-import SettingsIcon from "@mui/icons-material/Settings";
 import React from "react";
+import { ConvertModal } from "../modals/categoriesmodal";
 
 const ConvertSection: React.FC = () => {
   return (
     <div className="min-w-[560px] gap-4 max-w-[560px] flex flex-col h-full">
       <div className="flex items-center">
-        <button className="button flex rounded-l-2xl">
-          <SettingsIcon />
-        </button>
+        <ConvertModal />
         <input
           className="w-full input-text"
           placeholder="Enter classname"

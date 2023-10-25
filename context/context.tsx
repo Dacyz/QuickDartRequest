@@ -11,7 +11,6 @@ import React, {
 } from "react";
 import { Toaster, toast } from "sonner";
 
-
 interface DashboardContextProps {
   children: ReactNode;
 }
@@ -35,6 +34,7 @@ interface DashboardContextData {
   setRequestCategory: (newName: string | undefined) => void;
   updateCategoriesStorage: (newData: CategoryType) => void;
   removeCategoriesStorage: (newData: number) => void;
+  handleInputChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 const DashboardContext = createContext<DashboardContextData | undefined>(
@@ -87,6 +87,7 @@ export const DashboardProvider: React.FC<DashboardContextProps> = ({
   // Función para establecer el nombre del request
   const setRequestName = (newName: string) => {
     const updatedRequest = requestModel.copyWith({ name: newName });
+    console.log(updatedRequest);
     setRequestModel(updatedRequest);
   };
 
@@ -95,13 +96,48 @@ export const DashboardProvider: React.FC<DashboardContextProps> = ({
     setRequestModel(updatedRequest);
   };
 
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const input: string = event.target.value;
+    try {
+      if (input.includes("?")) {
+        const partes: string[] = input.split("?"); // Dividir la cadena
+        const queryString = input.substring(partes[0].length);
+        const paramsString = input.substring(partes[0].length + 1);
+        const parameters: string[] = paramsString.split("&");
+        let newRows: ParameterRow[] = [];
+        parameters.map((parameter) => {
+          const values: string[] = parameter.split("=");
+          newRows.push({
+            id: generateRandomId(),
+            estado: true,
+            key: values[0] ?? "",
+            value: values[1] ?? "",
+          });
+        });
+        newRows.push({
+          id: generateRandomId(),
+          estado: true,
+          key: "",
+          value: "",
+        });
+        const newValue = new RequestModel(partes[0], `${queryString}`, newRows);
+        setRequestModel(newValue); // Actualiza el estado con el valor del input
+        return;
+      }
+    } catch (error) {
+      console.error("Ocurrio un error", error);
+    }
+    const newValue = requestModel.copyWith({ host: input });
+    setRequestModel(newValue); // Actualiza el estado con el valor del input
+  };
+
   // Función para guardar una nueva petición
   // TODO: VALIDAR MODELOS ANTERIORES
   const saveRequestModel = () => {
     try {
       const newModel = requestModel.copyWith({ timeStamp: Date.now() });
       updateRequestStorage(newModel); // Actualiza el localStorage con los datos obtenidos
-      toast.success('Guardado correctamente');
+      toast.success("Guardado correctamente");
     } catch (error) {
       console.error("Error al guardar la petición", error);
     }
@@ -156,9 +192,10 @@ export const DashboardProvider: React.FC<DashboardContextProps> = ({
         setRequestCategory: setRequestCategory,
         updateCategoriesStorage: updateCategoriesStorage,
         removeCategoriesStorage: removeCategoriesStorage,
+        handleInputChange: handleInputChange,
       }}
     >
-      <Toaster theme="dark" richColors/>
+      <Toaster theme="dark" richColors />
       {children}
     </DashboardContext.Provider>
   );

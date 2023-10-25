@@ -2,8 +2,6 @@
 import React, { useState } from "react";
 import { useDashboardContext } from "../../context/context";
 import Title from "../labels/title";
-import ConvertSection from "./convert-request";
-import LineSeparator from "../other/line-separator";
 import ViewResponse from "../other/view-response";
 import { HeaderTable, ParamsTable } from "../other/params-table";
 import { ParameterRow } from "@/data/models/parameter";
@@ -11,26 +9,11 @@ import RequestModel from "@/data/models/request_model";
 import DropDownMethodBox from "../buttons/dropdown";
 import ButtonGroup from "../buttons/button-group";
 import { generateRandomId } from "@/data/helpers/number_extension";
-
-const modes = ["Params", "Authorization", "Headers", "Body"];
-const authModes = [
-  "No auth",
-  "API Key",
-  "Basic Auth",
-  "Bearer Token",
-  "OAuth 2.0",
-]; // Falta "Inherit from parent" y "AWS Signature"
-const bodyModes = [
-  "None",
-  "Form-data",
-  "x-www-form-urlencoded",
-  "Raw",
-  "Binary",
-]; // Falta "Inherit from parent" y "GraphQL"
+import { authModes, bodyModes, modes } from "@/data/data/modes";
+import HostRequestField from "../inputs/host-request";
 
 function getContentType(content: string): number {
-  if (content && content.includes("application/json")) {
-    // Si el Content-Type es JSON, muestra un mensaje en la consola
+  if (content.includes("application/json")) {
     return 1;
   } else if (content.includes("image/")) {
     return 2;
@@ -40,7 +23,6 @@ function getContentType(content: string): number {
 
 const HttpRequest: React.FC = () => {
   const { setRequestModel, requestModel } = useDashboardContext();
-  const [isMode, setMode] = useState(modes[0]);
   const [isAuthMode, setAuthMode] = useState(authModes[0]);
   const [isBodyMode, setBodyMode] = useState(bodyModes[0]);
   const [responseValue, setResponseValue] = useState<ResponseModel | null>(
@@ -79,60 +61,13 @@ const HttpRequest: React.FC = () => {
       console.error("Error al generar la petición", error);
     }
   };
-  const handleInputChange = (event: any) => {
-    const input: string = event.target.value;
-    const unit = input.includes("?");
-    try {
-      if (unit) {
-        const partes: string[] = input.split("?"); // Dividir la cadena
-        const queryString = input.substring(partes[0].length);
-        const paramsString = input.substring(partes[0].length + 1);
-        const parameters: string[] = paramsString.split("&");
-        let newRows: ParameterRow[] = [];
-        parameters.map((parameter) => {
-          const values: string[] = parameter.split("=");
-          newRows.push({
-            id: generateRandomId(),
-            estado: true,
-            key: values[0] ?? "",
-            value: values[1] ?? "",
-          });
-        });
-        newRows.push({
-          id: generateRandomId(),
-          estado: true,
-          key: "",
-          value: "",
-        });
-        const newValue = new RequestModel(partes[0], `${queryString}`, newRows);
-        console.log(newValue);
-        setRequestModel(newValue); // Actualiza el estado con el valor del input
-        return;
-      }
-    } catch (error) {
-      const newValue = new RequestModel(input);
-      setRequestModel(newValue); // Actualiza el estado con el valor del input
-      console.log(error, newValue);
-      return;
-    }
-    const newValue = new RequestModel(input);
-    console.log(newValue);
-    setRequestModel(newValue); // Actualiza el estado con el valor del input
-  };
+  
 
   return (
     <div className="flex flex-col w-full gap-4">
       <div className="flex items-center">
         <DropDownMethodBox />
-        <input
-          className="w-full input-text"
-          placeholder="Enter URL or paste text"
-          aria-controls=":rq:"
-          aria-labelledby=":rr:"
-          type="text"
-          value={requestModel.url}
-          onChange={handleInputChange}
-        ></input>
+        <HostRequestField/>
         <button
           className="button rounded-r-[16px]"
           onClick={handleClickGenerate}
@@ -141,17 +76,18 @@ const HttpRequest: React.FC = () => {
         </button>
       </div>
       <div className="flex justify-between">
-        <Title className="ml-2" text={isMode} />
+        <Title className="ml-2" text={requestModel.mode} />
         <ButtonGroup
-          value={isMode}
+          value={requestModel.mode}
           items={modes}
           onChange={(mode) => {
-            setMode(mode);
+            const newValue = requestModel.copyWith({ mode: mode });
+            setRequestModel(newValue); // Actualiza el estado con el valor del input
           }}
         />
       </div>
       <div className="rounded-[16px] bg-[#1E1E1E] min-h-[25vh] max-h-[25vh] overflow-y-auto scrollbar-thin scrollbar-vertical-thin scrollbar-thumb-blue-500 scrollbar-track-blue-200 scrollbar-thumb-rounded">
-        {isMode === modes[0] ? (
+        {requestModel.mode === modes[0] ? (
           <ParamsTable
             rows={requestModel.params}
             addRow={() => {
@@ -189,7 +125,7 @@ const HttpRequest: React.FC = () => {
               );
             }}
           />
-        ) : isMode === modes[1] ? (
+        ) : requestModel.mode === modes[1] ? (
           <div className="">
             <ButtonGroup
               className="mb-[16px]"
@@ -207,7 +143,7 @@ const HttpRequest: React.FC = () => {
               <>{isAuthMode}</>
             )}
           </div>
-        ) : isMode === modes[2] ? (
+        ) : requestModel.mode === modes[2] ? (
           <HeaderTable
             rows={requestModel.headers}
             addRow={() => {
