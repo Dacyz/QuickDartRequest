@@ -3,7 +3,6 @@ import CopyAllIcon from "@mui/icons-material/CopyAll";
 import CodeEditor from "@uiw/react-textarea-code-editor";
 import React from "react";
 import ConvertModal from "../modals/convert-modal";
-import Title from "../labels/title";
 
 const ConvertRequest: React.FC = () => {
   return (
@@ -20,12 +19,15 @@ const ConvertRequest: React.FC = () => {
           ></input>
           <button className="button flex rounded-r-2xl">Convert</button>
         </div>
-        <div
-          onChange={() => false}
+        <CodeEditor
+          language="json"
+          data-color-mode="dark"
+          placeholder="Please enter JSON object."
+          contentEditable={false}
+          padding={16}
           style={{
             fontSize: 12,
             backgroundColor: "#1E1E1E",
-            padding: "16px",
             borderRadius: "16px",
             overflow: "auto",
             flexGrow: "1",
@@ -34,10 +36,10 @@ const ConvertRequest: React.FC = () => {
             fontFamily:
               "ui-monospace,SFMono-Regular,SF Mono,Consolas,Liberation Mono,Menlo,monospace",
           }}
-        ></div>
+        />
       </div>
+      {/* <LineSeparator /> */}
       <div className="flex flex-col gap-4">
-        <Title text="Input" className="ml-2" />
         <CodeEditor
           value={``}
           onChange={() => false}
@@ -59,28 +61,10 @@ const ConvertRequest: React.FC = () => {
               "ui-monospace,SFMono-Regular,SF Mono,Consolas,Liberation Mono,Menlo,monospace",
           }}
         />
-        <Title text="Output" className="ml-2" />
-        <CodeEditor
-          value={``}
-          onChange={() => false}
-          language="dart"
-          data-color-mode="dark"
-          placeholder="Please enter Dart code."
-          contentEditable={false}
-          disabled
-          padding={16}
-          style={{
-            fontSize: 12,
-            backgroundColor: "#1E1E1E",
-            borderRadius: "16px",
-            overflow: "auto",
-            flexGrow: "1",
-            width: "100%",
-            resize: "none",
-            fontFamily:
-              "ui-monospace,SFMono-Regular,SF Mono,Consolas,Liberation Mono,Menlo,monospace",
-          }}
-        />
+        <button className="button w-full rounded-2xl">
+          {" "}
+          <CopyAllIcon /> Copy
+        </button>
       </div>
     </div>
   );

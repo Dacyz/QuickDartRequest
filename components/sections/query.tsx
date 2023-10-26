@@ -16,6 +16,8 @@ import FreeSoloCreateOption from "../inputs/select-tag";
 import LineSeparator from "../other/line-separator";
 import CategoriesModal from "../modals/categoriesmodal";
 import ConvertRequest from "./convert-request";
+import Select from "../inputs/select";
+import { useDashboardContext } from "@/context/context";
 
 type module = {
   id: number;
@@ -53,6 +55,9 @@ const modules: module[] = [
 
 const QueryPage: React.FC = () => {
   const [mode, setMode] = useState<module>(modules[0]);
+  const { categoriesData, setRequestCategory } = useDashboardContext();
+  const options = categoriesData.map((e) => e.title);
+  const [selectedOption, setSelectedOption] = useState(options[0]);
   return (
     <div className="flex flex-col flex-grow p-4 gap-4 overflow-hidden">
       <div className="flex justify-between">
@@ -78,6 +83,14 @@ const QueryPage: React.FC = () => {
         </div>
         <div className="flex">
           <NameRequestField />
+          <Select
+            options={options}
+            value={selectedOption}
+            onChange={(e) => {
+              setRequestCategory(e);
+              setSelectedOption(e);
+            }}
+          />
           {/* <FreeSoloCreateOption /> */}
           <CategoriesModal />
           <SaveRequestButton />

@@ -1,6 +1,6 @@
 const SocketRequest: React.FC = () => {
   return (
-    <div className="flex flex-col gap-3 rounded-[16px] items-center justify-center h-full bg-[#1E1E1E]">
+    <div className="flex flex-col gap-3 rounded-[16px] items-center justify-center h-full w-full bg-[#1E1E1E]">
       <svg
         width="280"
         height="293"
