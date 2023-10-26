@@ -4,7 +4,7 @@ import Title from "../labels/title";
 import Material from "../buttons/material";
 import HttpRequest from "./http-request";
 import SocketRequest from "./socket-request";
-import ConvertSection from "./convert-request";
+import ConvertSection from "../other/convert-section";
 import {
   ConvertRequestIcon,
   HttpRequestIcon,
@@ -14,7 +14,8 @@ import SaveRequestButton from "../buttons/save-request";
 import NameRequestField from "../inputs/name-request";
 import FreeSoloCreateOption from "../inputs/select-tag";
 import LineSeparator from "../other/line-separator";
-import { CategoriesModal } from "../modals/categoriesmodal";
+import CategoriesModal from "../modals/categoriesmodal";
+import ConvertRequest from "./convert-request";
 
 type module = {
   id: number;
@@ -39,7 +40,7 @@ const modules: module[] = [
   {
     id: 2,
     name: "Convert Request",
-    component: <ConvertSection />,
+    component: <ConvertRequest />,
     icon: <ConvertRequestIcon />,
   },
   {

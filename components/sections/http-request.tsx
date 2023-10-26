@@ -4,8 +4,6 @@ import { useDashboardContext } from "../../context/context";
 import Title from "../labels/title";
 import ViewResponse from "../other/view-response";
 import { HeaderTable, ParamsTable } from "../other/params-table";
-import { ParameterRow } from "@/data/models/parameter";
-import RequestModel from "@/data/models/request_model";
 import DropDownMethodBox from "../buttons/dropdown";
 import ButtonGroup from "../buttons/button-group";
 import { generateRandomId } from "@/data/helpers/number_extension";
