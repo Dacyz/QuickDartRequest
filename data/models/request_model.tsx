@@ -1,5 +1,6 @@
+import { defaultHeaders, defaultParameters } from "../data/default";
 import { options } from "../data/methods";
-import { generateRandomId } from "../helpers/number_extension";
+import { regex } from "../helpers/validation_extension";
 import { MethodClass } from "./method-model";
 import { ParameterRow, HeaderRow } from "./parameter";
 
@@ -16,79 +17,7 @@ interface RequestInterface {
   headers: HeaderRow[];
 }
 
-const regex = /^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$/i;
-const defaultHeaders: HeaderRow[] = [
-  {
-    id: 0,
-    estado: true,
-    key: "Cache-Control",
-    value: "no-cache",
-    hidden: true,
-  },
-  {
-    id: 1,
-    estado: true,
-    key: "Postman-Token",
-    value: "<calculated when request is sent>",
-    hidden: true,
-  },
-  {
-    id: 2,
-    estado: true,
-    key: "Content-Length",
-    value: "0",
-    hidden: true,
-  },
-  {
-    id: 3,
-    estado: true,
-    key: "Host",
-    value: "<calculated when request is sent>",
-    hidden: true,
-  },
-  {
-    id: 4,
-    estado: true,
-    key: "User-Agent",
-    value: "QuickRequest/0.32.1",
-    hidden: true,
-  },
-  {
-    id: 5,
-    estado: true,
-    key: "Accept",
-    value: "*/*",
-    hidden: true,
-  },
-  {
-    id: 6,
-    estado: true,
-    key: "Accept-Encoding",
-    value: "gzip, deflate, br",
-    hidden: true,
-  },
-  {
-    id: 7,
-    estado: true,
-    key: "Connection",
-    value: "keep-alive",
-    hidden: true,
-  },
-  {
-    id: 8,
-    estado: true,
-    key: "",
-    value: "",
-    hidden: false,
-  },
-];
-const defaultParameters: ParameterRow[] = [
-  { id: generateRandomId(), estado: true, key: "", value: "" },
-];
-
 class RequestModel implements RequestInterface {
-  // Expresión regular para verificar si el string es una URL válida
-  // Propiedades de la clase
   public name: string;
   public host: string;
   public query: string;
@@ -100,7 +29,6 @@ class RequestModel implements RequestInterface {
   public params: ParameterRow[];
   public headers: HeaderRow[];
 
-  // Constructor de la clase
   constructor(
     host?: string,
     query?: string,
@@ -112,14 +40,11 @@ class RequestModel implements RequestInterface {
     name?: string,
     mode?: string
   ) {
-    this.host = host ?? ""; // Asignamos parametro1 a uri
+    this.host = host ?? "";
     this.include = false;
-    this.query = query ?? ""; // Asignamos parametro2 a query
-    if (!method) {
-      this.method = options[0]; // Asignamos parametro
-    } else {
-      this.method = options[method]; // Asignamos parametro
-    }
+    this.query = query ?? "";
+    if (!method) this.method = options[0];
+    else this.method = options[method];
     this.params = params ?? defaultParameters;
     this.headers = headers ?? defaultHeaders;
     this.timeStamp = timeStamp ?? 0;
@@ -166,14 +91,10 @@ class RequestModel implements RequestInterface {
   }
 
   // Función (método) de la clase
-  esEnlaceValido(wa?: string): boolean {
-    // Usamos test() para verificar si el texto coincide con la expresión regular
-    return regex.test(wa ?? this.url);
-  }
+  // Usamos test() para verificar si el texto coincide con la expresión regular
+  esEnlaceValido = (wa?: string): boolean => regex.test(wa ?? this.url);
 
-  toString(): string {
-    return `${this.method.name} | ${this.include} | ${this.query}`;
-  }
+  toString = (): string => `[${this.method.name}]${this.include} ${this.query}`;
 
   copyWith(changes: Partial<RequestModel>): RequestModel {
     // Creamos una nueva instancia de RequestModel y copiamos las propiedades originales
@@ -190,39 +111,20 @@ class RequestModel implements RequestInterface {
     copiedRequest.mode = this.mode;
 
     // Aplicamos los cambios proporcionados en el objeto `changes`
-    if (changes.host !== undefined) {
-      copiedRequest.host = changes.host;
-    }
-    if (changes.query !== undefined) {
-      copiedRequest.query = changes.query;
-    }
-    if (changes.method !== undefined) {
-      copiedRequest.method = changes.method;
-    }
-    if (changes.include !== undefined) {
-      copiedRequest.include = changes.include;
-    }
-    if (changes.params !== undefined) {
-      copiedRequest.params = changes.params;
-    }
-    if (changes.headers !== undefined) {
-      copiedRequest.headers = changes.headers;
-    }
-    if (changes.timeStamp !== undefined) {
+    if (changes.host !== undefined) copiedRequest.host = changes.host;
+    if (changes.query !== undefined) copiedRequest.query = changes.query;
+    if (changes.method !== undefined) copiedRequest.method = changes.method;
+    if (changes.include !== undefined) copiedRequest.include = changes.include;
+    if (changes.params !== undefined) copiedRequest.params = changes.params;
+    if (changes.headers !== undefined) copiedRequest.headers = changes.headers;
+    if (changes.timeStamp !== undefined)
       copiedRequest.timeStamp = changes.timeStamp;
-    }
-    if (changes.group !== undefined) {
-      copiedRequest.group = changes.group;
-    }
-    if (changes.name !== undefined) {
-      copiedRequest.name = changes.name;
-    }
-    if (changes.mode !== undefined) {
-      copiedRequest.mode = changes.mode;
-    }
+    if (changes.group !== undefined) copiedRequest.group = changes.group;
+    if (changes.name !== undefined) copiedRequest.name = changes.name;
+    if (changes.mode !== undefined) copiedRequest.mode = changes.mode;
 
     return copiedRequest;
   }
 }
 
-export default RequestModel; // Exporta la clase directamente
+export default RequestModel;

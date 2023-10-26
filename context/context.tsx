@@ -120,7 +120,11 @@ export const DashboardProvider: React.FC<DashboardContextProps> = ({
           key: "",
           value: "",
         });
-        const newValue = new RequestModel(partes[0], `${queryString}`, newRows);
+        const newValue = requestModel.copyWith({
+          host: partes[0],
+          query: `${queryString}`,
+          params: newRows,
+        });
         setRequestModel(newValue); // Actualiza el estado con el valor del input
         return;
       }
@@ -145,20 +149,22 @@ export const DashboardProvider: React.FC<DashboardContextProps> = ({
 
   // Cargar datos del localStorage al inicio
   useEffect(() => {
-    const storedDataString = localStorage.getItem(listRequest) || "";
-    const storedCategoriesString = localStorage.getItem(listCategories) || "";
+    const storedDataString = localStorage.getItem(listRequest);
+    const storedCategoriesString = localStorage.getItem(listCategories);
     let storedData = [];
     let storedCategoriesData = [];
     let model: RequestModel = new RequestModel();
     try {
-      storedData = JSON.parse(storedDataString) || [];
+      if (storedDataString !== null)
+        storedData = JSON.parse(storedDataString) || [];
     } catch (error) {
       console.error("Error al analizar los datos de localStorage:", error);
       // Puedes proporcionar un valor predeterminado en caso de un error de análisis.
       storedData = []; // O cualquier otro valor predeterminado que desees.
     }
     try {
-      storedCategoriesData = JSON.parse(storedCategoriesString) || [];
+      if (storedCategoriesString !== null)
+        storedCategoriesData = JSON.parse(storedCategoriesString) || [];
     } catch (error) {
       console.error("Error al analizar los datos de localStorage:", error);
       // Puedes proporcionar un valor predeterminado en caso de un error de análisis.

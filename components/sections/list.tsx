@@ -180,8 +180,7 @@ function List() {
               key={index}
               className="flex mt-[16px] px-[12px] py-[8px] bg-[#1E1E1E] transition-colors cursor-pointer hover:bg-[#404040] rounded-[16px] items-center"
               onClick={() => {
-                setRequestModel(item);
-                console.log(item);
+                setRequestModel(new RequestModel().copyWith(item));
               }}
             >
               {getMethodDiv(item.method.id)}
