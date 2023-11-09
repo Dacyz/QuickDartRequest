@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import { useDashboardContext } from "../../context/context";
-import Title from "../labels/title";
+import { Title } from "../labels/title";
 import ViewResponse from "../other/view-response";
 import { HeaderTable, ParamsTable } from "../other/params-table";
 import DropDownMethodBox from "../buttons/dropdown";
@@ -19,32 +19,34 @@ const HttpRequest: React.FC = () => {
   const [isBodyMode, setBodyMode] = useState(bodyModes[0]);
   const handleClickGenerate = async () => {
     try {
-      if (requestModel.esEnlaceValido()) {
-        const url = new URL(requestModel.url);
-        toast.promise(fetch(url), {
-          loading: "Loading...",
-          success: async (resp) => {
-            const contentTypeHeader = resp.headers.get("Content-Type") ?? "*/*";
-            let res: number = getContentType(contentTypeHeader);
-            let json: object | null;
-            json = res === 1 ? await resp.json() : null;
-            const item: ResponseModel = {
-              Name: url,
-              Enlace: requestModel.url,
-              Response: resp,
-              jsonResponse: json,
-              TimeStamp: Date.now(),
-            };
-            console.log(item);
-            setResponseModel(item); // Actualiza el estado con los datos obtenidos
-            return `${url} has been fetched`;
-          },
-          error: "Error",
-        });
-      } else {
+      const url = new URL(requestModel.url);
+      if (!requestModel.esEnlaceValido()) {
+        toast.error(`${requestModel.url} has no petition format`);
         console.error("Invalid url:", requestModel);
+        return;
       }
+      toast.promise(fetch(url, { method: "GET", mode: "no-cors" }), {
+        loading: "Loading...",
+        success: async (resp) => {
+          const contentTypeHeader = resp.headers.get("Content-Type") ?? "*/*";
+          let res: number = getContentType(contentTypeHeader);
+          let json: object | null;
+          json = res === 1 ? await resp.json() : null;
+          const item: ResponseModel = {
+            Name: url,
+            Enlace: requestModel.url,
+            Response: resp,
+            jsonResponse: json,
+            TimeStamp: Date.now(),
+          };
+          console.log(item);
+          setResponseModel(item); // Actualiza el estado con los datos obtenidos
+          return `${url} has been fetched`;
+        },
+        error: `Error generating the petition ${requestModel.url}`,
+      });
     } catch (error) {
+      toast.error(`Error generating the petition  ${requestModel.url}`);
       console.error("Error al generar la petición", error);
     }
   };
@@ -72,9 +74,7 @@ const HttpRequest: React.FC = () => {
           }}
         />
       </div>
-      <div
-        className="bg-[#1e1e1e73] flex-grow flex-shrink overflow-y-auto scrollbar-thin scrollbar-vertical-thin scrollbar-thumb-blue-500 scrollbar-track-blue-200 scrollbar-thumb-rounded"
-      >
+      <div className="bg-[#1e1e1e73] flex-grow flex-shrink overflow-y-auto scrollbar-thin scrollbar-vertical-thin scrollbar-thumb-blue-500 scrollbar-track-blue-200 scrollbar-thumb-rounded">
         {requestModel.mode === modes[0] ? (
           <ParamsTable
             rows={requestModel.params}

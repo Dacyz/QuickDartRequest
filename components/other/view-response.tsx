@@ -2,7 +2,10 @@
 /* eslint-disable @next/next/no-img-element */
 import CodeEditor from "@uiw/react-textarea-code-editor";
 import React from "react";
-// import ReactJson from "react-json-view";
+// import { Viewer, Worker } from "@react-pdf-viewer/core";
+
+// Import the styles
+import "@react-pdf-viewer/core/lib/styles/index.css";
 
 interface ResponseProps {
   item: ResponseModel | null;
@@ -43,7 +46,10 @@ function convertValue(response: ResponseModel): React.ReactNode {
         className="flex items-center flex-grow-0 flex-shrink justify-center rounded-[16px] bg-[#1E1E1E]"
         style={{ flexBasis: "30%", minHeight: "420px" }}
       >
-        <img className="rounded-[16px] p-2 max-h-full" src={response.Enlace}></img>
+        <img
+          className="rounded-[16px] p-2 max-h-full"
+          src={response.Enlace}
+        ></img>
       </div>
     );
   } else if (contentTypeHeader.includes("video/")) {
@@ -57,7 +63,18 @@ function convertValue(response: ResponseModel): React.ReactNode {
         />
       </div>
     );
-  }
+  } // else if (contentTypeHeader.includes("application/pdf")) {
+  //   return (
+  //     <div
+  //       className="flex items-center flex-grow-0 flex-shrink justify-center rounded-[16px] bg-[#1E1E1E]"
+  //       style={{ flexBasis: "30%", minHeight: "420px" }}
+  //     >
+  //       <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.4.120/build/pdf.worker.min.js">
+  //         <Viewer fileUrl="http://www.pdf995.com/samples/pdf.pdf" />
+  //       </Worker>
+  //     </div>
+  //   );
+  // }
   return <>Undefined</>;
 }
 

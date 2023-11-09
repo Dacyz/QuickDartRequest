@@ -92,12 +92,11 @@ const ConvertSection: React.FC = () => {
   },
 ),`;
     const imageHttp = `import 'package:http/http.dart' as http;
-import 'dart:typed_data';
 
 // Replaced with the URL of your image
 final response = await http.get(Uri.parse('${responseModel.Enlace}'));
 if (response.statusCode == 200) {
-  final imageBytes = response.bodyBytes; // Utiliza imageBytes como necesites
+  final imageBytes = response.bodyBytes;
 }`;
     return (
       <div className="min-w-[640px] max-w-[640px] overflow-y-auto scrollbar-thin scrollbar-vertical-thin scrollbar-thumb-blue-500 scrollbar-track-blue-200 scrollbar-thumb-rounded ">
@@ -202,7 +201,210 @@ if (response.statusCode == 200) {
           binary data in imageBytes. You can use imageBytes as needed, such as
           saving it locally or processing it in some way.
         </div>
-        <img className="rounded-[16px] p-2 mx-auto" src={responseModel.Enlace} />
+        <img
+          className="rounded-[16px] p-2 mx-auto"
+          src={responseModel.Enlace}
+        />
+      </div>
+    );
+  }
+  if (contentTypeHeader.includes("video/")) {
+    const imageWidget = `dependencies:
+  video_player: ^2.2.17`;
+    const imageWidget2 = `dependencies:
+  http: ^0.13.3`;
+    const imageHttp = `late VideoPlayerController _controller;
+
+@override
+void initState() {
+  super.initState();
+  _controller = VideoPlayerController.network('${responseModel.Enlace}'); // Replaced with your actual video URL.
+  _controller.initialize().then((_) => setState(() {}));
+  _controller.setLooping(true); // Optional: Loop the video.
+}
+
+@override
+void dispose() {
+  super.dispose();
+  _controller.dispose();
+}
+
+@override
+Widget build(BuildContext context) {
+  return Scaffold(
+    ...
+    body:_controller.value.isInitialized
+      ? AspectRatio(
+          aspectRatio: _controller.value.aspectRatio,
+          child: VideoPlayer(_controller),
+        )
+      : CircularProgressIndicator(),
+    floatingActionButton: FloatingActionButton(
+      onPressed: () {
+        setState(() {
+          if (_controller.value.isPlaying) {
+            _controller.pause();
+          } else {
+            _controller.play();
+          }
+        });
+      },
+      child: Icon(
+        _controller.value.isPlaying ? Icons.pause : Icons.play_arrow,
+      ),
+    ),
+  );
+}`;
+    const videoHttp = `import 'package:http/http.dart' as http;
+
+// Replaced with the URL of your image
+final response = await http.get(Uri.parse('${responseModel.Enlace}'));
+if (response.statusCode == 200) {
+  final videoBytes = response.bodyBytes;
+}`;
+    return (
+      <div className="min-w-[640px] max-w-[640px] overflow-y-auto scrollbar-thin scrollbar-vertical-thin scrollbar-thumb-blue-500 scrollbar-track-blue-200 scrollbar-thumb-rounded ">
+        <div
+          data-color-mode="dark"
+          placeholder="Please enter Classname for generate Dart code."
+          contentEditable={false}
+          style={{
+            fontSize: 12,
+            width: "100%",
+            padding: "16px",
+            fontFamily:
+              "ui-monospace,SFMono-Regular,SF Mono,Consolas,Liberation Mono,Menlo,monospace",
+          }}
+        >
+          To embed an internet video in Flutter, you can use the.
+          <span className="font-bold">video_player</span> package <br /> <br />{" "}
+          First, add it to your <span className="font-bold">pubspec.yaml</span>{" "}
+          file:
+        </div>
+        <CodeEditor
+          value={imageWidget}
+          language="yaml"
+          data-color-mode="dark"
+          placeholder="Please enter Classname for generate Dart code."
+          contentEditable={false}
+          disabled
+          padding={16}
+          style={{
+            fontSize: 12,
+            backgroundColor: "#1E1E1E",
+            borderRadius: "16px",
+            width: "100%",
+            resize: "none",
+            fontFamily:
+              "ui-monospace,SFMono-Regular,SF Mono,Consolas,Liberation Mono,Menlo,monospace",
+          }}
+        />
+        <div
+          data-color-mode="dark"
+          placeholder="Please enter Classname for generate Dart code."
+          contentEditable={false}
+          style={{
+            fontSize: 12,
+            width: "100%",
+            padding: "16px",
+            fontFamily:
+              "ui-monospace,SFMono-Regular,SF Mono,Consolas,Liberation Mono,Menlo,monospace",
+          }}
+        >
+          Run <span className="font-bold">flutter pub get</span> to install the
+          dependency. Now, in your Dart file, import the{" "}
+          <span className="font-bold">video_player</span> package and use the{" "}
+          <span className="font-bold">VideoPlayerController</span>
+          widget. <br /> <br />
+          Here{"'"}s a basic example:
+        </div>
+        <CodeEditor
+          value={imageHttp}
+          language="dart"
+          data-color-mode="dark"
+          placeholder="Please enter Classname for generate Dart code."
+          contentEditable={false}
+          disabled
+          padding={16}
+          style={{
+            fontSize: 12,
+            backgroundColor: "#1E1E1E",
+            borderRadius: "16px",
+            width: "100%",
+            resize: "none",
+            fontFamily:
+              "ui-monospace,SFMono-Regular,SF Mono,Consolas,Liberation Mono,Menlo,monospace",
+          }}
+        />
+        <div
+          data-color-mode="dark"
+          placeholder="Please enter Classname for generate Dart code."
+          contentEditable={false}
+          style={{
+            fontSize: 12,
+            width: "100%",
+            padding: "16px",
+            fontFamily:
+              "ui-monospace,SFMono-Regular,SF Mono,Consolas,Liberation Mono,Menlo,monospace",
+          }}
+        >
+          If you want to make a GET request to a URL in Flutter, you can use the
+          package <span className="font-bold">http</span>. Make sure to add the
+          dependency in your file{" "}
+          <span className="font-bold">pubspec.yaml</span>:
+        </div>
+        <CodeEditor
+          value={imageWidget2}
+          language="yaml"
+          data-color-mode="dark"
+          placeholder="Please enter Classname for generate Dart code."
+          contentEditable={false}
+          disabled
+          padding={16}
+          style={{
+            fontSize: 12,
+            backgroundColor: "#1E1E1E",
+            borderRadius: "16px",
+            width: "100%",
+            resize: "none",
+            fontFamily:
+              "ui-monospace,SFMono-Regular,SF Mono,Consolas,Liberation Mono,Menlo,monospace",
+          }}
+        />
+        <div
+          data-color-mode="dark"
+          placeholder="Please enter Classname for generate Dart code."
+          contentEditable={false}
+          style={{
+            fontSize: 12,
+            width: "100%",
+            padding: "16px",
+            fontFamily:
+              "ui-monospace,SFMono-Regular,SF Mono,Consolas,Liberation Mono,Menlo,monospace",
+          }}
+        >
+          This code downloads the video from the specified URL and stores its
+          binary data in videoBytes. You can use videoBytes as needed, such as
+          saving it locally or processing it in some way.
+        </div>
+        <CodeEditor
+          value={videoHttp}
+          language="dart"
+          data-color-mode="dark"
+          placeholder="Please enter Classname for generate Dart code."
+          contentEditable={false}
+          disabled
+          padding={16}
+          style={{
+            fontSize: 12,
+            backgroundColor: "#1E1E1E",
+            borderRadius: "16px",
+            width: "100%",
+            resize: "none",
+            fontFamily:
+              "ui-monospace,SFMono-Regular,SF Mono,Consolas,Liberation Mono,Menlo,monospace",
+          }}
+        />
       </div>
     );
   }

@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import Title from "../labels/title";
+import { Title } from "../labels/title";
 import Material from "../buttons/material";
 import HttpRequest from "./http-request";
 import SocketRequest from "./socket-request";
