@@ -8,7 +8,7 @@ interface ResponseProps {
   item: ResponseModel | null;
 }
 
-function esTamo(response: ResponseModel): React.ReactNode {
+function convertValue(response: ResponseModel): React.ReactNode {
   let resp = response.Response;
   const contentTypeHeader = resp.headers.get("Content-Type") ?? "*/*";
   if (contentTypeHeader && contentTypeHeader.includes("application/json")) {
@@ -500,7 +500,7 @@ const ViewResponse: React.FC<ResponseProps> = ({ item }) => {
       </div>
     );
   }
-  return esTamo(item);
+  return convertValue(item);
 };
 
 export default ViewResponse;

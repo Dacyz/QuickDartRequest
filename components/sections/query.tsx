@@ -12,8 +12,6 @@ import {
 } from "../icons/icon";
 import SaveRequestButton from "../buttons/save-request";
 import NameRequestField from "../inputs/name-request";
-import FreeSoloCreateOption from "../inputs/select-tag";
-import LineSeparator from "../other/line-separator";
 import CategoriesModal from "../modals/categoriesmodal";
 import ConvertRequest from "./convert-request";
 import Select from "../inputs/select";
@@ -33,7 +31,6 @@ const modules: module[] = [
     component: (
       <>
         <HttpRequest />
-        <LineSeparator />
         <ConvertSection />
       </>
     ),

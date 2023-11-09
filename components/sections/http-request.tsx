@@ -9,49 +9,38 @@ import ButtonGroup from "../buttons/button-group";
 import { generateRandomId } from "@/data/helpers/number_extension";
 import { authModes, bodyModes, modes } from "@/data/data/modes";
 import HostRequestField from "../inputs/host-request";
-
-function getContentType(content: string): number {
-  if (content.includes("application/json")) {
-    return 1;
-  } else if (content.includes("image/")) {
-    return 2;
-  }
-  return 0;
-}
+import { toast } from "sonner";
+import { getContentType } from "@/data/helpers/validation_extension";
 
 const HttpRequest: React.FC = () => {
-  const { setRequestModel, requestModel } = useDashboardContext();
+  const { setRequestModel, requestModel, setResponseModel, responseModel } =
+    useDashboardContext();
   const [isAuthMode, setAuthMode] = useState(authModes[0]);
   const [isBodyMode, setBodyMode] = useState(bodyModes[0]);
-  const [responseValue, setResponseValue] = useState<ResponseModel | null>(
-    null
-  );
   const handleClickGenerate = async () => {
     try {
       if (requestModel.esEnlaceValido()) {
         const url = new URL(requestModel.url);
-        let resp = await fetch(url);
-        const contentTypeHeader = resp.headers.get("Content-Type") ?? "*/*";
-        let res: number = getContentType(contentTypeHeader);
-        let json: object | null;
-        if (res === 1) {
-          json = await resp.json();
-          console.log(json);
-        } else {
-          json = null;
-        }
-        const item: ResponseModel = {
-          Name: url.host,
-          Description: "",
-          Method: 0,
-          Enlace: requestModel.url,
-          Response: resp,
-          Tipo: res,
-          jsonResponse: json,
-          Group: "",
-          TimeStamp: Date.now(),
-        };
-        setResponseValue(item); // Actualiza el estado con los datos obtenidos
+        toast.promise(fetch(url), {
+          loading: "Loading...",
+          success: async (resp) => {
+            const contentTypeHeader = resp.headers.get("Content-Type") ?? "*/*";
+            let res: number = getContentType(contentTypeHeader);
+            let json: object | null;
+            json = res === 1 ? await resp.json() : null;
+            const item: ResponseModel = {
+              Name: url,
+              Enlace: requestModel.url,
+              Response: resp,
+              jsonResponse: json,
+              TimeStamp: Date.now(),
+            };
+            console.log(item);
+            setResponseModel(item); // Actualiza el estado con los datos obtenidos
+            return `${url.host} has been fetched`;
+          },
+          error: "Error",
+        });
       } else {
         console.error("Invalid url:", requestModel);
       }
@@ -59,13 +48,12 @@ const HttpRequest: React.FC = () => {
       console.error("Error al generar la petición", error);
     }
   };
-  
 
   return (
     <div className="flex flex-col w-full gap-4">
       <div className="flex items-center">
         <DropDownMethodBox />
-        <HostRequestField/>
+        <HostRequestField />
         <button
           className="button rounded-r-[16px]"
           onClick={handleClickGenerate}
@@ -204,7 +192,7 @@ const HttpRequest: React.FC = () => {
         )}
       </div>
       <Title className="ml-2" text="Response" />
-      <ViewResponse item={responseValue} />
+      <ViewResponse item={responseModel} />
     </div>
   );
 };

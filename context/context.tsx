@@ -26,6 +26,7 @@ interface DashboardContextData {
   localData: RequestModel[];
   categoriesData: CategoryType[];
   requestModel: RequestModel;
+  responseModel: ResponseModel | null;
   setRequestModel: React.Dispatch<React.SetStateAction<RequestModel>>;
   updateLocalStorage: (data: RequestModel) => void;
   removeLocalStorage: (data: number) => void;
@@ -35,6 +36,7 @@ interface DashboardContextData {
   updateCategoriesStorage: (newData: CategoryType) => void;
   removeCategoriesStorage: (newData: number) => void;
   handleInputChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  setResponseModel: (newData: ResponseModel) => void;
 }
 
 const DashboardContext = createContext<DashboardContextData | undefined>(
@@ -54,6 +56,7 @@ export const DashboardProvider: React.FC<DashboardContextProps> = ({
   const [requestModel, setRequestModel] = useState<RequestModel>(
     new RequestModel()
   );
+  const [responseModel, setResponse] = useState<ResponseModel | null>(null);
 
   const updateRequestStorage = (newData: RequestModel) => {
     const updatedData = [...localData, newData];
@@ -61,6 +64,7 @@ export const DashboardProvider: React.FC<DashboardContextProps> = ({
     setLocalData(updatedData);
   };
 
+  const setResponseModel = (newData: ResponseModel) => setResponse(newData);
   const updateCategoriesStorage = (newData: CategoryType) => {
     const updatedData = [...categoriesData, newData];
     localStorage.setItem(listCategories, JSON.stringify(updatedData));
@@ -190,6 +194,7 @@ export const DashboardProvider: React.FC<DashboardContextProps> = ({
         localData: localData,
         categoriesData: categoriesData,
         requestModel: requestModel,
+        responseModel: responseModel,
         updateLocalStorage: updateRequestStorage,
         removeLocalStorage: removeLocalStorage,
         setRequestModel: setRequestModel,
@@ -199,6 +204,7 @@ export const DashboardProvider: React.FC<DashboardContextProps> = ({
         updateCategoriesStorage: updateCategoriesStorage,
         removeCategoriesStorage: removeCategoriesStorage,
         handleInputChange: handleInputChange,
+        setResponseModel: setResponseModel,
       }}
     >
       <Toaster theme="dark" richColors />
