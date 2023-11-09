@@ -80,15 +80,18 @@ const QueryPage: React.FC = () => {
         </div>
         <div className="flex">
           <NameRequestField />
-          <Select
-            options={options}
-            value={selectedOption}
-            onChange={(e) => {
-              setRequestCategory(e);
-              setSelectedOption(e);
-            }}
-          />
-          {/* <FreeSoloCreateOption /> */}
+          {options.length === 0 ? (
+            <></>
+          ) : (
+            <Select
+              options={options}
+              value={selectedOption}
+              onChange={(e) => {
+                setRequestCategory(e);
+                setSelectedOption(e);
+              }}
+            />
+          )}
           <CategoriesModal />
           <SaveRequestButton />
         </div>

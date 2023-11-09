@@ -36,7 +36,7 @@ interface DashboardContextData {
   updateCategoriesStorage: (newData: CategoryType) => void;
   removeCategoriesStorage: (newData: number) => void;
   handleInputChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  setResponseModel: (newData: ResponseModel) => void;
+  setResponseModel: (newData: ResponseModel | null) => void;
 }
 
 const DashboardContext = createContext<DashboardContextData | undefined>(
@@ -64,7 +64,7 @@ export const DashboardProvider: React.FC<DashboardContextProps> = ({
     setLocalData(updatedData);
   };
 
-  const setResponseModel = (newData: ResponseModel) => setResponse(newData);
+  const setResponseModel = (newData: ResponseModel | null) => setResponse(newData);
   const updateCategoriesStorage = (newData: CategoryType) => {
     const updatedData = [...categoriesData, newData];
     localStorage.setItem(listCategories, JSON.stringify(updatedData));
@@ -155,24 +155,16 @@ export const DashboardProvider: React.FC<DashboardContextProps> = ({
   useEffect(() => {
     const storedDataString = localStorage.getItem(listRequest);
     const storedCategoriesString = localStorage.getItem(listCategories);
-    let storedData = [];
-    let storedCategoriesData = [];
+    let storedData: RequestModel[] = [];
+    let storedCategoriesData: CategoryType[] = [];
     let model: RequestModel = new RequestModel();
     try {
       if (storedDataString !== null)
         storedData = JSON.parse(storedDataString) || [];
-    } catch (error) {
-      console.error("Error al analizar los datos de localStorage:", error);
-      // Puedes proporcionar un valor predeterminado en caso de un error de análisis.
-      storedData = []; // O cualquier otro valor predeterminado que desees.
-    }
-    try {
       if (storedCategoriesString !== null)
         storedCategoriesData = JSON.parse(storedCategoriesString) || [];
     } catch (error) {
       console.error("Error al analizar los datos de localStorage:", error);
-      // Puedes proporcionar un valor predeterminado en caso de un error de análisis.
-      storedCategoriesData = []; // O cualquier otro valor predeterminado que desees.
     }
     if (hasProperties()) {
       try {

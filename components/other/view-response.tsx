@@ -39,15 +39,22 @@ function convertValue(response: ResponseModel): React.ReactNode {
     );
   } else if (contentTypeHeader.includes("image/")) {
     return (
-      <div className="flex items-center justify-center rounded-[16px] bg-[#1E1E1E] flex-grow">
-        <img className="rounded-[16px] p-2" src={response.Enlace}></img>
+      <div
+        className="flex items-center flex-grow-0 flex-shrink justify-center rounded-[16px] bg-[#1E1E1E]"
+        style={{ flexBasis: "30%", minHeight: "420px" }}
+      >
+        <img className="rounded-[16px] p-2 max-h-full" src={response.Enlace}></img>
       </div>
     );
   } else if (contentTypeHeader.includes("video/")) {
     console.log("La respuesta no es JSON");
     return (
-      <div className="flex items-center justify-center rounded-[16px] bg-[#1E1E1E] flex-grow">
-        <video className="rounded-[16px] p-2" src={response.Enlace}></video>
+      <div className="rounded-[16px] bg-[#1E1E1E] flex-grow">
+        <video
+          className="rounded-[16px] p-2 h-full object-scale-down"
+          src={response.Enlace}
+          controls
+        />
       </div>
     );
   }
@@ -57,7 +64,7 @@ function convertValue(response: ResponseModel): React.ReactNode {
 const ViewResponse: React.FC<ResponseProps> = ({ item }) => {
   if (item == null) {
     return (
-      <div className="flex flex-col items-center gap-2 h-full bg-[#1E1E1E] rounded-[16px] justify-center">
+      <div className="flex flex-col items-center gap-2 flex-grow bg-[#1E1E1E] rounded-[16px] justify-center">
         <svg
           width="241"
           height="179"

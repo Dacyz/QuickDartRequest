@@ -11,6 +11,7 @@ import {
   ParseLabel,
   DeleteLabel,
 } from "../labels/labels";
+import BorderClearIcon from "@mui/icons-material/BorderClear";
 import moment from "moment";
 import { useDashboardContext } from "../../context/context";
 import RequestModel from "@/data/models/request_model";
@@ -82,6 +83,7 @@ function List() {
     localData: data,
     removeLocalStorage,
     setRequestModel,
+    setResponseModel,
   } = useDashboardContext();
   const colleagueIcon = (
     <Material
@@ -181,6 +183,7 @@ function List() {
               className="flex mt-[16px] px-[12px] py-[8px] bg-[#1E1E1E] transition-colors cursor-pointer hover:bg-[#404040] rounded-[16px] items-center"
               onClick={() => {
                 setRequestModel(new RequestModel().copyWith(item));
+                setResponseModel(null);
               }}
             >
               {getMethodDiv(item.method.id)}
@@ -223,6 +226,17 @@ function List() {
         </div>
       </div>
       <div className="flex-grow overflow-y-auto scrollbar-thin scrollbar-vertical-thin scrollbar-thumb-blue-500 scrollbar-track-blue-200 scrollbar-thumb-rounded">
+        <button
+          className="bg-[#1E1E1E] text-white py-2 px-4 rounded-[16px] relative w-full text-[12px] font-semibold flex justify-center align-middle gap-1 items-center"
+          onClick={() => {
+            setRequestModel(new RequestModel());
+            setResponseModel(null);
+          }}
+        >
+          <span className="absolute inset-0 border border-white border-dashed rounded-[16px]"></span>
+          <BorderClearIcon fontSize="small"/> New Request
+        </button>
+
         {data.length === 0 ? (
           <div className="flex items-center justify-center text-center h-full">
             Aún no has realizado ninguna petición, realiza nuevas consultas para

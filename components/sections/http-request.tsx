@@ -37,7 +37,7 @@ const HttpRequest: React.FC = () => {
             };
             console.log(item);
             setResponseModel(item); // Actualiza el estado con los datos obtenidos
-            return `${url.host} has been fetched`;
+            return `${url} has been fetched`;
           },
           error: "Error",
         });
@@ -50,7 +50,7 @@ const HttpRequest: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col w-full gap-4">
+    <div className="flex flex-col w-full gap-4 flex-grow">
       <div className="flex items-center">
         <DropDownMethodBox />
         <HostRequestField />
@@ -72,7 +72,9 @@ const HttpRequest: React.FC = () => {
           }}
         />
       </div>
-      <div className="rounded-[16px] bg-[#1E1E1E] min-h-[25vh] max-h-[25vh] overflow-y-auto scrollbar-thin scrollbar-vertical-thin scrollbar-thumb-blue-500 scrollbar-track-blue-200 scrollbar-thumb-rounded">
+      <div
+        className="bg-[#1e1e1e73] flex-grow flex-shrink overflow-y-auto scrollbar-thin scrollbar-vertical-thin scrollbar-thumb-blue-500 scrollbar-track-blue-200 scrollbar-thumb-rounded"
+      >
         {requestModel.mode === modes[0] ? (
           <ParamsTable
             rows={requestModel.params}
