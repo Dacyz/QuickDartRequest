@@ -1,5 +1,6 @@
 "use client";
 import { generateRandomId } from "@/data/helpers/number_extension";
+import ConfigConvert from "@/data/models/config_model";
 import { ParameterRow } from "@/data/models/parameter";
 import RequestModel from "@/data/models/request_model";
 import React, {
@@ -22,11 +23,25 @@ interface CategoryType {
   timeStamp: number;
 }
 
+
+const config: ConfigConvert = {
+  generateToJson: false,
+  generateCopyWith: false,
+  generateToString: false,
+  useDefaultValue: false,
+  useEquatable: false,
+  useSerializable: false,
+  useNum: false,
+  generateKey: false,
+  generateJsonComment: false,
+};
+
 interface DashboardContextData {
   localData: RequestModel[];
   categoriesData: CategoryType[];
   requestModel: RequestModel;
   responseModel: ResponseModel | null;
+  configModel: ConfigConvert;
   setRequestModel: React.Dispatch<React.SetStateAction<RequestModel>>;
   updateLocalStorage: (data: RequestModel) => void;
   removeLocalStorage: (data: number) => void;
@@ -37,6 +52,7 @@ interface DashboardContextData {
   removeCategoriesStorage: (newData: number) => void;
   handleInputChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   setResponseModel: (newData: ResponseModel | null) => void;
+  updateConfigStorage: (newData: ConfigConvert) => void;
 }
 
 const DashboardContext = createContext<DashboardContextData | undefined>(
@@ -46,6 +62,7 @@ const DashboardContext = createContext<DashboardContextData | undefined>(
 const separator: string = ":";
 const listRequest: string = "ListRequest";
 const listCategories: string = "ListCategories";
+const listConfig: string = "ListConfig";
 const allowedMethods: string[] = ["get", "post", "put", "delete"];
 
 export const DashboardProvider: React.FC<DashboardContextProps> = ({
@@ -56,6 +73,7 @@ export const DashboardProvider: React.FC<DashboardContextProps> = ({
   const [requestModel, setRequestModel] = useState<RequestModel>(
     new RequestModel()
   );
+  const [configModel, setConfigModel] = useState<ConfigConvert>(config);
   const [responseModel, setResponse] = useState<ResponseModel | null>(null);
 
   const updateRequestStorage = (newData: RequestModel) => {
@@ -64,7 +82,13 @@ export const DashboardProvider: React.FC<DashboardContextProps> = ({
     setLocalData(updatedData);
   };
 
-  const setResponseModel = (newData: ResponseModel | null) => setResponse(newData);
+  const updateConfigStorage = (newData: ConfigConvert) => {
+    localStorage.setItem(listConfig, JSON.stringify(newData));
+    setConfigModel(newData);
+  };
+
+  const setResponseModel = (newData: ResponseModel | null) =>
+    setResponse(newData);
   const updateCategoriesStorage = (newData: CategoryType) => {
     const updatedData = [...categoriesData, newData];
     localStorage.setItem(listCategories, JSON.stringify(updatedData));
@@ -155,14 +179,18 @@ export const DashboardProvider: React.FC<DashboardContextProps> = ({
   useEffect(() => {
     const storedDataString = localStorage.getItem(listRequest);
     const storedCategoriesString = localStorage.getItem(listCategories);
+    const storedConfigString = localStorage.getItem(listConfig);
     let storedData: RequestModel[] = [];
     let storedCategoriesData: CategoryType[] = [];
     let model: RequestModel = new RequestModel();
+    let configM: ConfigConvert = config;
     try {
       if (storedDataString !== null)
         storedData = JSON.parse(storedDataString) || [];
       if (storedCategoriesString !== null)
         storedCategoriesData = JSON.parse(storedCategoriesString) || [];
+      if (storedConfigString !== null)
+        configM = JSON.parse(storedConfigString) || config;
     } catch (error) {
       console.error("Error al analizar los datos de localStorage:", error);
     }
@@ -176,6 +204,7 @@ export const DashboardProvider: React.FC<DashboardContextProps> = ({
     }
     console.log(`List: [${storedData.length}], Response: ${model}`);
     setLocalData(storedData);
+    setConfigModel(configM);
     setRequestModel(model);
     setCategoriesData(storedCategoriesData);
   }, []);
@@ -197,6 +226,8 @@ export const DashboardProvider: React.FC<DashboardContextProps> = ({
         removeCategoriesStorage: removeCategoriesStorage,
         handleInputChange: handleInputChange,
         setResponseModel: setResponseModel,
+        configModel: configModel,
+        updateConfigStorage: updateConfigStorage,
       }}
     >
       <Toaster theme="dark" richColors />

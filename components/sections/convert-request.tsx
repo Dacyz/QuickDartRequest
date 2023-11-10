@@ -10,12 +10,16 @@ import {
   JSONSchemaInput,
   FetchingJSONSchemaStore,
 } from "quicktype-core";
+import { toast } from "sonner";
 import { CustomDartTargetLanguage } from "@/data/data/quicktype/custom_dart_renderer";
+import ConfigConvert from "@/data/models/config_model";
+import { useDashboardContext } from "@/context/context";
 
 async function quicktypeJSON(
   targetLanguage: string,
   typeName: string,
-  jsonString: string
+  jsonString: string,
+  configModel: ConfigConvert,
 ) {
   const jsonInput = jsonInputForTargetLanguage(targetLanguage);
 
@@ -23,15 +27,15 @@ async function quicktypeJSON(
   // type, or many sources for other types. Here we're
   // just making one type from one piece of sample JSON.
   const dartLang = new CustomDartTargetLanguage({
-    generateToJson: true,
-    generateCopyWith: true,
-    generateToString: true,
-    useDefaultValue: true,
-    useEquatable: true,
-    useSerializable: true,
-    useNum: true,
-    generateKey: true,
-    generateJsonComment: true,
+    generateToJson: configModel.generateToJson,
+    generateCopyWith: configModel.generateCopyWith,
+    generateToString: configModel.generateToString,
+    useDefaultValue: configModel.useDefaultValue,
+    useEquatable: configModel.useEquatable,
+    useSerializable: configModel.useSerializable,
+    useNum: configModel.useNum,
+    generateKey: configModel.generateKey,
+    generateJsonComment: configModel.generateJsonComment,
   });
   await jsonInput.addSource({
     name: typeName,
@@ -48,41 +52,31 @@ async function quicktypeJSON(
   });
 }
 
-async function quicktypeJSONSchema(
-  targetLanguage: string,
-  typeName: string,
-  jsonSchemaString: string
-) {
-  const schemaInput = new JSONSchemaInput(new FetchingJSONSchemaStore());
-
-  // We could add multiple schemas for multiple types,
-  // but here we're just making one type from JSON schema.
-  await schemaInput.addSource({ name: typeName, schema: jsonSchemaString });
-
-  const inputData = new InputData();
-  inputData.addInput(schemaInput);
-
-  return await quicktype({
-    inputData,
-    lang: targetLanguage,
-  });
-}
-
 const ConvertRequest: React.FC = () => {
+  const { configModel } = useDashboardContext();
   const [set, get] = useState("");
   const [setv, getv] = useState("");
   const [className, setClassName] = useState("");
   const handleClickGenerate = async () => {
-    getv(set);
     try {
+      if (set.length == 0) {
+        toast.error('Json Object must to be not empty')
+        return;
+      }
+      if (className.length == 0) {
+        toast.error('ClassName must to be not empty')
+        return;
+      }
       const { lines: swiftPerson } = await quicktypeJSON(
         "dart",
         className,
-        set
+        set,
+        configModel,
       );
       getv(swiftPerson.join("\n"));
       console.log(swiftPerson.join("\n"));
-    } catch (error) {
+    } catch (error: any) {
+      toast.error(`${error.message}`);
       console.error(error);
     }
   };

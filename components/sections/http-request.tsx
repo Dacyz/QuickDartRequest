@@ -25,7 +25,7 @@ const HttpRequest: React.FC = () => {
         console.error("Invalid url:", requestModel);
         return;
       }
-      toast.promise(fetch(url, { method: "GET", mode: "no-cors" }), {
+      toast.promise(fetch(url, { method: requestModel.method.name }), {
         loading: "Loading...",
         success: async (resp) => {
           const contentTypeHeader = resp.headers.get("Content-Type") ?? "*/*";

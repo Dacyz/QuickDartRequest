@@ -12,12 +12,15 @@ import {
   jsonInputForTargetLanguage,
   quicktype,
 } from "quicktype-core";
+import { toast } from "sonner";
 import { CustomDartTargetLanguage } from "@/data/data/quicktype/custom_dart_renderer";
+import ConfigConvert from "@/data/models/config_model";
 
 async function quicktypeJSON(
   targetLanguage: string,
   typeName: string,
-  jsonString: string
+  jsonString: string,
+  configModel: ConfigConvert,
 ) {
   const jsonInput = jsonInputForTargetLanguage(targetLanguage);
 
@@ -25,15 +28,15 @@ async function quicktypeJSON(
   // type, or many sources for other types. Here we're
   // just making one type from one piece of sample JSON.
   const dartLang = new CustomDartTargetLanguage({
-    generateToJson: true,
-    generateCopyWith: true,
-    generateToString: true,
-    useDefaultValue: true,
-    useEquatable: true,
-    useSerializable: true,
-    useNum: true,
-    generateKey: true,
-    generateJsonComment: true,
+    generateToJson: configModel.generateToJson,
+    generateCopyWith: configModel.generateCopyWith,
+    generateToString: configModel.generateToString,
+    useDefaultValue: configModel.useDefaultValue,
+    useEquatable: configModel.useEquatable,
+    useSerializable: configModel.useSerializable,
+    useNum: configModel.useNum,
+    generateKey: configModel.generateKey,
+    generateJsonComment: configModel.generateJsonComment,
   });
   await jsonInput.addSource({
     name: typeName,
@@ -51,16 +54,21 @@ async function quicktypeJSON(
 }
 
 const ConvertSection: React.FC = () => {
-  const { responseModel } = useDashboardContext();
+  const { responseModel, configModel } = useDashboardContext();
   const [className, setClassName] = useState("");
   const [convert, setConvert] = useState("");
 
   const handleClickGenerate = async () => {
     try {
+      if (className.length == 0) {
+        toast.error('ClassName must to be not empty')
+        return;
+      }
       const { lines: swiftPerson } = await quicktypeJSON(
         "dart",
         className,
-        JSON.stringify(responseModel?.jsonResponse) ?? ""
+        JSON.stringify(responseModel?.jsonResponse) ?? "",
+        configModel,
       );
       setConvert(swiftPerson.join("\n"));
     } catch (error) {

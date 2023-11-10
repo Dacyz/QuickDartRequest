@@ -3,6 +3,8 @@ import "./modal.css";
 import Modal from "./modal";
 import CodeEditor from "@uiw/react-textarea-code-editor";
 import SettingsIcon from "@mui/icons-material/Settings";
+import { useDashboardContext } from "@/context/context";
+import { copyWith } from "@/data/models/config_model";
 
 const descriptions: React.ReactNode[] = [
   <>
@@ -115,7 +117,7 @@ queryParameters: queryParameters,
 function ConvertModal() {
   const [isOpen, setIsOpen] = useState(false);
   const [get, set] = useState<React.ReactNode | null>(null);
-
+  const { configModel, updateConfigStorage } = useDashboardContext();
   return (
     <>
       <button
@@ -134,7 +136,21 @@ function ConvertModal() {
             </p>
             <ul className="flex-grow ">
               <li>
-                <input type="checkbox" id="toJson" name="toJson" value="Bike" />
+                <input
+                  type="checkbox"
+                  id="toJson"
+                  name="toJson"
+                  value="Bike"
+                  checked={configModel.generateToJson}
+                  onChange={(event) => {
+                    console.log(event.target.checked ? "wa" : "s");
+                    updateConfigStorage(
+                      copyWith(configModel, {
+                        generateToJson: event.target.checked,
+                      })
+                    );
+                  }}
+                />
                 <label htmlFor="toJson">
                   {" "}
                   Generate{" "}
@@ -154,6 +170,15 @@ function ConvertModal() {
                   id="copyWith"
                   name="copyWith"
                   value="Bike"
+                  checked={configModel.generateCopyWith}
+                  onChange={(event) => {
+                    console.log(event.target.checked ? "wa" : "s");
+                    updateConfigStorage(
+                      copyWith(configModel, {
+                        generateCopyWith: event.target.checked,
+                      })
+                    );
+                  }}
                 />
                 <label htmlFor="copyWith">
                   {" "}
@@ -174,6 +199,15 @@ function ConvertModal() {
                   id="toString"
                   name="toString"
                   value="Bike"
+                  checked={configModel.generateToString}
+                  onChange={(event) => {
+                    console.log(event.target.checked ? "wa" : "s");
+                    updateConfigStorage(
+                      copyWith(configModel, {
+                        generateToString: event.target.checked,
+                      })
+                    );
+                  }}
                 />
                 <label htmlFor="toString">
                   {" "}
@@ -191,11 +225,20 @@ function ConvertModal() {
               <li>
                 <input
                   type="checkbox"
-                  id="toString"
-                  name="toString"
+                  id="useNum"
+                  name="useNum"
                   value="Bike"
+                  checked={configModel.useNum}
+                  onChange={(event) => {
+                    console.log(event.target.checked ? "wa" : "s");
+                    updateConfigStorage(
+                      copyWith(configModel, {
+                        useNum: event.target.checked,
+                      })
+                    );
+                  }}
                 />
-                <label htmlFor="toString">
+                <label htmlFor="useNum">
                   {" "}
                   Always use{" "}
                   <span
@@ -211,11 +254,20 @@ function ConvertModal() {
               <li>
                 <input
                   type="checkbox"
-                  id="toString"
-                  name="toString"
+                  id="useEquatable"
+                  name="useEquatable"
                   value="Bike"
+                  checked={configModel.useEquatable}
+                  onChange={(event) => {
+                    console.log(event.target.checked ? "wa" : "s");
+                    updateConfigStorage(
+                      copyWith(configModel, {
+                        useEquatable: event.target.checked,
+                      })
+                    );
+                  }}
                 />
-                <label htmlFor="toString">
+                <label htmlFor="useEquatable">
                   {" "}
                   Use{" "}
                   <span
@@ -231,11 +283,20 @@ function ConvertModal() {
               <li>
                 <input
                   type="checkbox"
-                  id="toString"
-                  name="toString"
+                  id="useSerializable"
+                  name="useSerializable"
                   value="Bike"
+                  checked={configModel.useSerializable}
+                  onChange={(event) => {
+                    console.log(event.target.checked ? "wa" : "s");
+                    updateConfigStorage(
+                      copyWith(configModel, {
+                        useSerializable: event.target.checked,
+                      })
+                    );
+                  }}
                 />
-                <label htmlFor="toString">
+                <label htmlFor="useSerializable">
                   {" "}
                   Use{" "}
                   <span
@@ -251,11 +312,20 @@ function ConvertModal() {
               <li>
                 <input
                   type="checkbox"
-                  id="toString"
-                  name="toString"
+                  id="generateKey"
+                  name="generateKey"
                   value="Bike"
+                  checked={configModel.generateKey}
+                  onChange={(event) => {
+                    console.log(event.target.checked ? "wa" : "s");
+                    updateConfigStorage(
+                      copyWith(configModel, {
+                        generateKey: event.target.checked,
+                      })
+                    );
+                  }}
                 />
-                <label htmlFor="toString">
+                <label htmlFor="generateKey">
                   {" "}
                   Generate{" "}
                   <span
@@ -270,11 +340,20 @@ function ConvertModal() {
               <li>
                 <input
                   type="checkbox"
-                  id="toString"
-                  name="toString"
+                  id="useDefaultValue"
+                  name="useDefaultValue"
                   value="Bike"
+                  checked={configModel.useDefaultValue}
+                  onChange={(event) => {
+                    console.log(event.target.checked ? "wa" : "s");
+                    updateConfigStorage(
+                      copyWith(configModel, {
+                        useDefaultValue: event.target.checked,
+                      })
+                    );
+                  }}
                 />
-                <label htmlFor="toString">
+                <label htmlFor="useDefaultValue">
                   {" "}
                   Use{" "}
                   <span
@@ -290,11 +369,20 @@ function ConvertModal() {
               <li>
                 <input
                   type="checkbox"
-                  id="toString"
-                  name="toString"
+                  id="generateJsonComment"
+                  name="generateJsonComment"
                   value="Bike"
+                  checked={configModel.generateJsonComment}
+                  onChange={(event) => {
+                    console.log(event.target.checked ? "wa" : "s");
+                    updateConfigStorage(
+                      copyWith(configModel, {
+                        generateJsonComment: event.target.checked,
+                      })
+                    );
+                  }}
                 />
-                <label htmlFor="toString">
+                <label htmlFor="generateJsonComment">
                   {" "}
                   Generate{" "}
                   <span
@@ -321,7 +409,6 @@ function ConvertModal() {
           </div>
           {get != null ? (
             <div
-              onChange={() => false}
               style={{
                 fontSize: 12,
                 margin: "32px 0px 0px 0px",
