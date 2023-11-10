@@ -40,6 +40,76 @@ const descriptions: React.ReactNode[] = [
     />
   </>,
   <>
+    <p className="mb-2">
+      The <span className="text-blue-400">copyWith</span> method is commonly
+      used in programming to create an immutable copy of an object with some
+      properties modified. This method allows for selective updates to an object
+      without directly modifying the original object. When is invoked, a new
+      instance of the object is returned with the desired changes, while leaving
+      the untouched properties unchanged.
+    </p>
+    <CodeEditor
+      value={`Example copyWith({
+    String? example,
+}) {
+    return Example(
+        example: example ?? this.example,
+    );
+}`}
+      onChange={() => false}
+      language="dart"
+      data-color-mode="dark"
+      placeholder="Please enter Dart code."
+      contentEditable={false}
+      disabled
+      padding={16}
+      style={{
+        fontSize: 12,
+        backgroundColor: "#1E1E1E",
+        borderRadius: "16px",
+        overflow: "auto",
+        flexGrow: "1",
+        width: "100%",
+        resize: "none",
+        fontFamily:
+          "ui-monospace,SFMono-Regular,SF Mono,Consolas,Liberation Mono,Menlo,monospace",
+      }}
+    />
+  </>,
+  <>
+    <p className="mb-2">
+      The <span className="text-blue-400">toString</span> method is used to
+      obtain a string representation of an object. In programming, especially in
+      object-oriented languages, the toString method is implemented to return a
+      string that provides a readable representation of the object{"'"}s state.
+      This is useful for debugging and displaying information.
+    </p>
+    <CodeEditor
+      value={`@override
+String toString(){
+    return "$example, ";
+}`}
+      onChange={() => false}
+      language="dart"
+      data-color-mode="dark"
+      placeholder="Please enter Dart code."
+      contentEditable={false}
+      disabled
+      padding={16}
+      style={{
+        fontSize: 12,
+        backgroundColor: "#1E1E1E",
+        borderRadius: "16px",
+        overflow: "auto",
+        flexGrow: "1",
+        width: "100%",
+        resize: "none",
+        fontFamily:
+          "ui-monospace,SFMono-Regular,SF Mono,Consolas,Liberation Mono,Menlo,monospace",
+      }}
+    />
+  </>,
+  <>
     <p className="mb-2">copyWith</p>
     <CodeEditor
       value={`class ApiConstants {
@@ -214,7 +284,7 @@ function ConvertModal() {
                   Generate{" "}
                   <span
                     className="text-blue-400"
-                    onMouseEnter={() => set(descriptions[1])}
+                    onMouseEnter={() => set(descriptions[2])}
                     // onMouseLeave={() => set(null)}
                   >
                     toString

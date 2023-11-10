@@ -71,9 +71,9 @@ const ConvertSection: React.FC = () => {
         configModel,
       );
       setConvert(swiftPerson.join("\n"));
-    } catch (error) {
-      console.error(error, className);
-      console.log(responseModel?.jsonResponse?.toString());
+    } catch (error : any) {
+      toast.error(`${error.message}`);
+      console.error(error, className, responseModel?.jsonResponse?.toString());
     }
   };
 
