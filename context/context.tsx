@@ -1,9 +1,9 @@
 "use client";
 import { generateRandomId } from "@/data/helpers/number_extension";
-import ConfigConvert from "@/data/models/config_model";
+import CategoryType from "@/data/models/category_model";
 import { ParameterRow } from "@/data/models/parameter";
 import RequestModel from "@/data/models/request_model";
-import UserSettings from "@/data/models/settings_model";
+import UserSettings, { settings } from "@/data/models/settings_model";
 import React, {
   createContext,
   useState,
@@ -16,32 +16,6 @@ import { Toaster, toast } from "sonner";
 interface DashboardContextProps {
   children: ReactNode;
 }
-
-interface CategoryType {
-  inputValue?: string;
-  title: string;
-  isSave?: boolean;
-  timeStamp: number;
-}
-
-const settings: UserSettings = {
-  userName: "User",
-  sideBarAlign: "left",
-  showExplanation: true,
-  configConvert: {
-    generateToJson: false,
-    generateCopyWith: false,
-    generateToString: false,
-    useDefaultValue: false,
-    useEquatable: false,
-    useSerializable: false,
-    useNum: false,
-    generateKey: false,
-    generateJsonComment: false,
-    propertiesNullable: true,
-    useDefaultProperties: false,
-  },
-};
 
 interface DashboardContextData {
   localData: RequestModel[];
@@ -166,7 +140,7 @@ export const DashboardProvider: React.FC<DashboardContextProps> = ({
         return;
       }
     } catch (error) {
-      console.error("Ocurrio un error", error);
+      console.error("An error occurred", error);
     }
     const newValue = requestModel.copyWith({ host: input });
     setRequestModel(newValue); // Actualiza el estado con el valor del input

@@ -20,7 +20,7 @@ async function quicktypeJSON(
   targetLanguage: string,
   typeName: string,
   jsonString: string,
-  configModel: ConfigConvert,
+  configModel: ConfigConvert
 ) {
   const jsonInput = jsonInputForTargetLanguage(targetLanguage);
 
@@ -54,24 +54,24 @@ async function quicktypeJSON(
 }
 
 const ConvertSection: React.FC = () => {
-  const { responseModel, configModel } = useDashboardContext();
+  const { responseModel, userSettings } = useDashboardContext();
   const [className, setClassName] = useState("");
   const [convert, setConvert] = useState("");
 
   const handleClickGenerate = async () => {
     try {
       if (className.length == 0) {
-        toast.error('ClassName must to be not empty')
+        toast.error("ClassName must to be not empty");
         return;
       }
       const { lines: swiftPerson } = await quicktypeJSON(
         "dart",
         className,
         JSON.stringify(responseModel?.jsonResponse) ?? "",
-        configModel,
+        userSettings.configConvert
       );
       setConvert(swiftPerson.join("\n"));
-    } catch (error : any) {
+    } catch (error: any) {
       toast.error(`${error.message}`);
       console.error(error, className, responseModel?.jsonResponse?.toString());
     }

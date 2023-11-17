@@ -7,6 +7,25 @@ export default interface UserSettings {
   configConvert: ConfigConvert;
 }
 
+const settings: UserSettings = {
+  userName: "User",
+  sideBarAlign: "left",
+  showExplanation: true,
+  configConvert: {
+    generateToJson: false,
+    generateCopyWith: false,
+    generateToString: false,
+    useDefaultValue: false,
+    useEquatable: false,
+    useSerializable: false,
+    useNum: false,
+    generateKey: false,
+    generateJsonComment: false,
+    propertiesNullable: true,
+    useDefaultProperties: false,
+  },
+};
+
 function copyWithSettings(
   originalSettings: UserSettings,
   updates: Partial<UserSettings>
@@ -20,4 +39,4 @@ function copyWithSettings(
   };
 }
 
-export { copyWithSettings };
+export { copyWithSettings, settings };
