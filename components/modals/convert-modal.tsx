@@ -5,6 +5,7 @@ import CodeEditor from "@uiw/react-textarea-code-editor";
 import SettingsIcon from "@mui/icons-material/Settings";
 import { useDashboardContext } from "@/context/context";
 import { copyWith } from "@/data/models/config_model";
+import { copyWithSettings } from "@/data/models/settings_model";
 
 const descriptions: React.ReactNode[] = [
   <>
@@ -145,7 +146,6 @@ queryParameters: queryParameters,
       }}
     />
   </>,
-  ,
   <>
     <p className="mb-2">toString</p>
     <CodeEditor
@@ -187,7 +187,7 @@ queryParameters: queryParameters,
 function ConvertModal() {
   const [isOpen, setIsOpen] = useState(false);
   const [get, set] = useState<React.ReactNode | null>(null);
-  const { configModel, updateConfigStorage } = useDashboardContext();
+  const { userSettings, updateUserSettings } = useDashboardContext();
   return (
     <>
       <button
@@ -211,12 +211,13 @@ function ConvertModal() {
                   id="toJson"
                   name="toJson"
                   value="Bike"
-                  checked={configModel.generateToJson}
+                  checked={userSettings.configConvert.generateToJson}
                   onChange={(event) => {
-                    console.log(event.target.checked ? "wa" : "s");
-                    updateConfigStorage(
-                      copyWith(configModel, {
-                        generateToJson: event.target.checked,
+                    updateUserSettings(
+                      copyWithSettings(userSettings, {
+                        configConvert: copyWith(userSettings.configConvert, {
+                          generateToJson: event.target.checked,
+                        }),
                       })
                     );
                   }}
@@ -240,12 +241,13 @@ function ConvertModal() {
                   id="copyWith"
                   name="copyWith"
                   value="Bike"
-                  checked={configModel.generateCopyWith}
+                  checked={userSettings.configConvert.generateCopyWith}
                   onChange={(event) => {
-                    console.log(event.target.checked ? "wa" : "s");
-                    updateConfigStorage(
-                      copyWith(configModel, {
-                        generateCopyWith: event.target.checked,
+                    updateUserSettings(
+                      copyWithSettings(userSettings, {
+                        configConvert: copyWith(userSettings.configConvert, {
+                          generateCopyWith: event.target.checked,
+                        }),
                       })
                     );
                   }}
@@ -269,12 +271,13 @@ function ConvertModal() {
                   id="toString"
                   name="toString"
                   value="Bike"
-                  checked={configModel.generateToString}
+                  checked={userSettings.configConvert.generateToString}
                   onChange={(event) => {
-                    console.log(event.target.checked ? "wa" : "s");
-                    updateConfigStorage(
-                      copyWith(configModel, {
-                        generateToString: event.target.checked,
+                    updateUserSettings(
+                      copyWithSettings(userSettings, {
+                        configConvert: copyWith(userSettings.configConvert, {
+                          generateToString: event.target.checked,
+                        }),
                       })
                     );
                   }}
@@ -298,12 +301,13 @@ function ConvertModal() {
                   id="useNum"
                   name="useNum"
                   value="Bike"
-                  checked={configModel.useNum}
+                  checked={userSettings.configConvert.useNum}
                   onChange={(event) => {
-                    console.log(event.target.checked ? "wa" : "s");
-                    updateConfigStorage(
-                      copyWith(configModel, {
-                        useNum: event.target.checked,
+                    updateUserSettings(
+                      copyWithSettings(userSettings, {
+                        configConvert: copyWith(userSettings.configConvert, {
+                          useNum: event.target.checked,
+                        }),
                       })
                     );
                   }}
@@ -327,12 +331,13 @@ function ConvertModal() {
                   id="useEquatable"
                   name="useEquatable"
                   value="Bike"
-                  checked={configModel.useEquatable}
+                  checked={userSettings.configConvert.useEquatable}
                   onChange={(event) => {
-                    console.log(event.target.checked ? "wa" : "s");
-                    updateConfigStorage(
-                      copyWith(configModel, {
-                        useEquatable: event.target.checked,
+                    updateUserSettings(
+                      copyWithSettings(userSettings, {
+                        configConvert: copyWith(userSettings.configConvert, {
+                          useEquatable: event.target.checked,
+                        }),
                       })
                     );
                   }}
@@ -356,12 +361,14 @@ function ConvertModal() {
                   id="useSerializable"
                   name="useSerializable"
                   value="Bike"
-                  checked={configModel.useSerializable}
+                  checked={userSettings.configConvert.useSerializable}
                   onChange={(event) => {
                     console.log(event.target.checked ? "wa" : "s");
-                    updateConfigStorage(
-                      copyWith(configModel, {
-                        useSerializable: event.target.checked,
+                    updateUserSettings(
+                      copyWithSettings(userSettings, {
+                        configConvert: copyWith(userSettings.configConvert, {
+                          useSerializable: event.target.checked,
+                        }),
                       })
                     );
                   }}
@@ -385,12 +392,13 @@ function ConvertModal() {
                   id="generateKey"
                   name="generateKey"
                   value="Bike"
-                  checked={configModel.generateKey}
+                  checked={userSettings.configConvert.generateKey}
                   onChange={(event) => {
-                    console.log(event.target.checked ? "wa" : "s");
-                    updateConfigStorage(
-                      copyWith(configModel, {
-                        generateKey: event.target.checked,
+                    updateUserSettings(
+                      copyWithSettings(userSettings, {
+                        configConvert: copyWith(userSettings.configConvert, {
+                          generateKey: event.target.checked,
+                        }),
                       })
                     );
                   }}
@@ -413,12 +421,13 @@ function ConvertModal() {
                   id="useDefaultValue"
                   name="useDefaultValue"
                   value="Bike"
-                  checked={configModel.useDefaultValue}
+                  checked={userSettings.configConvert.useDefaultValue}
                   onChange={(event) => {
-                    console.log(event.target.checked ? "wa" : "s");
-                    updateConfigStorage(
-                      copyWith(configModel, {
-                        useDefaultValue: event.target.checked,
+                    updateUserSettings(
+                      copyWithSettings(userSettings, {
+                        configConvert: copyWith(userSettings.configConvert, {
+                          useDefaultValue: event.target.checked,
+                        }),
                       })
                     );
                   }}
@@ -442,12 +451,13 @@ function ConvertModal() {
                   id="generateJsonComment"
                   name="generateJsonComment"
                   value="Bike"
-                  checked={configModel.generateJsonComment}
+                  checked={userSettings.configConvert.generateJsonComment}
                   onChange={(event) => {
-                    console.log(event.target.checked ? "wa" : "s");
-                    updateConfigStorage(
-                      copyWith(configModel, {
-                        generateJsonComment: event.target.checked,
+                    updateUserSettings(
+                      copyWithSettings(userSettings, {
+                        configConvert: copyWith(userSettings.configConvert, {
+                          generateJsonComment: event.target.checked,
+                        }),
                       })
                     );
                   }}
@@ -463,6 +473,36 @@ function ConvertModal() {
                     comment
                   </span>{" "}
                   of JSON
+                </label>
+              </li>
+              <li>
+                <input
+                  type="checkbox"
+                  id="propertiesNullable"
+                  name="propertiesNullable"
+                  value="Bike"
+                  checked={userSettings.configConvert.propertiesNullable}
+                  onChange={(event) => {
+                    updateUserSettings(
+                      copyWithSettings(userSettings, {
+                        configConvert: copyWith(userSettings.configConvert, {
+                          propertiesNullable: event.target.checked,
+                        }),
+                      })
+                    );
+                  }}
+                />
+                <label htmlFor="propertiesNullable">
+                  {" "}
+                  Use{" "}
+                  <span
+                    className="text-blue-400"
+                    onMouseEnter={() => set(descriptions[1])}
+                    // onMouseLeave={() => set(null)}
+                  >
+                    nullable
+                  </span>{" "}
+                  properties
                 </label>
               </li>
             </ul>

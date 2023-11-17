@@ -45,11 +45,11 @@ async function quicktypeJSON(
 
   const inputData = new InputData();
   inputData.addInput(jsonInput);
-
+  console.log(configModel);
   return await quicktype({
     inputData,
     lang: dartLang,
-    allPropertiesOptional: true, // Nullsafety
+    allPropertiesOptional: configModel.propertiesNullable, // Nullsafety
   });
 }
 

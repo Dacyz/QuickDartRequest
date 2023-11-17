@@ -8,6 +8,8 @@ export default interface ConfigConvert {
   useNum: boolean;
   generateKey: boolean;
   generateJsonComment: boolean;
+  propertiesNullable: boolean;
+  useDefaultProperties: boolean;
 }
 
 function copyWith(
@@ -27,6 +29,10 @@ function copyWith(
     generateKey: updates.generateKey ?? originalConfig.generateKey,
     generateJsonComment:
       updates.generateJsonComment ?? originalConfig.generateJsonComment,
+    propertiesNullable:
+      updates.propertiesNullable ?? originalConfig.propertiesNullable,
+    useDefaultProperties:
+      updates.useDefaultProperties ?? originalConfig.useDefaultProperties,
   };
 }
 

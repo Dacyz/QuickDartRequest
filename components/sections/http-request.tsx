@@ -74,7 +74,7 @@ const HttpRequest: React.FC = () => {
           }}
         />
       </div>
-      <div className="bg-[#1e1e1e73] flex-grow flex-shrink overflow-y-auto scrollbar-thin scrollbar-vertical-thin scrollbar-thumb-blue-500 scrollbar-track-blue-200 scrollbar-thumb-rounded">
+      <div className="bg-[#1e1e1e73] flex-grow-[2] flex-shrink-[2] overflow-y-auto scrollbar-thin scrollbar-vertical-thin scrollbar-thumb-blue-500 scrollbar-track-blue-200 scrollbar-thumb-rounded">
         {requestModel.mode === modes[0] ? (
           <ParamsTable
             rows={requestModel.params}

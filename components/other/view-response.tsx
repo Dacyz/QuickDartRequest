@@ -2,10 +2,6 @@
 /* eslint-disable @next/next/no-img-element */
 import CodeEditor from "@uiw/react-textarea-code-editor";
 import React from "react";
-// import { Viewer, Worker } from "@react-pdf-viewer/core";
-
-// Import the styles
-import "@react-pdf-viewer/core/lib/styles/index.css";
 
 interface ResponseProps {
   item: ResponseModel | null;
@@ -32,8 +28,9 @@ function convertValue(response: ResponseModel): React.ReactNode {
           backgroundColor: "#1E1E1E",
           borderRadius: "16px",
           overflow: "auto",
-          flexGrow: "1",
           width: "100%",
+          height: "40vh",
+          minHeight: "40vh",
           resize: "none",
           fontFamily:
             "ui-monospace,SFMono-Regular,SF Mono,Consolas,Liberation Mono,Menlo,monospace",
@@ -43,8 +40,8 @@ function convertValue(response: ResponseModel): React.ReactNode {
   } else if (contentTypeHeader.includes("image/")) {
     return (
       <div
-        className="flex items-center flex-grow-0 flex-shrink justify-center rounded-[16px] bg-[#1E1E1E]"
-        style={{ flexBasis: "30%", minHeight: "420px" }}
+        className="flex items-center flex-shrink justify-center rounded-[16px] h-[40vh] min-h-[40vh] bg-[#1E1E1E]"
+        style={{ flexBasis: "30%"}}
       >
         <img
           className="rounded-[16px] p-2 max-h-full"
@@ -55,7 +52,7 @@ function convertValue(response: ResponseModel): React.ReactNode {
   } else if (contentTypeHeader.includes("video/")) {
     console.log("La respuesta no es JSON");
     return (
-      <div className="rounded-[16px] bg-[#1E1E1E] flex-grow">
+      <div className="rounded-[16px] bg-[#1E1E1E] h-[40vh] min-h-[40vh]">
         <video
           className="rounded-[16px] p-2 h-full object-scale-down"
           src={response.Enlace}
@@ -81,7 +78,7 @@ function convertValue(response: ResponseModel): React.ReactNode {
 const ViewResponse: React.FC<ResponseProps> = ({ item }) => {
   if (item == null) {
     return (
-      <div className="flex flex-col items-center gap-2 flex-grow bg-[#1E1E1E] rounded-[16px] justify-center">
+      <div className="flex flex-col items-center gap-2 h-[40vh] min-h-[40vh] bg-[#1E1E1E] rounded-[16px] justify-center">
         <svg
           width="241"
           height="179"

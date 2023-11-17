@@ -17,6 +17,8 @@ import { useDashboardContext } from "../../context/context";
 import RequestModel from "@/data/models/request_model";
 import { firstToUpperCase } from "@/data/helpers/string_extension";
 import { ClockIcon, CollageIcon } from "../icons/icon";
+import AvatarLetter from "../labels/avatar";
+import DropDownSettingsBox from "../buttons/dropdown-settings";
 
 const methodComponents = new Map<number, JSX.Element>([
   [0, <GetLabel />],
@@ -65,6 +67,7 @@ function List() {
     removeLocalStorage,
     setRequestModel,
     setResponseModel,
+    userSettings
   } = useDashboardContext();
   const colleagueIcon = (
     <Material
@@ -139,7 +142,7 @@ function List() {
           {group.map((item, index) => (
             <li
               key={index}
-              className="flex mt-[16px] px-[12px] py-[8px] bg-[#1E1E1E] transition-colors cursor-pointer hover:bg-[#404040] rounded-[16px] items-center"
+              className="flex mt-[8px] px-[12px] py-[8px] bg-[#1E1E1E] transition-colors cursor-pointer hover:bg-[#404040] rounded-[16px] items-center"
               onClick={() => {
                 setRequestModel(new RequestModel().copyWith(item));
                 console.log(new RequestModel().copyWith(item));
@@ -207,6 +210,7 @@ function List() {
           </>
         )}
       </div>
+      <DropDownSettingsBox />
     </div>
   );
 }

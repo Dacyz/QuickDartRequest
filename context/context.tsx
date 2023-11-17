@@ -3,6 +3,7 @@ import { generateRandomId } from "@/data/helpers/number_extension";
 import ConfigConvert from "@/data/models/config_model";
 import { ParameterRow } from "@/data/models/parameter";
 import RequestModel from "@/data/models/request_model";
+import UserSettings from "@/data/models/settings_model";
 import React, {
   createContext,
   useState,
@@ -23,17 +24,23 @@ interface CategoryType {
   timeStamp: number;
 }
 
-
-const config: ConfigConvert = {
-  generateToJson: false,
-  generateCopyWith: false,
-  generateToString: false,
-  useDefaultValue: false,
-  useEquatable: false,
-  useSerializable: false,
-  useNum: false,
-  generateKey: false,
-  generateJsonComment: false,
+const settings: UserSettings = {
+  userName: "User",
+  sideBarAlign: "left",
+  showExplanation: true,
+  configConvert: {
+    generateToJson: false,
+    generateCopyWith: false,
+    generateToString: false,
+    useDefaultValue: false,
+    useEquatable: false,
+    useSerializable: false,
+    useNum: false,
+    generateKey: false,
+    generateJsonComment: false,
+    propertiesNullable: true,
+    useDefaultProperties: false,
+  },
 };
 
 interface DashboardContextData {
@@ -41,7 +48,7 @@ interface DashboardContextData {
   categoriesData: CategoryType[];
   requestModel: RequestModel;
   responseModel: ResponseModel | null;
-  configModel: ConfigConvert;
+  userSettings: UserSettings;
   setRequestModel: React.Dispatch<React.SetStateAction<RequestModel>>;
   updateLocalStorage: (data: RequestModel) => void;
   removeLocalStorage: (data: number) => void;
@@ -52,7 +59,7 @@ interface DashboardContextData {
   removeCategoriesStorage: (newData: number) => void;
   handleInputChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   setResponseModel: (newData: ResponseModel | null) => void;
-  updateConfigStorage: (newData: ConfigConvert) => void;
+  updateUserSettings: (newData: UserSettings) => void;
 }
 
 const DashboardContext = createContext<DashboardContextData | undefined>(
@@ -62,7 +69,7 @@ const DashboardContext = createContext<DashboardContextData | undefined>(
 const separator: string = ":";
 const listRequest: string = "ListRequest";
 const listCategories: string = "ListCategories";
-const listConfig: string = "ListConfig";
+const listSettings: string = "listSettings";
 const allowedMethods: string[] = ["get", "post", "put", "delete"];
 
 export const DashboardProvider: React.FC<DashboardContextProps> = ({
@@ -73,7 +80,7 @@ export const DashboardProvider: React.FC<DashboardContextProps> = ({
   const [requestModel, setRequestModel] = useState<RequestModel>(
     new RequestModel()
   );
-  const [configModel, setConfigModel] = useState<ConfigConvert>(config);
+  const [userSettings, setUserSettings] = useState<UserSettings>(settings);
   const [responseModel, setResponse] = useState<ResponseModel | null>(null);
 
   const updateRequestStorage = (newData: RequestModel) => {
@@ -82,9 +89,9 @@ export const DashboardProvider: React.FC<DashboardContextProps> = ({
     setLocalData(updatedData);
   };
 
-  const updateConfigStorage = (newData: ConfigConvert) => {
-    localStorage.setItem(listConfig, JSON.stringify(newData));
-    setConfigModel(newData);
+  const updateUserSettings = (newData: UserSettings) => {
+    localStorage.setItem(listSettings, JSON.stringify(newData));
+    setUserSettings(newData);
   };
 
   const setResponseModel = (newData: ResponseModel | null) =>
@@ -179,18 +186,18 @@ export const DashboardProvider: React.FC<DashboardContextProps> = ({
   useEffect(() => {
     const storedDataString = localStorage.getItem(listRequest);
     const storedCategoriesString = localStorage.getItem(listCategories);
-    const storedConfigString = localStorage.getItem(listConfig);
+    const storedSettingString = localStorage.getItem(listSettings);
     let storedData: RequestModel[] = [];
     let storedCategoriesData: CategoryType[] = [];
     let model: RequestModel = new RequestModel();
-    let configM: ConfigConvert = config;
+    let configM: UserSettings = settings;
     try {
       if (storedDataString !== null)
         storedData = JSON.parse(storedDataString) || [];
       if (storedCategoriesString !== null)
         storedCategoriesData = JSON.parse(storedCategoriesString) || [];
-      if (storedConfigString !== null)
-        configM = JSON.parse(storedConfigString) || config;
+      if (storedSettingString !== null)
+        configM = JSON.parse(storedSettingString) || settings;
     } catch (error) {
       console.error("Error al analizar los datos de localStorage:", error);
     }
@@ -204,7 +211,7 @@ export const DashboardProvider: React.FC<DashboardContextProps> = ({
     }
     console.log(`List: [${storedData.length}], Response: ${model}`);
     setLocalData(storedData);
-    setConfigModel(configM);
+    setUserSettings(configM);
     setRequestModel(model);
     setCategoriesData(storedCategoriesData);
   }, []);
@@ -216,6 +223,7 @@ export const DashboardProvider: React.FC<DashboardContextProps> = ({
         categoriesData: categoriesData,
         requestModel: requestModel,
         responseModel: responseModel,
+        userSettings: userSettings,
         updateLocalStorage: updateRequestStorage,
         removeLocalStorage: removeLocalStorage,
         setRequestModel: setRequestModel,
@@ -226,8 +234,7 @@ export const DashboardProvider: React.FC<DashboardContextProps> = ({
         removeCategoriesStorage: removeCategoriesStorage,
         handleInputChange: handleInputChange,
         setResponseModel: setResponseModel,
-        configModel: configModel,
-        updateConfigStorage: updateConfigStorage,
+        updateUserSettings: updateUserSettings,
       }}
     >
       <Toaster theme="dark" richColors />

@@ -2,13 +2,25 @@ import React from "react";
 
 interface TitleProps {
   text: string;
+  style?: "small" | "large";
   className?: string;
 }
 
-const Title: React.FC<TitleProps> = ({ text, className }) => {
+const Title: React.FC<TitleProps> = ({ text, className, style }) => {
+  const baseClass =
+    "font-medium text-white text-center flex items-center align-middle";
+  if (style === "small") {
+    return (
+      <h3
+        className={`${baseClass} text-[16px] overflow-hidden whitespace-nowrap overflow-ellipsis ${className}`}
+      >
+        {text}
+      </h3>
+    );
+  }
   return (
     <h3
-      className={`font-semibold text-white text-center flex items-center align-middle text-[20px] ${className}`}
+      className={`${baseClass} text-[20px] overflow-hidden whitespace-nowrap overflow-ellipsis ${className}`}
     >
       {text}
     </h3>

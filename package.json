@@ -20,6 +20,7 @@
     "@types/react-dom": "18.2.7",
     "@uiw/react-textarea-code-editor": "^2.1.9",
     "autoprefixer": "10.4.16",
+    "encoding": "^0.1.13",
     "eslint": "8.49.0",
     "eslint-config-next": "13.5.2",
     "framer-motion": "^10.16.4",
