@@ -49,6 +49,7 @@ interface DashboardContextData {
   requestModel: RequestModel;
   responseModel: ResponseModel | null;
   userSettings: UserSettings;
+  loadingData: boolean;
   setRequestModel: React.Dispatch<React.SetStateAction<RequestModel>>;
   updateLocalStorage: (data: RequestModel) => void;
   removeLocalStorage: (data: number) => void;
@@ -76,6 +77,7 @@ export const DashboardProvider: React.FC<DashboardContextProps> = ({
   children,
 }) => {
   const [localData, setLocalData] = useState<RequestModel[]>([]);
+  const [loadingData, setLoadingData] = useState<boolean>(false);
   const [categoriesData, setCategoriesData] = useState<CategoryType[]>([]);
   const [requestModel, setRequestModel] = useState<RequestModel>(
     new RequestModel()
@@ -214,6 +216,7 @@ export const DashboardProvider: React.FC<DashboardContextProps> = ({
     setUserSettings(configM);
     setRequestModel(model);
     setCategoriesData(storedCategoriesData);
+    setLoadingData(true);
   }, []);
 
   return (
@@ -224,6 +227,7 @@ export const DashboardProvider: React.FC<DashboardContextProps> = ({
         requestModel: requestModel,
         responseModel: responseModel,
         userSettings: userSettings,
+        loadingData: loadingData,
         updateLocalStorage: updateRequestStorage,
         removeLocalStorage: removeLocalStorage,
         setRequestModel: setRequestModel,
