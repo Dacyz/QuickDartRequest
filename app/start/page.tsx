@@ -1,16 +1,10 @@
 import { DashboardProvider } from "../../context/context";
-import LineSeparator from "../../components/other/line-separator";
-import List from "../../components/sections/list";
-import QueryPage from "../../components/sections/query";
+import Application from "@/components/Application";
 
 export default function Home() {
   return (
     <DashboardProvider>
-      <div className="flex w-screen h-screen overflow-hidden">
-        <List />
-        <LineSeparator />
-        <QueryPage />
-      </div>
+      <Application/>
     </DashboardProvider>
   );
 }

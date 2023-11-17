@@ -18,7 +18,7 @@ import RequestModel from "@/data/models/request_model";
 import { firstToUpperCase } from "@/data/helpers/string_extension";
 import { ClockIcon, CollageIcon } from "../icons/icon";
 import AvatarLetter from "../labels/avatar";
-import DropDownSettingsBox from "../buttons/dropdown-settings";
+import DropDownSettingsBox from "../modals/settings-modal";
 
 const methodComponents = new Map<number, JSX.Element>([
   [0, <GetLabel />],

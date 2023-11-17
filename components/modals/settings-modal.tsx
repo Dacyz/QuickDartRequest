@@ -1,26 +1,90 @@
-import { useState } from "react";
-import "./modal.css";
-import Modal from "./modal";
 import { useDashboardContext } from "@/context/context";
-import { Settings } from "@mui/icons-material";
+import { AnimatePresence, motion } from "framer-motion";
+import { useState } from "react";
 import AvatarLetter from "../labels/avatar";
+import { Title } from "../labels/title";
+import { Forest, Window, Settings } from "@mui/icons-material";
+import Link from "next/link";
 import { copyWithSettings } from "@/data/models/settings_model";
+import Modal from "./modal";
 
-function SettingsModal() {
-  const [isOpen, setIsOpen] = useState(false);
-  const [getD, setD] = useState("");
-  const [getV, setV] = useState<React.ReactNode | null>(<></>);
+interface TitleProps {
+  className?: string;
+}
+
+const DropDownSettingsBox: React.FC<TitleProps> = (className) => {
+  const [isOpen, setOpen] = useState(false);
+  const [isModalOpen, setModalOpen] = useState(false);
   const { userSettings, updateUserSettings } = useDashboardContext();
   return (
     <>
       <div
-        className="flex px-3 min-h-[44px] py-1 items-center gap-3 dark:text-white cursor-pointer text-sm hover:bg-gray-100 dark:hover:bg-gray-800"
-        onClick={() => setIsOpen(true)}
+        className="relative flex-row flex cursor-pointer gap-2 min-w-[72px] text-center text-[12px] justify-start items-center hover:bg-[#1E1E1E] p-2"
+        style={{
+          borderRadius: !isOpen ? "16px" : "0 0 16px 16px",
+        }}
+        onClick={() => setOpen(!isOpen)}
+        onMouseLeave={() => setOpen(false)}
       >
-        <Settings />
-        Settings
+        <AvatarLetter text={userSettings.userName} />
+        <Title style="small" text={userSettings.userName} />
+        <AnimatePresence initial={false}>
+          {isOpen && (
+            <motion.div
+              initial={{ y: 0, opacity: 0 }}
+              animate={{ y: -20, opacity: [0.1, 1] }}
+              exit={{ y: 0, opacity: [0.5, 0] }}
+              transition={{ duration: 0.1 }}
+              className="absolute w-[288px] left-0 bg-[#1E1E1E] rounded-b-2xl z-50"
+            >
+              <div
+                className="absolute bottom-full left-0 z-20 mb-1 w-full overflow-hidden rounded-lg bg-white pb-1.5 pt-1 outline-none gizmo:border gizmo:border-gray-100 dark:bg-[#1E1E1E] opacity-100 translate-y-0"
+                aria-labelledby="headlessui-menu-button-:r3r:"
+                id="headlessui-menu-items-:r41:"
+                role="menu"
+                tabIndex={0}
+                data-headlessui-state="open"
+              >
+                <nav role="none">
+                  {/* <a
+                    className="flex px-3 min-h-[44px] py-1 items-center gap-3 dark:text-white cursor-pointer text-sm hover:bg-gray-100 dark:hover:bg-gray-800"
+                    id="headlessui-menu-item-:r42:"
+                    role="menuitem"
+                    tabIndex={-1}
+                    data-headlessui-state=""
+                  >
+                    <Forest />
+                    Custom instructions
+                  </a> */}
+                  <div
+                    className="flex px-3 min-h-[44px] py-1 items-center gap-3 dark:text-white cursor-pointer text-sm hover:bg-gray-100 dark:hover:bg-gray-800"
+                    onClick={() => setModalOpen(true)}
+                  >
+                    <Settings />
+                    Settings
+                  </div>
+                  <div
+                    className="h-px dark:bg-white/10 bg-black/20"
+                    role="none"
+                  />
+                  <Link
+                    href={"/about"}
+                    className="flex px-3 min-h-[44px] py-1 items-center gap-3 dark:text-white cursor-pointer text-sm hover:bg-gray-100 dark:hover:bg-gray-800"
+                    id="headlessui-menu-item-:r44:"
+                    role="menuitem"
+                    tabIndex={-1}
+                    data-headlessui-state=""
+                  >
+                    <Window />
+                    Leave
+                  </Link>
+                </nav>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
-      <Modal handleClose={() => setIsOpen(false)} isOpen={isOpen}>
+      <Modal handleClose={() => setModalOpen(false)} isOpen={isModalOpen}>
         <div className="gap-4 grid grid-cols-1 h-full w-full">
           <div className="flex flex-col h-full">
             <p className="mb-4 text-lg font-bold">Settings for user</p>
@@ -53,6 +117,13 @@ function SettingsModal() {
                   className={`flex h-32 p-3 w-full mb-2 rounded-lg hover:border hover:border-[#484848] align-middle items-center justify-center ${
                     userSettings.sideBarAlign ? "bg-[#1E1E1E]" : "bg-[#3a3a39]"
                   }`}
+                  onClick={() =>
+                    updateUserSettings(
+                      copyWithSettings(userSettings, {
+                        sideBarAlign: false,
+                      })
+                    )
+                  }
                 >
                   <div className="flex bg-[#484848] w-[20%] h-full rounded-l-lg items-center align-middle justify-center">
                     S
@@ -66,6 +137,13 @@ function SettingsModal() {
                   className={`flex h-32 p-3 mb-2 w-full rounded-lg hover:border hover:border-[#484848] align-middle items-center justify-center ${
                     !userSettings.sideBarAlign ? "bg-[#1E1E1E]" : "bg-[#3a3a39]"
                   }`}
+                  onClick={() =>
+                    updateUserSettings(
+                      copyWithSettings(userSettings, {
+                        sideBarAlign: true,
+                      })
+                    )
+                  }
                 >
                   <div className=" bg-[#1E1E1E] w-[80%] h-full rounded-l-lg" />
                   <div className="flex bg-[#484848] w-[20%] h-full rounded-r-lg items-center align-middle justify-center">
@@ -87,35 +165,10 @@ function SettingsModal() {
               onChange={(e) => setD(e.target.value)}
             ></input> */}
           </div>
-          {/* {getV != null ? (
-            <div
-              onChange={() => false}
-              style={{
-                fontSize: 12,
-                margin: "32px 0px 0px 0px",
-                backgroundColor: "#FFFFFF10",
-                padding: "16px",
-                borderRadius: "16px",
-                overflow: "auto",
-                alignItems: "center",
-                justifyItems: "center",
-                flexGrow: "1",
-                width: "100%",
-                gap: "16px",
-                resize: "none",
-                fontFamily:
-                  "ui-monospace,SFMono-Regular,SF Mono,Consolas,Liberation Mono,Menlo,monospace",
-              }}
-            >
-              {getV}
-            </div>
-          ) : (
-            <></>
-          )} */}
         </div>
       </Modal>
     </>
   );
-}
+};
 
-export default SettingsModal;
+export default DropDownSettingsBox;

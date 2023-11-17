@@ -52,7 +52,7 @@ async function quicktypeJSON(
 }
 
 const ConvertRequest: React.FC = () => {
-  const { configModel } = useDashboardContext();
+  const { userSettings } = useDashboardContext();
   const [set, get] = useState("");
   const [setv, getv] = useState("");
   const [className, setClassName] = useState("");
@@ -70,7 +70,7 @@ const ConvertRequest: React.FC = () => {
         "dart",
         className,
         set,
-        configModel
+        userSettings.configConvert
       );
       getv(swiftPerson.join("\n"));
       console.log(swiftPerson.join("\n"));
