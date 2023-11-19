@@ -3,6 +3,7 @@ import ConfigConvert from "./config_model";
 export default interface UserSettings {
   userName: string;
   sideBarAlign: boolean | "left" | "right";
+  toastAlign: "top-left" | "top-right" | "bottom-left" | "bottom-right";
   showExplanation: boolean;
   configConvert: ConfigConvert;
 }
@@ -11,6 +12,7 @@ const settings: UserSettings = {
   userName: "User",
   sideBarAlign: "left",
   showExplanation: true,
+  toastAlign: "bottom-right",
   configConvert: {
     generateToJson: false,
     generateCopyWith: false,
@@ -36,6 +38,7 @@ function copyWithSettings(
     showExplanation:
       updates.showExplanation ?? originalSettings.showExplanation,
     configConvert: updates.configConvert ?? originalSettings.configConvert,
+    toastAlign: updates.toastAlign ?? originalSettings.toastAlign,
   };
 }
 

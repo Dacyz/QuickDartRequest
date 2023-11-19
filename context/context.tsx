@@ -215,7 +215,7 @@ export const DashboardProvider: React.FC<DashboardContextProps> = ({
         updateUserSettings: updateUserSettings,
       }}
     >
-      <Toaster theme="dark" richColors />
+      <Toaster theme="dark" richColors position={userSettings.toastAlign} />
       {children}
     </DashboardContext.Provider>
   );
