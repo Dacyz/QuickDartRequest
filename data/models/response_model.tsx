@@ -2,7 +2,7 @@ interface Item {
   Enlace: string;
   Name: URL;
   Response: Response;
-  jsonResponse: object | null;
+  jsonResponse: object | null | string;
   TimeStamp: number;
 }
 
@@ -11,7 +11,7 @@ class ResponseModel implements Item {
     public Enlace: string,
     public Name: URL,
     public Response: Response,
-    public jsonResponse: object | null,
+    public jsonResponse: object | null | string,
     public TimeStamp: number,
   ) {
     this.Enlace = Enlace;

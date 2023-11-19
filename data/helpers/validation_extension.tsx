@@ -7,6 +7,8 @@ function getContentType(content: string): number {
     return 2;
   } else if (content.includes("video/")) {
     return 3;
+  } else if (content.includes("text/")) {
+    return 4;
   }
   return 0;
 }

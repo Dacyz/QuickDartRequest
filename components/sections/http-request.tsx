@@ -17,6 +17,7 @@ const HttpRequest: React.FC = () => {
     useDashboardContext();
   const [isAuthMode, setAuthMode] = useState(authModes[0]);
   const [isBodyMode, setBodyMode] = useState(bodyModes[0]);
+
   const handleClickGenerate = async () => {
     try {
       const url = new URL(requestModel.url);
@@ -28,20 +29,30 @@ const HttpRequest: React.FC = () => {
       toast.promise(fetch(url, { method: requestModel.method.name }), {
         loading: "Loading...",
         success: async (resp) => {
-          const contentTypeHeader = resp.headers.get("Content-Type") ?? "*/*";
-          let res: number = getContentType(contentTypeHeader);
-          let json: object | null;
-          json = res === 1 ? await resp.json() : null;
-          const item: ResponseModel = {
-            Name: url,
-            Enlace: requestModel.url,
-            Response: resp,
-            jsonResponse: json,
-            TimeStamp: Date.now(),
-          };
-          console.log(item);
-          setResponseModel(item); // Actualiza el estado con los datos obtenidos
-          return `${url} has been fetched`;
+          try {
+            const contentTypeHeader = resp.headers.get("Content-Type") ?? "*/*";
+            let res: number = getContentType(contentTypeHeader);
+            console.log(res);
+            let json: object | null | string;
+            json =
+              res === 1
+                ? await resp.json()
+                : res === 4
+                ? await resp.text()
+                : null;
+            const item: ResponseModel = {
+              Name: url,
+              Enlace: requestModel.url,
+              Response: resp,
+              jsonResponse: json,
+              TimeStamp: Date.now(),
+            };
+            console.log(item);
+            setResponseModel(item); // Actualiza el estado con los datos obtenidos
+            return `${url} has been fetched`;
+          } catch (error) {
+            toast.error(`${url} has some problems`);
+          }
         },
         error: `Error generating the petition ${requestModel.url}`,
       });

@@ -41,7 +41,7 @@ function convertValue(response: ResponseModel): React.ReactNode {
     return (
       <div
         className="flex items-center flex-shrink justify-center rounded-[16px] h-[40vh] min-h-[40vh] bg-[#1E1E1E]"
-        style={{ flexBasis: "30%"}}
+        style={{ flexBasis: "30%" }}
       >
         <img
           className="rounded-[16px] p-2 max-h-full"
@@ -58,6 +58,30 @@ function convertValue(response: ResponseModel): React.ReactNode {
           src={response.Enlace}
           controls
         />
+      </div>
+    );
+  } else if (contentTypeHeader.includes("text/")) {
+    console.log("La respuesta no es JSON");
+    return (
+      <div
+        className="rounded-[16px] bg-[#1E1E1E] h-[40vh] min-h-[40vh]"
+        style={{
+          fontSize: 12,
+          backgroundColor: "#1E1E1E",
+          padding: "16px",
+          borderRadius: "16px",
+          overflow: "auto",
+          width: "100%",
+          height: "40vh",
+          minHeight: "40vh",
+          resize: "none",
+          fontFamily:
+            "ui-monospace,SFMono-Regular,SF Mono,Consolas,Liberation Mono,Menlo,monospace",
+        }}
+      >
+        {typeof response.jsonResponse === "string"
+          ? response.jsonResponse
+          : "Some error ocurred"}
       </div>
     );
   } // else if (contentTypeHeader.includes("application/pdf")) {
