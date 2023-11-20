@@ -56,7 +56,7 @@ const QueryPage: React.FC = () => {
   const options = categoriesData.map((e) => e.title);
   const [selectedOption, setSelectedOption] = useState(options[0]);
   return (
-    <div className="flex flex-col flex-grow p-4 gap-4 overflow-hidden">
+    <div className="flex flex-col flex-grow p-4 gap-4 overflow-hidden bg-[#131212]">
       <div className="flex justify-between">
         <div className="flex">
           {modules.map((item) => (
