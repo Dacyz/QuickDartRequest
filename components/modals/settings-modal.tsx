@@ -34,14 +34,17 @@ const findChangedProperties = (
   newSettings: UserSettings
 ): string[] => {
   const changedProperties: string[] = [];
-
   // Función auxiliar para comparar dos objetos y encontrar propiedades cambiadas
   const compareObjects = (oldObj: any, newObj: any, parentKey?: string) => {
     for (const key in newObj) {
       const fullPath = parentKey ? `${parentKey}.${key}` : key;
 
       if (oldObj[key] !== newObj[key]) {
-        changedProperties.push(fullPath);
+        if (typeof newObj[key] !== "object") {
+          changedProperties.push(fullPath);
+        }
+        // console.log(oldObj[key]);
+        // console.log(newObj[key]);
       }
 
       if (
@@ -50,7 +53,9 @@ const findChangedProperties = (
         !Array.isArray(newObj[key])
       ) {
         // Recursivamente comparar objetos anidados
-        compareObjects(oldObj[key], newObj[key], fullPath);
+        if (oldObj[key] !== undefined) {
+          compareObjects(oldObj[key], newObj[key], fullPath);
+        }
       }
     }
   };
@@ -391,12 +396,6 @@ const DropDownSettingsBox: React.FC<TitleProps> = (className) => {
               onChange={async (file: File) => {
                 // Leer el contenido del archivo y obtener las llaves
                 const fileContent = await readFileContent(file);
-                const keys = Object.keys(fileContent);
-                console.log(keys);
-                // Mostrar los valores asociados a cada llave
-                keys.forEach((key) => {
-                  console.log(`Valor para ${key}:`, fileContent[key]);
-                });
                 const changes = findChangedProperties(
                   userSettings,
                   fileContent["Settings"]
