@@ -3,11 +3,107 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useState } from "react";
 import AvatarLetter from "../labels/avatar";
 import { Title } from "../labels/title";
-import { Forest, Window, Settings } from "@mui/icons-material";
+import { Forest, Window, Settings, Logout } from "@mui/icons-material";
 import Link from "next/link";
-import { copyWithSettings } from "@/data/models/settings_model";
+import UserSettings, { copyWithSettings } from "@/data/models/settings_model";
 import Modal from "./modal";
 import { toast } from "sonner";
+import Switch from "../buttons/switch";
+import ButtonExport, { ResetButton } from "../buttons/buttons";
+import FilePicker from "../buttons/file-picker";
+import LineSeparator from "../other/line-separator";
+
+// Función para leer el contenido de un archivo como texto
+const readFileContent = async (file: File): Promise<any> => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      try {
+        const content = JSON.parse(event.target?.result as string);
+        resolve(content);
+      } catch (error) {
+        reject(error);
+      }
+    };
+    reader.readAsText(file);
+  });
+};
+
+const findChangedProperties = (
+  oldSettings: UserSettings,
+  newSettings: UserSettings
+): string[] => {
+  const changedProperties: string[] = [];
+
+  // Función auxiliar para comparar dos objetos y encontrar propiedades cambiadas
+  const compareObjects = (oldObj: any, newObj: any, parentKey?: string) => {
+    for (const key in newObj) {
+      const fullPath = parentKey ? `${parentKey}.${key}` : key;
+
+      if (oldObj[key] !== newObj[key]) {
+        changedProperties.push(fullPath);
+      }
+
+      if (
+        typeof newObj[key] === "object" &&
+        newObj[key] !== null &&
+        !Array.isArray(newObj[key])
+      ) {
+        // Recursivamente comparar objetos anidados
+        compareObjects(oldObj[key], newObj[key], fullPath);
+      }
+    }
+  };
+
+  // Comparar las propiedades de UserSettings
+  compareObjects(oldSettings, newSettings);
+
+  return changedProperties;
+};
+
+// Ejemplo de uso:
+const oldSettings: UserSettings = {
+  userName: "JohnDoe",
+  sideBarAlign: "left",
+  toastAlign: "top-right",
+  showExplanation: true,
+  configConvert: {
+    generateToJson: true,
+    generateCopyWith: false,
+    generateToString: true,
+    useDefaultValue: false,
+    useEquatable: true,
+    useSerializable: true,
+    useNum: false,
+    generateKey: false,
+    generateJsonComment: true,
+    propertiesNullable: false,
+    useDefaultProperties: true,
+  },
+};
+
+const newSettings: UserSettings = {
+  userName: "JohnSmith",
+  sideBarAlign: "right",
+  toastAlign: "bottom-left",
+  showExplanation: false,
+  configConvert: {
+    generateToJson: true,
+    generateCopyWith: true,
+    generateToString: true,
+    useDefaultValue: false,
+    useEquatable: true,
+    useSerializable: false,
+    useNum: true,
+    generateKey: false,
+    generateJsonComment: true,
+    propertiesNullable: true,
+    useDefaultProperties: true,
+  },
+};
+
+const changedProperties = findChangedProperties(oldSettings, newSettings);
+console.log("Propiedades cambiadas:", changedProperties);
 
 interface TitleProps {
   className?: string;
@@ -15,8 +111,10 @@ interface TitleProps {
 
 const DropDownSettingsBox: React.FC<TitleProps> = (className) => {
   const [isOpen, setOpen] = useState(false);
-  const [isModalOpen, setModalOpen] = useState(false);
-  const { userSettings, updateUserSettings } = useDashboardContext();
+  const [isSettingsModalOpen, setSettingsModal] = useState(false);
+  const [isDataControlsOpen, setDataControlsModal] = useState(false);
+  // const [isInstructionsOpen, setInstructionsModal] = useState(false);
+  const { userSettings, updateUserSettings, localData } = useDashboardContext();
   return (
     <>
       <div
@@ -57,9 +155,20 @@ const DropDownSettingsBox: React.FC<TitleProps> = (className) => {
                     <Forest />
                     Custom instructions
                   </a> */}
+                  <a
+                    className="flex px-3 min-h-[44px] py-1 items-center gap-3 dark:text-white cursor-pointer text-sm hover:bg-gray-100 dark:hover:bg-gray-800"
+                    id="headlessui-menu-item-:r42:"
+                    role="menuitem"
+                    tabIndex={-1}
+                    data-headlessui-state=""
+                    onClick={() => setDataControlsModal(true)}
+                  >
+                    <Window />
+                    Data controls
+                  </a>
                   <div
                     className="flex px-3 min-h-[44px] py-1 items-center gap-3 dark:text-white cursor-pointer text-sm hover:bg-gray-100 dark:hover:bg-gray-800"
-                    onClick={() => setModalOpen(true)}
+                    onClick={() => setSettingsModal(true)}
                   >
                     <Settings />
                     Settings
@@ -76,7 +185,7 @@ const DropDownSettingsBox: React.FC<TitleProps> = (className) => {
                     tabIndex={-1}
                     data-headlessui-state=""
                   >
-                    <Window />
+                    <Logout />
                     Leave
                   </Link>
                 </nav>
@@ -85,7 +194,10 @@ const DropDownSettingsBox: React.FC<TitleProps> = (className) => {
           )}
         </AnimatePresence>
       </div>
-      <Modal handleClose={() => setModalOpen(false)} isOpen={isModalOpen}>
+      <Modal
+        handleClose={() => setSettingsModal(false)}
+        isOpen={isSettingsModalOpen}
+      >
         <div className="gap-4 grid grid-cols-1 h-full w-full">
           <div className="flex flex-col h-full">
             <p className="mb-4 text-lg font-bold">Settings for user</p>
@@ -246,7 +358,7 @@ const DropDownSettingsBox: React.FC<TitleProps> = (className) => {
                       copyWithSettings(userSettings, {
                         toastAlign: "bottom-right",
                       })
-                    );  
+                    );
                     toast("Setting updated", {
                       description: "New alert position: Bottom Right",
                     });
@@ -261,6 +373,62 @@ const DropDownSettingsBox: React.FC<TitleProps> = (className) => {
             </div>
             <div className="flex flex-col gap-2 flex-grow"></div>
           </div>
+        </div>
+      </Modal>
+      <Modal
+        handleClose={() => setDataControlsModal(false)}
+        isOpen={isDataControlsOpen}
+      >
+        <p className="text-lg font-bold">Controls for Data</p>
+        <p>
+          Here are some options to export or import your data and improve your
+          productivity
+        </p>
+        <div className="gap-4 flex h-full w-full">
+          <div className="flex gap-3 flex-col w-full">
+            <p className="font-bold">Import</p>
+            <FilePicker
+              onChange={async (file: File) => {
+                // Leer el contenido del archivo y obtener las llaves
+                const fileContent = await readFileContent(file);
+                const keys = Object.keys(fileContent);
+                console.log(keys);
+                // Mostrar los valores asociados a cada llave
+                keys.forEach((key) => {
+                  console.log(`Valor para ${key}:`, fileContent[key]);
+                });
+                const changes = findChangedProperties(
+                  userSettings,
+                  fileContent["Settings"]
+                );
+                console.log(changes);
+              }}
+            />
+            <div className="flex flex-col gap-2 flex-grow"></div>
+          </div>
+          <LineSeparator />
+          <div className="flex gap-3 flex-col w-full">
+            <p className="font-bold">Export </p>
+            <ul className="m-2 flex flex-col gap-4">
+              <li className="flex items-center align-middle justify-between ">
+                Export the list of categories <Switch />
+              </li>
+              <li className="flex items-center align-middle justify-between ">
+                Export request history
+                <Switch />
+              </li>
+              <li className="flex items-center align-middle justify-between ">
+                Export user settings
+                <Switch />
+              </li>
+            </ul>
+            <div className="flex gap-2 items-center align-middle justify-between ">
+              Export <ButtonExport type="categories" />
+            </div>
+          </div>
+        </div>
+        <div className="flex gap-2 items-center align-middle justify-between ">
+          Reset all lists and settings <ResetButton />
         </div>
       </Modal>
     </>

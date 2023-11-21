@@ -44,7 +44,7 @@ const DashboardContext = createContext<DashboardContextData | undefined>(
 const separator: string = ":";
 const listRequest: string = "ListRequest";
 const listCategories: string = "ListCategories";
-const listSettings: string = "listSettings";
+const listSettings: string = "Settings";
 const allowedMethods: string[] = ["get", "post", "put", "delete"];
 
 export const DashboardProvider: React.FC<DashboardContextProps> = ({
