@@ -19,6 +19,7 @@ const HttpRequest: React.FC = () => {
     useDashboardContext();
   const [isAuthMode, setAuthMode] = useState(authModes[0]);
   const [isBodyMode, setBodyMode] = useState(bodyModes[0]);
+  const [asd, setAsd] = useState(false);
 
   const ups = async (url: URL, method: string) => {
     if (!requestModel.esEnlaceValido())
@@ -50,7 +51,7 @@ const HttpRequest: React.FC = () => {
     setResponseModel(item); // Actualiza el estado con los datos obtenidos
     return `${url} has been fetched`;
   };
-  
+
   const handleClickGenerate = async () => {
     try {
       const url = new URL(requestModel.url);
@@ -130,24 +131,32 @@ const HttpRequest: React.FC = () => {
             }}
           />
         ) : requestModel.mode === modes[1] ? (
-          <div className="">
-            <ButtonGroup
-              value={isAuthMode}
-              items={authModes}
-              onChange={(mode) => {
-                setAuthMode(mode);
-              }}
-            />
-            <div className="p-4">
+          <div className="p-4">
+            <div className="flex justify-between mb-4">
+              <ButtonGroup
+                value={isAuthMode}
+                items={authModes}
+                onChange={(mode) => {
+                  setAuthMode(mode);
+                }}
+              />
+              {authModes[1] === isAuthMode ? (
+                <ButtonGroup
+                  value={asd ? "Headers" : "Query Params"}
+                  items={["Headers", "Query Params"]}
+                  onChange={(mode) => {
+                    setAsd(!asd);
+                  }}
+                />
+              ) : (
+                <></>
+              )}
+            </div>
+            <div className="">
               {authModes[0] === isAuthMode ? (
                 "This request does not use any authorization"
               ) : authModes[1] === isAuthMode ? (
                 <ul className="flex flex-col w-full gap-3">
-                  <ButtonGroup
-                    value={"Headers"}
-                    items={["Headers", "Query Params"]}
-                    onChange={(mode) => {}}
-                  />
                   <li className="flex items-center gap-3">
                     Key{" "}
                     <input
@@ -212,7 +221,7 @@ const HttpRequest: React.FC = () => {
             }}
           />
         ) : (
-          <div className="">
+          <div className="p-4">
             <ButtonGroup
               className="mb-[16px]"
               value={isBodyMode}
@@ -221,18 +230,20 @@ const HttpRequest: React.FC = () => {
                 setBodyMode(mode);
               }}
             />
-            {bodyModes[0] === isBodyMode ? (
-              <div className="">This request does not have a body</div>
-            ) : bodyModes[1] === isBodyMode ? (
-              <ParamsTable
-                rows={requestModel.params}
-                addRow={() => {}}
-                deleteRow={(id: number) => {}}
-                setRows={(rows) => {}}
-              />
-            ) : (
-              <>{isBodyMode}</>
-            )}
+            <div className="">
+              {bodyModes[0] === isBodyMode ? (
+                "This request does not have a body"
+              ) : bodyModes[1] === isBodyMode ? (
+                <ParamsTable
+                  rows={requestModel.params}
+                  addRow={() => {}}
+                  deleteRow={(id: number) => {}}
+                  setRows={(rows) => {}}
+                />
+              ) : (
+                <>{isBodyMode}</>
+              )}
+            </div>
           </div>
         )}
       </div>
