@@ -1,15 +1,22 @@
 // Importar los módulos necesarios de React y Next.js
 import React, { useState } from "react";
 
+interface SwitchProps {
+  value: boolean;
+  onChange: (value: boolean) => void;
+}
+
 // Definir un componente funcional Switch
-const Switch: React.FC = () => {
+const Switch: React.FC<SwitchProps> = ({ value, onChange }) => {
   // Estado para controlar si el switch está activado o desactivado
-  const [checked, setChecked] = useState(true);
+  const [checked, setChecked] = useState<boolean>(value);
 
   // Función para manejar el cambio de estado del switch
   const handleToggle = () => {
     setChecked((prevChecked) => !prevChecked);
-    console.log(checked);
+    if (onChange) {
+      onChange(!checked);
+    }
   };
 
   return (

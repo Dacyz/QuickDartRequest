@@ -4,10 +4,11 @@ import React, { ChangeEvent, DragEvent, useState } from "react";
 
 interface FilePickerProps {
   onChange?: (file: File) => void;
+  onClear?: () => void;
 }
 
 // Definir un componente funcional FilePicker
-const FilePicker: React.FC<FilePickerProps> = ({ onChange }) => {
+const FilePicker: React.FC<FilePickerProps> = ({ onChange, onClear }) => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isDragging, setIsDragging] = useState(false);
 
@@ -28,6 +29,9 @@ const FilePicker: React.FC<FilePickerProps> = ({ onChange }) => {
     } else {
       // Limpiar la selección si no es un archivo JSON
       setSelectedFile(null);
+      if (onClear) {
+        onClear();
+      }
     }
   };
 
@@ -92,6 +96,9 @@ const FilePicker: React.FC<FilePickerProps> = ({ onChange }) => {
           <Close
             onClick={() => {
               setSelectedFile(null);
+              if (onClear) {
+                onClear();
+              }
             }}
           />
         ) : (

@@ -26,6 +26,7 @@
     "framer-motion": "^10.16.4",
     "moment": "^2.29.4",
     "next": "^13.5.6",
+    "node-fetch": "^2.6.1",
     "postcss": "^8.4.31",
     "quicktype-core": "^23.0.76",
     "react": "18.2.0",
@@ -42,5 +43,8 @@
       "react": "$react",
       "react-dom": "$react-dom"
     }
+  },
+  "devDependencies": {
+    "@types/node-fetch": "^2.6.9"
   }
 }

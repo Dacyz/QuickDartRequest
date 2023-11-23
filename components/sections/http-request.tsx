@@ -1,5 +1,6 @@
 "use client";
 import React, { useState } from "react";
+import fetch from "node-fetch";
 import { useDashboardContext } from "../../context/context";
 import { Title } from "../labels/title";
 import ViewResponse from "../other/view-response";
@@ -11,6 +12,7 @@ import { authModes, bodyModes, modes } from "@/data/data/modes";
 import HostRequestField from "../inputs/host-request";
 import { toast } from "sonner";
 import { getContentType } from "@/data/helpers/validation_extension";
+import ResponseModel from "@/data/models/response_model";
 
 const HttpRequest: React.FC = () => {
   const { setRequestModel, requestModel, setResponseModel, responseModel } =
@@ -18,47 +20,50 @@ const HttpRequest: React.FC = () => {
   const [isAuthMode, setAuthMode] = useState(authModes[0]);
   const [isBodyMode, setBodyMode] = useState(bodyModes[0]);
 
+  const ups = async (url: URL, method: string) => {
+    if (!requestModel.esEnlaceValido())
+      throw new Error(`${requestModel.url} has no petition format`);
+    const resp = await fetch(url, { method: method });
+    const contentTypeHeader = resp.headers.get("Content-Type") ?? "*/*";
+    let res: number = getContentType(contentTypeHeader);
+    let json: object | string | null;
+    if (res === 1) {
+      let pru = await resp.json();
+      if (typeof pru == "object") {
+        json = pru;
+      } else {
+        json = null;
+      }
+    } else if (res === 4) {
+      json = await resp.text();
+    } else {
+      json = null;
+    }
+    const item: ResponseModel = {
+      Name: url,
+      Enlace: requestModel.url,
+      Response: resp,
+      jsonResponse: json,
+      TimeStamp: Date.now(),
+    };
+    console.log(item);
+    setResponseModel(item); // Actualiza el estado con los datos obtenidos
+    return `${url} has been fetched`;
+  };
+  
   const handleClickGenerate = async () => {
     try {
       const url = new URL(requestModel.url);
-      if (!requestModel.esEnlaceValido()) {
-        toast.error(`${requestModel.url} has no petition format`);
-        console.error("Invalid url:", requestModel);
-        return;
-      }
-      toast.promise(fetch(url, { method: requestModel.method.name }), {
+      toast.promise(ups(url, requestModel.method.name), {
         loading: "Loading...",
         success: async (resp) => {
-          try {
-            const contentTypeHeader = resp.headers.get("Content-Type") ?? "*/*";
-            let res: number = getContentType(contentTypeHeader);
-            console.log(res);
-            let json: object | null | string;
-            json =
-              res === 1
-                ? await resp.json()
-                : res === 4
-                ? await resp.text()
-                : null;
-            const item: ResponseModel = {
-              Name: url,
-              Enlace: requestModel.url,
-              Response: resp,
-              jsonResponse: json,
-              TimeStamp: Date.now(),
-            };
-            console.log(item);
-            setResponseModel(item); // Actualiza el estado con los datos obtenidos
-            return `${url} has been fetched`;
-          } catch (error) {
-            toast.error(`${url} has some problems`);
-          }
+          return resp;
         },
         error: `Error generating the petition ${requestModel.url}`,
       });
     } catch (error) {
       toast.error(`Error generating the petition  ${requestModel.url}`);
-      console.error("Error al generar la petición", error);
+      console.error(error);
     }
   };
 
@@ -127,20 +132,47 @@ const HttpRequest: React.FC = () => {
         ) : requestModel.mode === modes[1] ? (
           <div className="">
             <ButtonGroup
-              className="mb-[16px]"
               value={isAuthMode}
               items={authModes}
               onChange={(mode) => {
                 setAuthMode(mode);
               }}
             />
-            {authModes[0] === isAuthMode ? (
-              <div className="">
-                This request does not use any authorization
-              </div>
-            ) : (
-              <>{isAuthMode}</>
-            )}
+            <div className="p-4">
+              {authModes[0] === isAuthMode ? (
+                "This request does not use any authorization"
+              ) : authModes[1] === isAuthMode ? (
+                <ul className="flex flex-col w-full gap-3">
+                  <ButtonGroup
+                    value={"Headers"}
+                    items={["Headers", "Query Params"]}
+                    onChange={(mode) => {}}
+                  />
+                  <li className="flex items-center gap-3">
+                    Key{" "}
+                    <input
+                      className="w-full input-text rounded-2xl"
+                      placeholder="Enter key or paste text"
+                      aria-controls=":rq:"
+                      aria-labelledby=":rr:"
+                      type="text"
+                    />
+                  </li>
+                  <li className="flex items-center gap-3">
+                    Value{" "}
+                    <input
+                      className="w-full input-text rounded-2xl"
+                      placeholder="Enter value or paste text"
+                      aria-controls=":rq:"
+                      aria-labelledby=":rr:"
+                      type="text"
+                    />
+                  </li>
+                </ul>
+              ) : (
+                <>{isAuthMode}</>
+              )}
+            </div>
           </div>
         ) : requestModel.mode === modes[2] ? (
           <HeaderTable

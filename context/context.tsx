@@ -3,6 +3,7 @@ import { generateRandomId } from "@/data/helpers/number_extension";
 import CategoryType from "@/data/models/category_model";
 import { ParameterRow } from "@/data/models/parameter";
 import RequestModel from "@/data/models/request_model";
+import ResponseModel from "@/data/models/response_model";
 import UserSettings, { settings } from "@/data/models/settings_model";
 import React, {
   createContext,

@@ -13,6 +13,26 @@ import ButtonExport, { ResetButton } from "../buttons/buttons";
 import FilePicker from "../buttons/file-picker";
 import LineSeparator from "../other/line-separator";
 
+const generateJsonAndDownload = (jsonData: object) => {
+  // Convertir el objeto a formato JSON
+  const jsonString = JSON.stringify(jsonData, null, 2);
+
+  // Crear un objeto Blob con el contenido JSON
+  const blob = new Blob([jsonString], { type: "application/json" });
+
+  // Crear un enlace de descarga
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "datos.json";
+
+  // Agregar el enlace al documento y hacer clic en él para iniciar la descarga
+  document.body.appendChild(a);
+  a.click();
+
+  // Limpiar el enlace y liberar recursos
+  document.body.removeChild(a);
+};
+
 // Función para leer el contenido de un archivo como texto
 const readFileContent = async (file: File): Promise<any> => {
   return new Promise((resolve, reject) => {
@@ -43,8 +63,6 @@ const findChangedProperties = (
         if (typeof newObj[key] !== "object") {
           changedProperties.push(fullPath);
         }
-        // console.log(oldObj[key]);
-        // console.log(newObj[key]);
       }
 
       if (
@@ -66,60 +84,52 @@ const findChangedProperties = (
   return changedProperties;
 };
 
-// Ejemplo de uso:
-const oldSettings: UserSettings = {
-  userName: "JohnDoe",
-  sideBarAlign: "left",
-  toastAlign: "top-right",
-  showExplanation: true,
-  configConvert: {
-    generateToJson: true,
-    generateCopyWith: false,
-    generateToString: true,
-    useDefaultValue: false,
-    useEquatable: true,
-    useSerializable: true,
-    useNum: false,
-    generateKey: false,
-    generateJsonComment: true,
-    propertiesNullable: false,
-    useDefaultProperties: true,
-  },
-};
-
-const newSettings: UserSettings = {
-  userName: "JohnSmith",
-  sideBarAlign: "right",
-  toastAlign: "bottom-left",
-  showExplanation: false,
-  configConvert: {
-    generateToJson: true,
-    generateCopyWith: true,
-    generateToString: true,
-    useDefaultValue: false,
-    useEquatable: true,
-    useSerializable: false,
-    useNum: true,
-    generateKey: false,
-    generateJsonComment: true,
-    propertiesNullable: true,
-    useDefaultProperties: true,
-  },
-};
-
-const changedProperties = findChangedProperties(oldSettings, newSettings);
-console.log("Propiedades cambiadas:", changedProperties);
-
 interface TitleProps {
   className?: string;
+}
+
+interface ImportAndExportConfig {
+  importCategories: boolean;
+  importRequest: boolean;
+  importSettings: boolean;
+  exportCategories: boolean;
+  exportRequest: boolean;
+  exportSettings: boolean;
+}
+
+function copyWith(
+  originalConfig: ImportAndExportConfig,
+  updates: Partial<ImportAndExportConfig>
+): ImportAndExportConfig {
+  return {
+    importCategories:
+      updates.importCategories ?? originalConfig.importCategories,
+    importRequest: updates.importRequest ?? originalConfig.importRequest,
+    importSettings: updates.importSettings ?? originalConfig.importSettings,
+    exportCategories:
+      updates.exportCategories ?? originalConfig.exportCategories,
+    exportRequest: updates.exportRequest ?? originalConfig.exportRequest,
+    exportSettings: updates.exportSettings ?? originalConfig.exportSettings,
+  };
 }
 
 const DropDownSettingsBox: React.FC<TitleProps> = (className) => {
   const [isOpen, setOpen] = useState(false);
   const [isSettingsModalOpen, setSettingsModal] = useState(false);
   const [isDataControlsOpen, setDataControlsModal] = useState(false);
+  const [config, setConfig] = useState<ImportAndExportConfig>({
+    importCategories: false,
+    importRequest: false,
+    importSettings: false,
+    exportCategories: true,
+    exportRequest: true,
+    exportSettings: true,
+  });
+  const [jsonImport, setJsonImport] = useState<any | null>(null);
+
   // const [isInstructionsOpen, setInstructionsModal] = useState(false);
-  const { userSettings, updateUserSettings, localData } = useDashboardContext();
+  const { userSettings, updateUserSettings, localData, categoriesData } =
+    useDashboardContext();
   return (
     <>
       <div
@@ -143,8 +153,6 @@ const DropDownSettingsBox: React.FC<TitleProps> = (className) => {
             >
               <div
                 className="absolute bottom-full left-0 z-20 mb-1 w-full overflow-hidden rounded-lg bg-white pb-1.5 pt-1 outline-none gizmo:border gizmo:border-gray-100 dark:bg-[#1E1E1E] opacity-100 translate-y-0"
-                aria-labelledby="headlessui-menu-button-:r3r:"
-                id="headlessui-menu-items-:r41:"
                 role="menu"
                 tabIndex={0}
                 data-headlessui-state="open"
@@ -290,7 +298,7 @@ const DropDownSettingsBox: React.FC<TitleProps> = (className) => {
               <div className="w-full box-decoration-slice">
                 <div
                   className={`flex h-32 p-3 w-full mb-2 rounded-lg hover:border hover:border-[#484848] align-middle items-center justify-center ${
-                    userSettings.sideBarAlign ? "bg-[#1E1E1E]" : "bg-[#3a3a39]"
+                    userSettings.toastAlign !== "top-left" ? "bg-[#1E1E1E]" : "bg-[#3a3a39]"
                   }`}
                   onClick={() => {
                     updateUserSettings(
@@ -312,7 +320,7 @@ const DropDownSettingsBox: React.FC<TitleProps> = (className) => {
               <div className="w-full box-decoration-slice">
                 <div
                   className={`flex h-32 p-3 w-full mb-2 rounded-lg hover:border hover:border-[#484848] align-middle items-center justify-center ${
-                    userSettings.sideBarAlign ? "bg-[#1E1E1E]" : "bg-[#3a3a39]"
+                    userSettings.toastAlign !== "top-right" ? "bg-[#1E1E1E]" : "bg-[#3a3a39]"
                   }`}
                   onClick={() => {
                     updateUserSettings(
@@ -334,7 +342,7 @@ const DropDownSettingsBox: React.FC<TitleProps> = (className) => {
               <div className="w-full box-decoration-slice">
                 <div
                   className={`flex h-32 p-3 w-full mb-2 rounded-lg hover:border hover:border-[#484848] align-middle items-center justify-center ${
-                    userSettings.sideBarAlign ? "bg-[#1E1E1E]" : "bg-[#3a3a39]"
+                    userSettings.toastAlign !== "bottom-left" ? "bg-[#1E1E1E]" : "bg-[#3a3a39]"
                   }`}
                   onClick={() => {
                     updateUserSettings(
@@ -356,7 +364,7 @@ const DropDownSettingsBox: React.FC<TitleProps> = (className) => {
               <div className="w-full box-decoration-slice">
                 <div
                   className={`flex h-32 p-3 w-full mb-2 rounded-lg hover:border hover:border-[#484848] align-middle items-center justify-center ${
-                    userSettings.sideBarAlign ? "bg-[#1E1E1E]" : "bg-[#3a3a39]"
+                    userSettings.toastAlign !== "bottom-right" ? "bg-[#1E1E1E]" : "bg-[#3a3a39]"
                   }`}
                   onClick={() => {
                     updateUserSettings(
@@ -400,9 +408,104 @@ const DropDownSettingsBox: React.FC<TitleProps> = (className) => {
                   userSettings,
                   fileContent["Settings"]
                 );
+                setJsonImport(fileContent);
+                setConfig(
+                  copyWith(config, {
+                    importCategories:
+                      (jsonImport ? jsonImport["ListCategories"] : false) !==
+                      null,
+                    importRequest:
+                      (jsonImport ? jsonImport["ListRequest"] : false) !== null,
+                    importSettings:
+                      (jsonImport ? jsonImport["Settings"] : false) !== null,
+                  })
+                );
                 console.log(changes);
               }}
+              onClear={() => {
+                setJsonImport(null);
+                setConfig(
+                  copyWith(config, {
+                    importCategories: false,
+                    importRequest: false,
+                    importSettings: false,
+                  })
+                );
+              }}
             />
+            {jsonImport ? (
+              <ul className="m-2 flex flex-col gap-4">
+                {jsonImport["ListCategories"] ? (
+                  <li className="flex items-center align-middle justify-between ">
+                    Import the list of categories{" "}
+                    <Switch
+                      value={config.importCategories}
+                      onChange={(value) => {
+                        setConfig(
+                          copyWith(config, {
+                            importCategories: value,
+                          })
+                        );
+                      }}
+                    />
+                  </li>
+                ) : (
+                  <></>
+                )}
+                {jsonImport["ListRequest"] ? (
+                  <li className="flex items-center align-middle justify-between ">
+                    Import request history
+                    <Switch
+                      value={config.importRequest}
+                      onChange={(value) => {
+                        setConfig(
+                          copyWith(config, {
+                            importRequest: value,
+                          })
+                        );
+                      }}
+                    />
+                  </li>
+                ) : (
+                  <></>
+                )}
+                {jsonImport["Settings"] ? (
+                  <li className="flex items-center align-middle justify-between ">
+                    Import user settings
+                    <Switch
+                      value={config.importSettings}
+                      onChange={(value) => {
+                        setConfig(
+                          copyWith(config, {
+                            importSettings: value,
+                          })
+                        );
+                      }}
+                    />
+                  </li>
+                ) : (
+                  <></>
+                )}
+              </ul>
+            ) : (
+              <></>
+            )}
+            {config.importCategories ||
+            config.importRequest ||
+            config.importSettings ? (
+              <div className="flex gap-2 items-center align-middle justify-between ">
+                Import{" "}
+                <ButtonExport
+                  text="Import"
+                  onClick={() => {
+                    toast.success("Successful import!");
+                  }}
+                />
+              </div>
+            ) : (
+              <></>
+            )}
+
             <div className="flex flex-col gap-2 flex-grow"></div>
           </div>
           <LineSeparator />
@@ -410,20 +513,73 @@ const DropDownSettingsBox: React.FC<TitleProps> = (className) => {
             <p className="font-bold">Export </p>
             <ul className="m-2 flex flex-col gap-4">
               <li className="flex items-center align-middle justify-between ">
-                Export the list of categories <Switch />
+                Export the list of categories{" "}
+                <Switch
+                  value={config.exportCategories}
+                  onChange={(value) => {
+                    setConfig(
+                      copyWith(config, {
+                        exportCategories: value,
+                      })
+                    );
+                    console.log(config.exportCategories);
+                  }}
+                />
               </li>
               <li className="flex items-center align-middle justify-between ">
                 Export request history
-                <Switch />
+                <Switch
+                  value={config.exportRequest}
+                  onChange={(value) => {
+                    setConfig(
+                      copyWith(config, {
+                        exportRequest: value,
+                      })
+                    );
+                  }}
+                />
               </li>
               <li className="flex items-center align-middle justify-between ">
                 Export user settings
-                <Switch />
+                <Switch
+                  value={config.exportSettings}
+                  onChange={(value) => {
+                    setConfig(
+                      copyWith(config, {
+                        exportSettings: value,
+                      })
+                    );
+                  }}
+                />
               </li>
             </ul>
-            <div className="flex gap-2 items-center align-middle justify-between ">
-              Export <ButtonExport type="categories" />
-            </div>
+            {config.exportSettings ||
+            config.exportRequest ||
+            config.exportCategories ? (
+              <div className="flex gap-2 items-center align-middle justify-between ">
+                Export{" "}
+                <ButtonExport
+                  text="Export"
+                  onClick={() => {
+                    // Datos que se agregarán al archivo JSON (puedes personalizar esto según tus necesidades)
+                    // Comprobaciones de exportación
+                    const jsonData: { [key: string]: any } = {};
+                    if (config.exportSettings) {
+                      jsonData.Settings = userSettings;
+                    }
+                    if (config.exportCategories) {
+                      jsonData.ListCategories = categoriesData;
+                    }
+                    if (config.exportRequest) {
+                      jsonData.ListRequest = localData;
+                    }
+                    generateJsonAndDownload(jsonData);
+                  }}
+                />
+              </div>
+            ) : (
+              <></>
+            )}
           </div>
         </div>
         <div className="flex gap-2 items-center align-middle justify-between ">

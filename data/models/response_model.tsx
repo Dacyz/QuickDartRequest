@@ -1,3 +1,5 @@
+import { Response } from "node-fetch";
+
 interface Item {
   Enlace: string;
   Name: URL;
@@ -6,13 +8,13 @@ interface Item {
   TimeStamp: number;
 }
 
-class ResponseModel implements Item {
+export default class ResponseModel implements Item {
   constructor(
     public Enlace: string,
     public Name: URL,
     public Response: Response,
     public jsonResponse: object | null | string,
-    public TimeStamp: number,
+    public TimeStamp: number
   ) {
     this.Enlace = Enlace;
     this.Name = Name;
