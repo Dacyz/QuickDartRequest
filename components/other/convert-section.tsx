@@ -80,11 +80,10 @@ const ConvertSection: React.FC = () => {
   if (responseModel === null) {
     return <></>;
   }
-  const contentTypeHeader =
-    responseModel.Response.headers.get("Content-Type") ?? "*/*";
-  if (contentTypeHeader.includes("image/")) {
+  const type = responseModel.contentType;
+  if (type === 2) {
     const imageWidget = `Image.network(
-  // Your URL of your image
+  // URL of your image
   '${responseModel.Enlace}', 
   loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
     if (loadingProgress == null) {
@@ -216,7 +215,7 @@ if (response.statusCode == 200) {
       </div>
     );
   }
-  if (contentTypeHeader.includes("video/")) {
+  if (type === 3) {
     const imageWidget = `dependencies:
   video_player: ^2.2.17`;
     const imageWidget2 = `dependencies:

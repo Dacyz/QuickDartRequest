@@ -11,7 +11,6 @@ import { generateRandomId } from "@/data/helpers/number_extension";
 import { authModes, bodyModes, modes } from "@/data/data/modes";
 import HostRequestField from "../inputs/host-request";
 import { toast } from "sonner";
-import { getContentType } from "@/data/helpers/validation_extension";
 import ResponseModel from "@/data/models/response_model";
 
 const HttpRequest: React.FC = () => {
@@ -24,32 +23,26 @@ const HttpRequest: React.FC = () => {
   const ups = async (url: URL, method: string) => {
     if (!requestModel.esEnlaceValido())
       throw new Error(`${requestModel.url} has no petition format`);
-    const resp = await fetch(url, { method: method });
-    const contentTypeHeader = resp.headers.get("Content-Type") ?? "*/*";
-    let res: number = getContentType(contentTypeHeader);
-    let json: object | string | null;
-    if (res === 1) {
-      let pru = await resp.json();
-      if (typeof pru == "object") {
-        json = pru;
-      } else {
-        json = null;
-      }
-    } else if (res === 4) {
-      json = await resp.text();
-    } else {
-      json = null;
-    }
+    const resp = await fetch("/api", {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify({ url: url, method: method }),
+    });
+    // console.log(await resp.text());
+    const gatito = await resp.json();
+
+    if (gatito.status !== 200) throw (gatito.data)
     const item: ResponseModel = {
       Name: url,
       Enlace: requestModel.url,
-      Response: resp,
-      jsonResponse: json,
+      contentType: gatito.contentType,
+      jsonResponse: gatito.data,
       TimeStamp: Date.now(),
     };
-    console.log(item);
     setResponseModel(item); // Actualiza el estado con los datos obtenidos
-    return `${url} has been fetched`;
+    return `Endpoint fetched`;
   };
 
   const handleClickGenerate = async () => {
@@ -60,7 +53,9 @@ const HttpRequest: React.FC = () => {
         success: async (resp) => {
           return resp;
         },
-        error: `Error generating the petition ${requestModel.url}`,
+        error: (e) => {
+          return `Error generating the petition ${requestModel.url}: ${e}`;
+        },
       });
     } catch (error) {
       toast.error(`Error generating the petition  ${requestModel.url}`);

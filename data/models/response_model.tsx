@@ -1,9 +1,7 @@
-import { Response } from "node-fetch";
-
 interface Item {
   Enlace: string;
   Name: URL;
-  Response: Response;
+  contentType: number;
   jsonResponse: object | null | string;
   TimeStamp: number;
 }
@@ -12,13 +10,13 @@ export default class ResponseModel implements Item {
   constructor(
     public Enlace: string,
     public Name: URL,
-    public Response: Response,
+    public contentType: number,
     public jsonResponse: object | null | string,
     public TimeStamp: number
   ) {
     this.Enlace = Enlace;
     this.Name = Name;
-    this.Response = Response;
+    this.contentType = contentType;
     this.jsonResponse = jsonResponse;
   }
 }

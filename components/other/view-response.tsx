@@ -1,5 +1,6 @@
 /* eslint-disable jsx-a11y/alt-text */
 /* eslint-disable @next/next/no-img-element */
+import ResponseModel from "@/data/models/response_model";
 import CodeEditor from "@uiw/react-textarea-code-editor";
 import React from "react";
 
@@ -8,9 +9,8 @@ interface ResponseProps {
 }
 
 function convertValue(response: ResponseModel): React.ReactNode {
-  let resp = response.Response;
-  const contentTypeHeader = resp.headers.get("Content-Type") ?? "*/*";
-  if (contentTypeHeader && contentTypeHeader.includes("application/json")) {
+  const type = response.contentType;
+  if (type === 1) {
     // Si el Content-Type es JSON, muestra un mensaje en la consola
     // Se ha retirado por ahora por problemas internos
     return (
@@ -37,7 +37,7 @@ function convertValue(response: ResponseModel): React.ReactNode {
         }}
       />
     );
-  } else if (contentTypeHeader.includes("image/")) {
+  } else if (type === 2) {
     return (
       <div
         className="flex items-center flex-shrink justify-center rounded-[16px] h-[40vh] min-h-[40vh] bg-[#1E1E1E]"
@@ -49,7 +49,7 @@ function convertValue(response: ResponseModel): React.ReactNode {
         ></img>
       </div>
     );
-  } else if (contentTypeHeader.includes("video/")) {
+  } else if (type === 3) {
     console.log("La respuesta no es JSON");
     return (
       <div className="rounded-[16px] bg-[#1E1E1E] h-[40vh] min-h-[40vh]">
@@ -60,7 +60,7 @@ function convertValue(response: ResponseModel): React.ReactNode {
         />
       </div>
     );
-  } else if (contentTypeHeader.includes("text/")) {
+  } else {
     console.log("La respuesta no es JSON");
     return (
       <div
