@@ -3,11 +3,7 @@ import { options } from "@/data/data/methods";
 import { AnimatePresence, motion } from "framer-motion";
 import { useState } from "react";
 
-interface TitleProps {
-  className?: string;
-}
-
-const DropDownMethodBox: React.FC<TitleProps> = (className) => {
+const DropDownMethodBox: React.FC = () => {
   const [isOpen, setOpen] = useState(false);
   const { setRequestModel, requestModel } = useDashboardContext();
   return (

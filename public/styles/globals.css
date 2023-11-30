@@ -35,6 +35,12 @@ body {
   /* Aquí puedes aplicar las clases de Tailwind CSS que desees */
 }
 
+.truncate {
+  white-space: nowrap;        /* No permitir que el texto se divida en varias líneas */
+  overflow: hidden;           /* Ocultar el contenido que desborda el contenedor */
+  text-overflow: ellipsis;    /* Mostrar puntos suspensivos (...) al final del desbordamiento */
+}
+
 .button {
   @apply py-2 px-4 transition-all border border-gray-700 text-gray-700 dark:bg-gray-700 dark:text-white duration-300 hover:bg-gray-600 hover:text-white focus:outline-none focus:ring focus:border-blue-300;
 }

@@ -13,7 +13,7 @@ const NameRequestField: React.FC = () => {
       aria-controls=":rq:"
       aria-labelledby=":rr:"
       type="text"
-      className="border-none bg-transparent px-2 text-right outline-none placeholder:text-[#FFFFFF78] placeholder:text-[12px] placeholder:font-normal font-normal text-[12px]"
+      className="input-text w-full rounded-l-2xl"
     />
   );
 };
