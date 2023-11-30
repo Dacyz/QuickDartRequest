@@ -28,10 +28,9 @@
 .modal-content {
     display: flex;
     flex-direction: column;
-    width: 50%;
-    height: 65%;
     padding: 16px;
     border-radius: 16px;
+    overflow: auto;
     gap: 16px;
     color: #fff;
     background-color: #161515;

@@ -31,7 +31,7 @@ const Modal: React.FC<ModalProps> = ({ children, isOpen, handleClose }) => {
         nodeRef={nodeRef}
       >
         <div className="modal" ref={nodeRef}>
-          <div className="modal-content">
+          <div className="modal-content w-[80%] md:w-[40%] h-[65%] md:h-[50%]">
             <button onClick={handleClose} className="absolute right-4 top-4">
               <CloseIcon />
             </button>

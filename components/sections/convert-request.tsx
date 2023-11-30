@@ -7,13 +7,12 @@ import {
   quicktype,
   InputData,
   jsonInputForTargetLanguage,
-  JSONSchemaInput,
-  FetchingJSONSchemaStore,
 } from "quicktype-core";
 import { toast } from "sonner";
 import { CustomDartTargetLanguage } from "@/data/data/quicktype/custom_dart_renderer";
 import ConfigConvert from "@/data/models/config_model";
 import { useDashboardContext } from "@/context/context";
+import LineSeparator from "../other/line-separator";
 
 async function quicktypeJSON(
   targetLanguage: string,
@@ -80,8 +79,8 @@ const ConvertRequest: React.FC = () => {
     }
   };
   return (
-    <div className="gap-4 grid grid-cols-2 h-full w-full">
-      <div className="flex flex-col gap-4">
+    <div className="flex flex-col md:flex-row gap-4 grid-cols-2 h-full w-full">
+      <div className="flex flex-col gap-4 w-full h-full">
         <div className="flex items-center">
           <ConvertModal />
           <input
@@ -123,8 +122,7 @@ const ConvertRequest: React.FC = () => {
           }}
         />
       </div>
-      {/* <LineSeparator /> */}
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-4 w-full h-full">
         <CodeEditor
           value={setv}
           language="dart"
@@ -146,7 +144,6 @@ const ConvertRequest: React.FC = () => {
           }}
         />
         <button className="button w-full rounded-2xl">
-          {" "}
           <CopyAllIcon /> Copy
         </button>
       </div>

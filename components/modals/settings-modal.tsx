@@ -397,7 +397,7 @@ const DropDownSettingsBox: React.FC<TitleProps> = (className) => {
           Here are some options to export or import your data and improve your
           productivity
         </p>
-        <div className="gap-4 flex h-full w-full">
+        <div className="gap-4 flex flex-col md:flex-row h-full w-full">
           <div className="flex gap-3 flex-col w-full">
             <p className="font-bold">Import</p>
             <FilePicker

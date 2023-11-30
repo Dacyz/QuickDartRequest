@@ -3,12 +3,10 @@ import React, { useState } from "react";
 import { Title } from "../labels/title";
 import Material from "../buttons/material";
 import HttpRequest from "./http-request";
-import SocketRequest from "./socket-request";
 import ConvertSection from "../other/convert-section";
 import {
   ConvertRequestIcon,
   HttpRequestIcon,
-  SocketRequestIcon,
 } from "../icons/icon";
 import SaveRequestButton from "../buttons/save-request";
 import NameRequestField from "../inputs/name-request";
@@ -42,12 +40,12 @@ const modules: module[] = [
     component: <ConvertRequest />,
     icon: <ConvertRequestIcon />,
   },
-  {
-    id: 3,
-    name: "Socket Request",
-    component: <SocketRequest />,
-    icon: <SocketRequestIcon />,
-  },
+  // {
+  //   id: 3,
+  //   name: "Socket Request",
+  //   component: <SocketRequest />,
+  //   icon: <SocketRequestIcon />,
+  // },
 ];
 
 const QueryPage: React.FC = () => {
@@ -63,11 +61,7 @@ const QueryPage: React.FC = () => {
             <Material
               key={item.id}
               className={`transition-opacity ${
-                modules[0] == item
-                  ? "rounded-l-[24px]"
-                  : modules[2] == item
-                  ? "rounded-r-[24px]"
-                  : ""
+                modules[0] == item ? "rounded-l-[24px]" : "rounded-r-[24px]"
               } ${mode == item ? "opacity-100" : "opacity-50"}`}
               onClick={() => {
                 setMode(item);
