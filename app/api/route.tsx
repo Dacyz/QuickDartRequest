@@ -1,4 +1,4 @@
-import { getContentType } from "@/data/helpers/validation_extension";
+import { getContentType } from "@/utils/helpers/validation_extension";
 
 export async function POST(request: Request) {
   const req = await request.json();

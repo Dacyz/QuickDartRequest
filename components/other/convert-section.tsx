@@ -6,7 +6,7 @@ import CodeEditor from "@uiw/react-textarea-code-editor";
 import React, { useState } from "react";
 import ConvertModal from "../modals/convert-modal";
 import { useDashboardContext } from "@/context/context";
-import LineSeparator from "./line-separator";
+import LineSeparator from "../../utils/components/line-separator";
 import {
   InputData,
   jsonInputForTargetLanguage,

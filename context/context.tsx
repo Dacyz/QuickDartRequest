@@ -1,5 +1,12 @@
 "use client";
-import { generateRandomId } from "@/data/helpers/number_extension";
+import { generateRandomId } from "@/utils/helpers/number_extension";
+import {
+  allowedMethods,
+  listCategories,
+  listRequest,
+  listSettings,
+} from "@/utils/helpers/string_extension";
+import { regex } from "@/utils/helpers/validation_extension";
 import CategoryType from "@/data/models/category_model";
 import { ParameterRow } from "@/data/models/parameter";
 import RequestModel from "@/data/models/request_model";
@@ -16,6 +23,9 @@ import { Toaster, toast } from "sonner";
 
 interface DashboardContextProps {
   children: ReactNode;
+  url?: string;
+  body?: string;
+  method?: string;
 }
 
 interface DashboardContextData {
@@ -42,20 +52,17 @@ const DashboardContext = createContext<DashboardContextData | undefined>(
   undefined
 );
 
-const separator: string = ":";
-const listRequest: string = "ListRequest";
-const listCategories: string = "ListCategories";
-const listSettings: string = "Settings";
-const allowedMethods: string[] = ["get", "post", "put", "delete"];
-
 export const DashboardProvider: React.FC<DashboardContextProps> = ({
   children,
+  url,
+  method,
+  body,
 }) => {
   const [localData, setLocalData] = useState<RequestModel[]>([]);
   const [loadingData, setLoadingData] = useState<boolean>(false);
   const [categoriesData, setCategoriesData] = useState<CategoryType[]>([]);
   const [requestModel, setRequestModel] = useState<RequestModel>(
-    new RequestModel()
+    getProperties(url, method) ?? new RequestModel()
   );
   const [userSettings, setUserSettings] = useState<UserSettings>(settings);
   const [responseModel, setResponse] = useState<ResponseModel | null>(null);
@@ -166,7 +173,6 @@ export const DashboardProvider: React.FC<DashboardContextProps> = ({
     const storedSettingString = localStorage.getItem(listSettings);
     let storedData: RequestModel[] = [];
     let storedCategoriesData: CategoryType[] = [];
-    let model: RequestModel = new RequestModel();
     let configM: UserSettings = settings;
     try {
       if (storedDataString !== null)
@@ -178,18 +184,9 @@ export const DashboardProvider: React.FC<DashboardContextProps> = ({
     } catch (error) {
       console.error("Error al analizar los datos de localStorage:", error);
     }
-    if (hasProperties()) {
-      try {
-        const newRequestModel = getProperties();
-        if (typeof newRequestModel !== "undefined") model = newRequestModel;
-      } catch (error) {
-        console.error("Error al traer los datos del url:", error);
-      }
-    }
-    console.log(`List: [${storedData.length}], Response: ${model}`);
+    console.log(`List: [${storedData.length}]`);
     setLocalData(storedData);
     setUserSettings(configM);
-    setRequestModel(model);
     setCategoriesData(storedCategoriesData);
     setLoadingData(true);
   }, []);
@@ -232,32 +229,16 @@ export const useDashboardContext = () => {
   return context;
 };
 
-function hasProperties(): boolean {
-  const origin = window.location.origin;
-  const fullURL = window.location.href;
-  return fullURL.length - origin.length > 3;
-}
-
-function getProperties(): RequestModel | undefined {
-  const origin = window.location.origin;
-  const fullURL = window.location.href;
-  const value = fullURL
-    .substring(origin.length + 1)
-    .replaceAll("http:/", "http://")
-    .replaceAll("https:/", "https://");
-  console.log(fullURL.length - origin.length);
-  console.log(value);
-  const parts = value.split(separator);
-  // Verificar si la URL cumple con el formato esperado y si el método está en el conjunto permitido
-  if (parts.length >= 2) {
-    const method = parts[0].toLowerCase(); // Convertir a minúsculas
-    const endpoint = value.substring(parts[0].length + 1);
-    // Conjunto de métodos permitidos en minúsculas
-    if (allowedMethods.includes(method)) {
-      return getRequest(endpoint, allowedMethods.indexOf(method));
-    }
+function getProperties(
+  value?: string,
+  method?: string
+): RequestModel | undefined {
+  if (value == null) return undefined;
+  if (!regex.test(value)) return undefined;
+  if (method && allowedMethods.includes(method)) {
+    return getRequest(value, allowedMethods.indexOf(method));
   }
-  return;
+  return getRequest(value);
 }
 
 function getRequest(value?: string, method?: number): RequestModel | undefined {
@@ -288,11 +269,11 @@ function getRequest(value?: string, method?: number): RequestModel | undefined {
         value: "",
       });
       const newValue = new RequestModel(
+        method,
         partes[0],
         `${queryString}`,
         newRows,
-        undefined,
-        method
+        undefined
       );
       console.log(newValue);
       return newValue;
@@ -301,9 +282,8 @@ function getRequest(value?: string, method?: number): RequestModel | undefined {
     console.log(error);
     return;
   }
-  const newValue = new RequestModel(input);
-  console.log(newValue);
-  return new RequestModel();
+  const newValue = new RequestModel(method ?? 0, input);
+  return newValue;
 }
 
 export { DashboardContext };

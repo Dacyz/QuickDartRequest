@@ -7,7 +7,7 @@ import ViewResponse from "../other/view-response";
 import { HeaderTable, ParamsTable } from "../other/params-table";
 import DropDownMethodBox from "../buttons/dropdown";
 import ButtonGroup from "../buttons/button-group";
-import { generateRandomId } from "@/data/helpers/number_extension";
+import { generateRandomId } from "@/utils/helpers/number_extension";
 import { authModes, bodyModes, modes } from "@/data/data/modes";
 import HostRequestField from "../inputs/host-request";
 import { toast } from "sonner";

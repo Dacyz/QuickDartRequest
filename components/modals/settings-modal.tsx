@@ -11,7 +11,7 @@ import { toast } from "sonner";
 import Switch from "../buttons/switch";
 import ButtonExport, { ResetButton } from "../buttons/buttons";
 import FilePicker from "../buttons/file-picker";
-import LineSeparator from "../other/line-separator";
+import LineSeparator from "../../utils/components/line-separator";
 
 const generateJsonAndDownload = (jsonData: object) => {
   // Convertir el objeto a formato JSON
@@ -158,16 +158,6 @@ const DropDownSettingsBox: React.FC<TitleProps> = (className) => {
                 data-headlessui-state="open"
               >
                 <nav role="none">
-                  {/* <a
-                    className="flex px-3 min-h-[44px] py-1 items-center gap-3 dark:text-white cursor-pointer text-sm hover:bg-gray-100 dark:hover:bg-gray-800"
-                    id="headlessui-menu-item-:r42:"
-                    role="menuitem"
-                    tabIndex={-1}
-                    data-headlessui-state=""
-                  >
-                    <Forest />
-                    Custom instructions
-                  </a> */}
                   <a
                     className="flex px-3 min-h-[44px] py-1 items-center gap-3 dark:text-white cursor-pointer text-sm hover:bg-gray-100 dark:hover:bg-gray-800"
                     id="headlessui-menu-item-:r42:"
@@ -191,7 +181,18 @@ const DropDownSettingsBox: React.FC<TitleProps> = (className) => {
                     role="none"
                   />
                   <Link
-                    href={"/about"}
+                    href={"./docs"}
+                    className="flex px-3 min-h-[44px] py-1 items-center gap-3 dark:text-white cursor-pointer text-sm hover:bg-gray-100 dark:hover:bg-gray-800"
+                    id="headlessui-menu-item-:r44:"
+                    role="menuitem"
+                    tabIndex={-1}
+                    data-headlessui-state=""
+                  >
+                    <Forest />
+                    Documentation
+                  </Link>
+                  <Link
+                    href={"./"}
                     className="flex px-3 min-h-[44px] py-1 items-center gap-3 dark:text-white cursor-pointer text-sm hover:bg-gray-100 dark:hover:bg-gray-800"
                     id="headlessui-menu-item-:r44:"
                     role="menuitem"
@@ -298,7 +299,9 @@ const DropDownSettingsBox: React.FC<TitleProps> = (className) => {
               <div className="w-full box-decoration-slice">
                 <div
                   className={`flex h-32 p-3 w-full mb-2 rounded-lg hover:border hover:border-[#484848] align-middle items-center justify-center ${
-                    userSettings.toastAlign !== "top-left" ? "bg-[#1E1E1E]" : "bg-[#3a3a39]"
+                    userSettings.toastAlign !== "top-left"
+                      ? "bg-[#1E1E1E]"
+                      : "bg-[#3a3a39]"
                   }`}
                   onClick={() => {
                     updateUserSettings(
@@ -320,7 +323,9 @@ const DropDownSettingsBox: React.FC<TitleProps> = (className) => {
               <div className="w-full box-decoration-slice">
                 <div
                   className={`flex h-32 p-3 w-full mb-2 rounded-lg hover:border hover:border-[#484848] align-middle items-center justify-center ${
-                    userSettings.toastAlign !== "top-right" ? "bg-[#1E1E1E]" : "bg-[#3a3a39]"
+                    userSettings.toastAlign !== "top-right"
+                      ? "bg-[#1E1E1E]"
+                      : "bg-[#3a3a39]"
                   }`}
                   onClick={() => {
                     updateUserSettings(
@@ -342,7 +347,9 @@ const DropDownSettingsBox: React.FC<TitleProps> = (className) => {
               <div className="w-full box-decoration-slice">
                 <div
                   className={`flex h-32 p-3 w-full mb-2 rounded-lg hover:border hover:border-[#484848] align-middle items-center justify-center ${
-                    userSettings.toastAlign !== "bottom-left" ? "bg-[#1E1E1E]" : "bg-[#3a3a39]"
+                    userSettings.toastAlign !== "bottom-left"
+                      ? "bg-[#1E1E1E]"
+                      : "bg-[#3a3a39]"
                   }`}
                   onClick={() => {
                     updateUserSettings(
@@ -364,7 +371,9 @@ const DropDownSettingsBox: React.FC<TitleProps> = (className) => {
               <div className="w-full box-decoration-slice">
                 <div
                   className={`flex h-32 p-3 w-full mb-2 rounded-lg hover:border hover:border-[#484848] align-middle items-center justify-center ${
-                    userSettings.toastAlign !== "bottom-right" ? "bg-[#1E1E1E]" : "bg-[#3a3a39]"
+                    userSettings.toastAlign !== "bottom-right"
+                      ? "bg-[#1E1E1E]"
+                      : "bg-[#3a3a39]"
                   }`}
                   onClick={() => {
                     updateUserSettings(

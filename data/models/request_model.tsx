@@ -1,6 +1,6 @@
 import { defaultHeaders, defaultParameters } from "../data/default";
 import { options } from "../data/methods";
-import { regex } from "../helpers/validation_extension";
+import { regex } from "../../utils/helpers/validation_extension";
 import { MethodClass } from "./method-model";
 import { ParameterRow, HeaderRow } from "./parameter";
 
@@ -30,11 +30,11 @@ class RequestModel implements RequestInterface {
   public headers: HeaderRow[];
 
   constructor(
+    method?: number,
     host?: string,
     query?: string,
     params?: ParameterRow[],
     headers?: HeaderRow[],
-    method?: number,
     timeStamp?: number,
     group?: string,
     name?: string,
@@ -98,7 +98,7 @@ class RequestModel implements RequestInterface {
 
   copyWith(changes: Partial<RequestModel>): RequestModel {
     // Creamos una nueva instancia de RequestModel y copiamos las propiedades originales
-    const copiedRequest = new RequestModel("");
+    const copiedRequest = new RequestModel();
     copiedRequest.host = this.host;
     copiedRequest.query = this.query;
     copiedRequest.method = this.method;

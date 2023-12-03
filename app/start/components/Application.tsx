@@ -1,8 +1,8 @@
 "use client";
 import { useDashboardContext } from "@/context/context";
-import LineSeparator from "./other/line-separator";
-import List from "./sections/list";
-import QueryPage from "./sections/query";
+import LineSeparator from "../../../utils/components/line-separator";
+import ListRequest from "./ListRequest";
+import QueryRequest from "./QueryRequest";
 
 const Application: React.FC = () => {
   const { userSettings, loadingData } = useDashboardContext();
@@ -16,15 +16,15 @@ const Application: React.FC = () => {
   }
   return userSettings.sideBarAlign ? (
     <div className="flex w-screen h-screen">
-      <QueryPage />
+      <QueryRequest />
       <LineSeparator />
-      <List />
+      <ListRequest />
     </div>
   ) : (
     <div className="flex w-screen h-screen">
-      <List />
+      <ListRequest />
       <LineSeparator />
-      <QueryPage />
+      <QueryRequest />
     </div>
   );
 };

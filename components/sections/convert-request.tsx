@@ -12,7 +12,7 @@ import { toast } from "sonner";
 import { CustomDartTargetLanguage } from "@/data/data/quicktype/custom_dart_renderer";
 import ConfigConvert from "@/data/models/config_model";
 import { useDashboardContext } from "@/context/context";
-import LineSeparator from "../other/line-separator";
+import LineSeparator from "../../utils/components/line-separator";
 
 async function quicktypeJSON(
   targetLanguage: string,

@@ -1,4 +1,4 @@
-import { generateRandomId } from "../helpers/number_extension";
+import { generateRandomId } from "../../utils/helpers/number_extension";
 import { HeaderRow, ParameterRow } from "../models/parameter";
 
 const defaultHeaders: HeaderRow[] = [

@@ -1,18 +1,18 @@
 "use client";
 import React, { useState } from "react";
-import { Title } from "../labels/title";
-import Material from "../buttons/material";
-import HttpRequest from "./http-request";
-import ConvertSection from "../other/convert-section";
+import { Title } from "../../../components/labels/title";
+import Material from "../../../components/buttons/material";
+import HttpRequest from "../../../components/sections/http-request";
+import ConvertSection from "../../../components/other/convert-section";
 import {
   ConvertRequestIcon,
   HttpRequestIcon,
-} from "../icons/icon";
-import SaveRequestButton from "../buttons/save-request";
-import NameRequestField from "../inputs/name-request";
-import CategoriesModal from "../modals/categoriesmodal";
-import ConvertRequest from "./convert-request";
-import Select from "../inputs/select";
+} from "../../../utils/icons/icon";
+import SaveRequestButton from "../../../components/buttons/save-request";
+import NameRequestField from "../../../components/inputs/name-request";
+import CategoriesModal from "../../../components/modals/categories-modal";
+import ConvertRequest from "../../../components/sections/convert-request";
+import Select from "../../../components/inputs/select";
 import { useDashboardContext } from "@/context/context";
 
 type module = {
@@ -48,7 +48,7 @@ const modules: module[] = [
   // },
 ];
 
-const QueryPage: React.FC = () => {
+const QueryRequest: React.FC = () => {
   const [mode, setMode] = useState<module>(modules[0]);
   const { categoriesData, setRequestCategory } = useDashboardContext();
   const options = categoriesData.map((e) => e.title);
@@ -95,4 +95,4 @@ const QueryPage: React.FC = () => {
   );
 };
 
-export default QueryPage;
+export default QueryRequest;
