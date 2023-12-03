@@ -1,5 +1,5 @@
 "use client";
-import { DashboardProvider } from "../../context/context";
+import { DashboardProvider } from "../../data/context/context";
 import Application from "@/app/start/components/Application";
 
 import { useSearchParams } from "next/navigation";

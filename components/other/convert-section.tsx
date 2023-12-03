@@ -5,7 +5,7 @@ import CopyAllIcon from "@mui/icons-material/CopyAll";
 import CodeEditor from "@uiw/react-textarea-code-editor";
 import React, { useState } from "react";
 import ConvertModal from "../modals/convert-modal";
-import { useDashboardContext } from "@/context/context";
+import { useDashboardContext } from "@/data/context/context";
 import LineSeparator from "../../utils/components/line-separator";
 import {
   InputData,

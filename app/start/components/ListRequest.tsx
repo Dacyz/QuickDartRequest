@@ -15,7 +15,7 @@ import { Title, Subtitle } from "../../../components/labels/title";
 import Material from "../../../components/buttons/material";
 import { ClockIcon, CollageIcon } from "../../../utils/icons/icon";
 import DropDownSettingsBox from "../../../components/modals/settings-modal";
-import { useDashboardContext } from "../../../context/context";
+import { useDashboardContext } from "../../../data/context/context";
 import RequestModel from "@/data/models/request_model";
 import { firstToUpperCase } from "@/utils/helpers/string_extension";
 import { Delete } from "@mui/icons-material";

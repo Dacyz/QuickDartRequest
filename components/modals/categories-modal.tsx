@@ -3,7 +3,7 @@ import "./modal.css";
 import Modal from "./modal";
 import ControlPointDuplicateIcon from "@mui/icons-material/ControlPointDuplicate";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { useDashboardContext } from "@/context/context";
+import { useDashboardContext } from "@/data/context/context";
 
 function CategoriesModal() {
   const [isOpen, setIsOpen] = useState(false);

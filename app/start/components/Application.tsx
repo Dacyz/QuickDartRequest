@@ -1,5 +1,5 @@
 "use client";
-import { useDashboardContext } from "@/context/context";
+import { useDashboardContext } from "@/data/context/context";
 import LineSeparator from "../../../utils/components/line-separator";
 import ListRequest from "./ListRequest";
 import QueryRequest from "./QueryRequest";

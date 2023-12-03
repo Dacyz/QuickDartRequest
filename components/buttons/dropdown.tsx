@@ -1,4 +1,4 @@
-import { useDashboardContext } from "@/context/context";
+import { useDashboardContext } from "@/data/context/context";
 import { options } from "@/data/data/methods";
 import { AnimatePresence, motion } from "framer-motion";
 import { useState } from "react";

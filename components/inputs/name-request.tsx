@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import { useDashboardContext } from "@/context/context";
+import { useDashboardContext } from "@/data/context/context";
 
 const NameRequestField: React.FC = () => {
   const { requestModel, setRequestName } = useDashboardContext();

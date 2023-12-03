@@ -3,7 +3,7 @@ import "./modal.css";
 import Modal from "./modal";
 import CodeEditor from "@uiw/react-textarea-code-editor";
 import SettingsIcon from "@mui/icons-material/Settings";
-import { useDashboardContext } from "@/context/context";
+import { useDashboardContext } from "@/data/context/context";
 import { copyWith } from "@/data/models/config_model";
 import { copyWithSettings } from "@/data/models/settings_model";
 
