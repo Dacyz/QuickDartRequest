@@ -9,7 +9,6 @@ interface RequestInterface {
   host: string | "";
   query: string | "";
   mode: string | "Params";
-  include: boolean;
   timeStamp: number;
   group?: string;
   method: MethodClass;
@@ -25,7 +24,6 @@ class RequestModel implements RequestInterface {
   public timeStamp: number;
   public group?: string;
   public method: MethodClass;
-  public include: boolean;
   public params: ParameterRow[];
   public headers: HeaderRow[];
 
@@ -41,7 +39,6 @@ class RequestModel implements RequestInterface {
     mode?: string
   ) {
     this.host = host ?? "";
-    this.include = false;
     this.query = query ?? "";
     if (!method) this.method = options[0];
     else this.method = options[method];
@@ -57,24 +54,16 @@ class RequestModel implements RequestInterface {
     return `${this.host}${this.query}`;
   }
 
-  get queries(): string {
-    if (this.include) return "?";
-    return "";
-  }
-
   // Función para convertir la lista en query parameters
   get query_params(): string {
     const queryParams = this.params
-      .filter((row) => row.estado !== false)
-      .map((row) => {
-        if (row.key.trim() !== "" && row.value.trim() !== "")
-          return `${row.key}=${row.value}`;
-        else if (row.key.trim() !== "" && row.value.trim() === "")
-          return `${row.key}`;
-        else if (row.key.trim() === "" && row.value.trim() !== "")
-          return `${row.value}`;
-      });
-    return `${this.queries}${queryParams.join("&")}`;
+      .filter(
+        (row) =>
+          row.estado !== false &&
+          (row.key.trim() !== "" || row.value.trim() !== "")
+      )
+      .map((row) => `${row.key}=${row.value}`);
+    return `${queryParams.length !== 0 ? "?" : ""}${queryParams.join("&")}`;
   }
 
   // Función para convertir la lista en query parameters
@@ -94,7 +83,7 @@ class RequestModel implements RequestInterface {
   // Usamos test() para verificar si el texto coincide con la expresión regular
   esEnlaceValido = (wa?: string): boolean => regex.test(wa ?? this.url);
 
-  toString = (): string => `[${this.method.name}]${this.include} ${this.query}`;
+  toString = (): string => `[${this.method.name}]${this.query}`;
 
   copyWith(changes: Partial<RequestModel>): RequestModel {
     // Creamos una nueva instancia de RequestModel y copiamos las propiedades originales
@@ -102,7 +91,6 @@ class RequestModel implements RequestInterface {
     copiedRequest.host = this.host;
     copiedRequest.query = this.query;
     copiedRequest.method = this.method;
-    copiedRequest.include = this.include;
     copiedRequest.params = this.params;
     copiedRequest.headers = this.headers;
     copiedRequest.timeStamp = this.timeStamp;
@@ -114,7 +102,6 @@ class RequestModel implements RequestInterface {
     if (changes.host !== undefined) copiedRequest.host = changes.host;
     if (changes.query !== undefined) copiedRequest.query = changes.query;
     if (changes.method !== undefined) copiedRequest.method = changes.method;
-    if (changes.include !== undefined) copiedRequest.include = changes.include;
     if (changes.params !== undefined) copiedRequest.params = changes.params;
     if (changes.headers !== undefined) copiedRequest.headers = changes.headers;
     if (changes.timeStamp !== undefined)

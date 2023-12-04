@@ -1,12 +1,10 @@
 "use client";
 import { generateRandomId } from "@/utils/helpers/number_extension";
 import {
-  allowedMethods,
   listCategories,
   listRequest,
   listSettings,
 } from "@/utils/helpers/string_extension";
-import { regex } from "@/utils/helpers/validation_extension";
 import CategoryType from "@/data/models/category_model";
 import { ParameterRow } from "@/data/models/parameter";
 import RequestModel from "@/data/models/request_model";
@@ -20,6 +18,7 @@ import React, {
   ReactNode,
 } from "react";
 import { Toaster, toast } from "sonner";
+import { getProperties } from "@/utils/helpers/request_extension";
 
 interface DashboardContextProps {
   children: ReactNode;
@@ -40,6 +39,7 @@ interface DashboardContextData {
   removeLocalStorage: (data: number) => void;
   setRequestName: (newName: string) => void;
   saveRequestModel: () => void;
+  updateRequestModel: () => void;
   setRequestCategory: (newName: string | undefined) => void;
   updateCategoriesStorage: (newData: CategoryType) => void;
   removeCategoriesStorage: (newData: number) => void;
@@ -71,6 +71,18 @@ export const DashboardProvider: React.FC<DashboardContextProps> = ({
     const updatedData = [...localData, newData];
     localStorage.setItem(listRequest, JSON.stringify(updatedData));
     setLocalData(updatedData);
+  };
+
+  const updateRequestModel = () => {
+    const index = localData.findIndex(
+      (item) => item.timeStamp === requestModel.timeStamp
+    );
+    if (index !== -1) {
+      const updatedData = [...localData];
+      updatedData[index] = requestModel;
+      localStorage.setItem(listRequest, JSON.stringify(updatedData));
+      setLocalData(updatedData);
+    }
   };
 
   const updateUserSettings = (newData: UserSettings) => {
@@ -117,13 +129,13 @@ export const DashboardProvider: React.FC<DashboardContextProps> = ({
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const input: string = event.target.value;
+    const newRows: ParameterRow[] = [];
     try {
       if (input.includes("?")) {
         const partes: string[] = input.split("?"); // Dividir la cadena
         const queryString = input.substring(partes[0].length);
         const paramsString = input.substring(partes[0].length + 1);
         const parameters: string[] = paramsString.split("&");
-        let newRows: ParameterRow[] = [];
         parameters.map((parameter) => {
           const values: string[] = parameter.split("=");
           newRows.push({
@@ -147,11 +159,21 @@ export const DashboardProvider: React.FC<DashboardContextProps> = ({
         setRequestModel(newValue); // Actualiza el estado con el valor del input
         return;
       }
+      newRows.push({
+        id: generateRandomId(),
+        estado: true,
+        key: "",
+        value: "",
+      });
+      const newValue = requestModel.copyWith({
+        host: input,
+        params: newRows,
+        query: "",
+      });
+      setRequestModel(newValue); // Actualiza el estado con el valor del input
     } catch (error) {
       console.error("An error occurred", error);
     }
-    const newValue = requestModel.copyWith({ host: input });
-    setRequestModel(newValue); // Actualiza el estado con el valor del input
   };
 
   // Función para guardar una nueva petición
@@ -200,6 +222,7 @@ export const DashboardProvider: React.FC<DashboardContextProps> = ({
         responseModel: responseModel,
         userSettings: userSettings,
         loadingData: loadingData,
+        updateRequestModel: updateRequestModel,
         updateLocalStorage: updateRequestStorage,
         removeLocalStorage: removeLocalStorage,
         setRequestModel: setRequestModel,
@@ -228,62 +251,5 @@ export const useDashboardContext = () => {
   }
   return context;
 };
-
-function getProperties(
-  value?: string,
-  method?: string
-): RequestModel | undefined {
-  if (value == null) return undefined;
-  if (!regex.test(value)) return undefined;
-  if (method && allowedMethods.includes(method)) {
-    return getRequest(value, allowedMethods.indexOf(method));
-  }
-  return getRequest(value);
-}
-
-function getRequest(value?: string, method?: number): RequestModel | undefined {
-  if (!value) return undefined;
-  if (typeof value !== "string") return undefined;
-  const input: string = value;
-  const unit = input.includes("?") ?? false;
-  try {
-    if (unit) {
-      const partes: string[] = input.split("?");
-      const queryString = input.substring(partes[0].length);
-      const paramsString = input.substring(partes[0].length + 1);
-      const parameters: string[] = paramsString.split("&");
-      let newRows: ParameterRow[] = [];
-      parameters.map((parameter) => {
-        const values: string[] = parameter.split("=");
-        newRows.push({
-          id: generateRandomId(),
-          estado: true,
-          key: values[0] ?? "",
-          value: values[1] ?? "",
-        });
-      });
-      newRows.push({
-        id: generateRandomId(),
-        estado: true,
-        key: "",
-        value: "",
-      });
-      const newValue = new RequestModel(
-        method,
-        partes[0],
-        `${queryString}`,
-        newRows,
-        undefined
-      );
-      console.log(newValue);
-      return newValue;
-    }
-  } catch (error) {
-    console.log(error);
-    return;
-  }
-  const newValue = new RequestModel(method ?? 0, input);
-  return newValue;
-}
 
 export { DashboardContext };

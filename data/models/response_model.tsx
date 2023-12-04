@@ -12,7 +12,7 @@ export default class ResponseModel implements Item {
     public Name: URL,
     public contentType: number,
     public jsonResponse: object | null | string,
-    public TimeStamp: number
+    public readonly TimeStamp: number
   ) {
     this.Enlace = Enlace;
     this.Name = Name;

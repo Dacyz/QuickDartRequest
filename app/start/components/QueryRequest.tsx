@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { Title } from "../../../components/labels/title";
 import Material from "../../../components/buttons/material";
-import HttpRequest from "../../../components/sections/http-request";
+import HttpRequest from "./modes/http-request";
 import ConvertSection from "../../../components/other/convert-section";
 import {
   ConvertRequestIcon,
@@ -11,7 +11,7 @@ import {
 import SaveRequestButton from "../../../components/buttons/save-request";
 import NameRequestField from "../../../components/inputs/name-request";
 import CategoriesModal from "../../../components/modals/categories-modal";
-import ConvertRequest from "../../../components/sections/convert-request";
+import ConvertRequest from "./modes/convert-request";
 import Select from "../../../components/inputs/select";
 import { useDashboardContext } from "@/data/context/context";
 

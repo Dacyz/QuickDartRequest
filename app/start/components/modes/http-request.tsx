@@ -1,17 +1,20 @@
 "use client";
 import React, { useState } from "react";
 import fetch from "node-fetch";
-import { useDashboardContext } from "../../data/context/context";
-import { Title } from "../labels/title";
-import ViewResponse from "../other/view-response";
-import { HeaderTable, ParamsTable } from "../other/params-table";
-import DropDownMethodBox from "../buttons/dropdown";
-import ButtonGroup from "../buttons/button-group";
+import { useDashboardContext } from "../../../../data/context/context";
+import { Title } from "../../../../components/labels/title";
+import ViewResponse from "../../../../components/other/view-response";
+import {
+  HeaderTable,
+  ParamsTable,
+} from "../../../../components/other/params-table";
+import DropDownMethodBox from "../../../../components/buttons/dropdown";
+import ButtonGroup from "../../../../components/buttons/button-group";
 import { generateRandomId } from "@/utils/helpers/number_extension";
 import { authModes, bodyModes, modes } from "@/data/data/modes";
-import HostRequestField from "../inputs/host-request";
+import HostRequestField from "../../../../components/inputs/host-request";
 import { toast } from "sonner";
-import ResponseModel from "@/data/models/response_model";
+import { callInternalEndpoint } from "@/utils/helpers/request_extension";
 
 const HttpRequest: React.FC = () => {
   const { setRequestModel, requestModel, setResponseModel, responseModel } =
@@ -20,47 +23,19 @@ const HttpRequest: React.FC = () => {
   const [isBodyMode, setBodyMode] = useState(bodyModes[0]);
   const [asd, setAsd] = useState(false);
 
-  const ups = async (url: URL, method: string) => {
-    if (!requestModel.esEnlaceValido())
-      throw new Error(`${requestModel.url} has no petition format`);
-    const resp = await fetch("/api", {
-      method: "POST",
-      headers: {
-        "content-type": "application/json",
-      },
-      body: JSON.stringify({ url: url, method: method }),
-    });
-    // console.log(await resp.text());
-    const gatito = await resp.json();
-
-    if (gatito.status !== 200) throw (gatito.data)
-    const item: ResponseModel = {
-      Name: url,
-      Enlace: requestModel.url,
-      contentType: gatito.contentType,
-      jsonResponse: gatito.data,
-      TimeStamp: Date.now(),
-    };
-    setResponseModel(item); // Actualiza el estado con los datos obtenidos
-    return `Endpoint fetched`;
-  };
-
   const handleClickGenerate = async () => {
-    try {
-      const url = new URL(requestModel.url);
-      toast.promise(ups(url, requestModel.method.name), {
-        loading: "Loading...",
-        success: async (resp) => {
-          return resp;
-        },
-        error: (e) => {
-          return `Error generating the petition ${requestModel.url}: ${e}`;
-        },
-      });
-    } catch (error) {
-      toast.error(`Error generating the petition  ${requestModel.url}`);
-      console.error(error);
-    }
+    toast.promise(callInternalEndpoint(requestModel), {
+      loading: "Loading...",
+      success: async (resp) => {
+        if (resp) {
+          setResponseModel(resp); // Actualiza el estado con los datos obtenidos
+          return "Endpoint fetched";
+        }
+      },
+      error: (e) => {
+        return `Error generating the petition ${requestModel.url}: ${e}`;
+      },
+    });
   };
 
   return (
