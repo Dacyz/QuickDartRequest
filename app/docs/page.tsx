@@ -2,14 +2,17 @@
 // Página de inicio en Next.js (pages/index.tsx)
 import React from "react";
 import Navbar from "./components/navbar";
-
+import ChapterViewer from "./components/documentation";
 
 const LandingPage = () => {
   return (
     <div className="bg-gray-900 text-white">
       <Navbar />
+      <div className="h-20" />
       {/* Leading */}
-      <section className="h-screen"></section>
+      <section className="container relative mx-auto">
+        <ChapterViewer />
+      </section>
       <section className="py-16 mx-4 md:mx-0">
         <div className="container mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
