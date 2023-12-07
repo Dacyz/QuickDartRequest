@@ -9,6 +9,7 @@ interface RequestInterface {
   host: string | "";
   query: string | "";
   mode: string | "Params";
+  module: number;
   timeStamp: number;
   group?: string;
   method: MethodClass;
@@ -21,6 +22,7 @@ class RequestModel implements RequestInterface {
   public host: string;
   public query: string;
   public mode: string;
+  public module: number;
   public timeStamp: number;
   public group?: string;
   public method: MethodClass;
@@ -33,6 +35,7 @@ class RequestModel implements RequestInterface {
     query?: string,
     params?: ParameterRow[],
     headers?: HeaderRow[],
+    module?: number,
     timeStamp?: number,
     group?: string,
     name?: string,
@@ -40,6 +43,7 @@ class RequestModel implements RequestInterface {
   ) {
     this.host = host ?? "";
     this.query = query ?? "";
+    this.module = module ?? 0;
     if (!method) this.method = options[0];
     else this.method = options[method];
     this.params = params ?? defaultParameters;
@@ -97,6 +101,7 @@ class RequestModel implements RequestInterface {
     copiedRequest.group = this.group;
     copiedRequest.name = this.name;
     copiedRequest.mode = this.mode;
+    copiedRequest.module = this.module;
 
     // Aplicamos los cambios proporcionados en el objeto `changes`
     if (changes.host !== undefined) copiedRequest.host = changes.host;
@@ -109,6 +114,7 @@ class RequestModel implements RequestInterface {
     if (changes.group !== undefined) copiedRequest.group = changes.group;
     if (changes.name !== undefined) copiedRequest.name = changes.name;
     if (changes.mode !== undefined) copiedRequest.mode = changes.mode;
+    if (changes.module !== undefined) copiedRequest.module = changes.module;
 
     return copiedRequest;
   }

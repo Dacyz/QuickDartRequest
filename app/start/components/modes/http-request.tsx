@@ -1,6 +1,5 @@
 "use client";
 import React, { useState } from "react";
-import fetch from "node-fetch";
 import { useDashboardContext } from "../../../../data/context/context";
 import { Title } from "../../../../components/labels/title";
 import ViewResponse from "../../../../components/other/view-response";

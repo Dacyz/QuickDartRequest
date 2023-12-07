@@ -100,11 +100,19 @@ export const DashboardProvider: React.FC<DashboardContextProps> = ({
 
   // Función para remover datos del localStorage
   const removeLocalStorage = (newData: number) => {
+    console.log(localData);
     const updatedData = localData.filter(
       (objeto) => objeto.timeStamp !== newData
     );
     localStorage.setItem(listRequest, JSON.stringify(updatedData));
     setLocalData(updatedData);
+    console.log(updatedData);
+    if (requestModel.timeStamp === 0) return;
+    if (updatedData.length === 0) {
+      setRequestModel(new RequestModel());
+    } else {
+      setRequestModel(updatedData[0]);
+    }
   };
 
   const removeCategoriesStorage = (newData: number) => {
@@ -182,6 +190,7 @@ export const DashboardProvider: React.FC<DashboardContextProps> = ({
     try {
       const newModel = requestModel.copyWith({ timeStamp: Date.now() });
       updateRequestStorage(newModel); // Actualiza el localStorage con los datos obtenidos
+      setRequestModel(newModel);
       toast.success("Guardado correctamente");
     } catch (error) {
       console.error("Error al guardar la petición", error);

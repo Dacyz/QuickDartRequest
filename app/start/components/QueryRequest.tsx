@@ -2,57 +2,21 @@
 import React, { useState } from "react";
 import { Title } from "../../../components/labels/title";
 import Material from "../../../components/buttons/material";
-import HttpRequest from "./modes/http-request";
-import ConvertSection from "../../../components/other/convert-section";
-import {
-  ConvertRequestIcon,
-  HttpRequestIcon,
-} from "../../../utils/icons/icon";
 import SaveRequestButton from "../../../components/buttons/save-request";
 import NameRequestField from "../../../components/inputs/name-request";
 import CategoriesModal from "../../../components/modals/categories-modal";
-import ConvertRequest from "./modes/convert-request";
 import Select from "../../../components/inputs/select";
 import { useDashboardContext } from "@/data/context/context";
-
-type module = {
-  id: number;
-  name: string;
-  component: React.ReactNode;
-  icon: React.ReactNode;
-};
-
-const modules: module[] = [
-  {
-    id: 1,
-    name: "Http Request",
-    component: (
-      <>
-        <HttpRequest />
-        <ConvertSection />
-      </>
-    ),
-    icon: <HttpRequestIcon />,
-  },
-  {
-    id: 2,
-    name: "Convert Request",
-    component: <ConvertRequest />,
-    icon: <ConvertRequestIcon />,
-  },
-  // {
-  //   id: 3,
-  //   name: "Socket Request",
-  //   component: <SocketRequest />,
-  //   icon: <SocketRequestIcon />,
-  // },
-];
+import { modules } from "@/data/models/module_model";
 
 const QueryRequest: React.FC = () => {
-  const [mode, setMode] = useState<module>(modules[0]);
-  const { categoriesData, setRequestCategory } = useDashboardContext();
+  const { categoriesData, setRequestCategory, requestModel, setRequestModel } =
+    useDashboardContext();
   const options = categoriesData.map((e) => e.title);
   const [selectedOption, setSelectedOption] = useState(options[0]);
+  const setMode = (value: number) => {
+    setRequestModel(requestModel.copyWith({ module: value }));
+  };
   return (
     <div className="flex flex-col flex-grow p-4 gap-4 overflow-hidden bg-[#131212]">
       <div className="flex justify-between">
@@ -62,15 +26,17 @@ const QueryRequest: React.FC = () => {
               key={item.id}
               className={`transition-opacity ${
                 modules[0] == item ? "rounded-l-[24px]" : "rounded-r-[24px]"
-              } ${mode == item ? "opacity-100" : "opacity-50"}`}
+              } ${
+                requestModel.module == item.id ? "opacity-100" : "opacity-50"
+              }`}
               onClick={() => {
-                setMode(item);
+                setMode(item.id);
               }}
             >
               {item.icon}
             </Material>
           ))}
-          <Title className="ml-2" text={mode.name} />
+          <Title className="ml-2" text={modules[requestModel.module].name} />
         </div>
         <div className="flex">
           <NameRequestField />
@@ -90,7 +56,9 @@ const QueryRequest: React.FC = () => {
           <SaveRequestButton />
         </div>
       </div>
-      <div className="flex h-[90%] gap-4 flex-grow">{mode.component}</div>
+      <div className="flex h-[90%] gap-4 flex-grow">
+        {modules[requestModel.module].component}
+      </div>
     </div>
   );
 };

@@ -19,7 +19,7 @@ import { useDashboardContext } from "../../../data/context/context";
 import RequestModel from "@/data/models/request_model";
 import { firstToUpperCase } from "@/utils/helpers/string_extension";
 import { Delete } from "@mui/icons-material";
-import LineSeparator from "../../../utils/components/line-separator";
+import { LayoutGroup, motion } from "framer-motion";
 
 const methodComponents = new Map<number, JSX.Element>([
   [0, <GetLabel />],
@@ -139,34 +139,43 @@ function ListRequest() {
   const groupsAndItemsJSX = Object.keys(sortedGroupedItem).map((groupKey) => {
     const group = sortedGroupedItem[groupKey];
     return (
-      <li key={groupKey} className="flex flex-col gap-2">
+      <div key={groupKey} className="flex flex-col gap-2">
         {groupKey === "" ? <></> : <Subtitle text={groupKey} />}
-        <ul className="flex flex-col gap-2">
-          {group.map((item, index) => (
-            <li
-              key={index}
-              className="flex px-[12px] py-[8px] bg-[#1E1E1E] transition-colors cursor-pointer hover:bg-[#404040] rounded-[16px] items-center"
-              onClick={() => {
-                setRequestModel(new RequestModel().copyWith(item));
-                setResponseModel(null);
-              }}
-            >
-              {getMethodDiv(item.method.id)}
-              <div className="ml-[8px] text-[12px] font-semibold flex w-full justify-between">
-                <span className="text-[12px] font-semibold">
-                  {item.name ?? item.host}
-                </span>
-                <div
-                  className="text-[12px] font-semibold opacity-0 hover:opacity-100 transition-opacity"
-                  onClick={() => removeLocalStorage(item.timeStamp)}
-                >
-                  <Delete fontSize="small" />
+        <LayoutGroup id="">
+          <motion.ul
+            className="flex flex-col gap-2"
+            transition={{ duration: 0.3, repeat: 1 }}
+          >
+            {group.map((item, index) => (
+              <motion.li
+                key={item.timeStamp.toString()}
+                layoutId={item.timeStamp.toString()}
+                className="flex px-[12px] py-[8px] bg-[#1E1E1E] cursor-pointer  rounded-[16px] items-center"
+                onClick={() => {
+                  setRequestModel(new RequestModel().copyWith(item));
+                  setResponseModel(null);
+                }}
+              >
+                {getMethodDiv(item.module === 1 ? 4 : item.method.id)}
+                <div className="ml-[8px] text-[12px] font-semibold flex w-full justify-between">
+                  <span className="text-[12px] font-semibold">
+                    {item.name ?? item.host}
+                  </span>
+                  <div
+                    className="text-[12px] font-semibold opacity-0 hover:opacity-100 transition-opacity"
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      removeLocalStorage(item.timeStamp);
+                    }}
+                  >
+                    <Delete fontSize="small" />
+                  </div>
                 </div>
-              </div>
-            </li>
-          ))}
-        </ul>
-      </li>
+              </motion.li>
+            ))}
+          </motion.ul>
+        </LayoutGroup>
+      </div>
     );
   });
 
@@ -186,7 +195,7 @@ function ListRequest() {
             verlas en tu historial
           </div>
         ) : (
-          <ul className="flex flex-col gap-3">
+          <div className="flex flex-col gap-3">
             <button
               className="bg-[#1E1E1E] text-white py-2 px-4 rounded-[16px] relative w-full text-[12px] font-semibold flex justify-center align-middle gap-1 items-center"
               onClick={() => {
@@ -198,7 +207,7 @@ function ListRequest() {
               <BorderClearIcon fontSize="small" /> New Request
             </button>
             {groupsAndItemsJSX}
-          </ul>
+          </div>
         )}
       </div>
       <DropDownSettingsBox />
