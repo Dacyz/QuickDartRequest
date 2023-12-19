@@ -19,10 +19,13 @@ import ImportAndExportConfig, {
   readFileContent,
 } from "@/utils/helpers/data_extension";
 
+type RestMode = 0 | 1 | 2;
+
 const DropDownSettingsBox: React.FC = () => {
   const [isOpen, setOpen] = useState(false);
   const [isSettingsModalOpen, setSettingsModal] = useState(false);
   const [isDataControlsOpen, setDataControlsModal] = useState(false);
+  const [resetMode, setResetMode] = useState<RestMode>(0);
   const [config, setConfig] = useState<ImportAndExportConfig>({
     importCategories: false,
     importRequest: false,
@@ -41,6 +44,7 @@ const DropDownSettingsBox: React.FC = () => {
     categoriesData,
     updateLocalDataIfNotExists,
     updateLocalCategoriesIfNotExists,
+    clearLocalStorage,
   } = useDashboardContext();
   return (
     <>
@@ -166,7 +170,7 @@ const DropDownSettingsBox: React.FC = () => {
                   onClick={() =>
                     updateUserSettings(
                       copyWithSettings(userSettings, {
-                        sideBarAlign: false,
+                        sideBarAlign: 'right',
                       })
                     )
                   }
@@ -186,7 +190,7 @@ const DropDownSettingsBox: React.FC = () => {
                   onClick={() =>
                     updateUserSettings(
                       copyWithSettings(userSettings, {
-                        sideBarAlign: true,
+                        sideBarAlign: 'left',
                       })
                     )
                   }
@@ -434,10 +438,7 @@ const DropDownSettingsBox: React.FC = () => {
                       jsonImport["Settings"] != null
                     ) {
                       updateUserSettings(
-                        copyWithSettings(
-                          userSettings,
-                          jsonImport["Settings"]
-                        )
+                        copyWithSettings(userSettings, jsonImport["Settings"])
                       );
                       load.push("settings");
                     }
@@ -446,10 +447,12 @@ const DropDownSettingsBox: React.FC = () => {
                       config.importCategories &&
                       jsonImport["ListCategories"] != null
                     ) {
-                      updateLocalCategoriesIfNotExists(jsonImport["ListCategories"]);
+                      updateLocalCategoriesIfNotExists(
+                        jsonImport["ListCategories"]
+                      );
                       load.push("categories");
                     }
-                    console.log(load.join(','));
+                    console.log(load.join(","));
                     toast.success("Successful import!");
                     // setJsonImport(null);
                   }}
@@ -536,7 +539,34 @@ const DropDownSettingsBox: React.FC = () => {
           </div>
         </div>
         <div className="flex gap-2 items-center align-middle justify-between ">
-          Reset all lists and settings <ResetButton />
+          {resetMode == 0 ? (
+            <>
+              Reset all lists and settings{" "}
+              <ResetButton
+                onClick={() => {
+                  setResetMode(1);
+                }}
+              />
+            </>
+          ) : (
+            <>
+              Are you sure for reset all?{" "}
+              <ResetButton
+                text="Yes"
+                onClick={() => {
+                  clearLocalStorage();
+                  setResetMode(0);
+                  toast.success("Successful reset!");
+                }}
+              />
+              <ButtonExport
+                text="No"
+                onClick={() => {
+                  setResetMode(0);
+                }}
+              />
+            </>
+          )}
         </div>
       </Modal>
     </>

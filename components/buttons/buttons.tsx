@@ -21,10 +21,17 @@ const ButtonExport: React.FC<ButtonExportProps> = ({ text, onClick }) => {
   );
 };
 
-const ResetButton: React.FC = ({}) => {
+const ResetButton: React.FC<ButtonExportProps> = ({ onClick, text }) => {
   return (
-    <button className="px-4 py-2 border border-red-700 text-red-700 dark:bg-red-700 dark:text-white rounded-md transition-all duration-300 hover:bg-red-800 hover:text-white focus:outline-none focus:ring focus:border-blue-300">
-      Reset
+    <button
+      className="px-4 py-2 border border-red-700 text-red-700 dark:bg-red-700 dark:text-white rounded-md transition-all duration-300 hover:bg-red-800 hover:text-white focus:outline-none focus:ring focus:border-blue-300"
+      onClick={() => {
+        if (onClick) {
+          onClick();
+        }
+      }}
+    >
+      {text ?? "Reset"}
     </button>
   );
 };

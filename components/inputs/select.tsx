@@ -14,7 +14,7 @@ const Select: React.FC<SelectProps> = ({ value, options, onChange }) => {
       className="relative bg-[#1E1E1E] border-l border-[#FFFFFF20] min-w-[156px] text-center text-[12px] justify-center items-center flex-row flex cursor-pointer"
       onClick={() => setOpen(!isOpen)}
     >
-      <p className="py-[11px] truncate p-2 text-center w-[156px]">
+      <p className=" truncate px-2 text-center w-[156px]">
         {value ?? "Select"}
       </p>
       <AnimatePresence initial={false}>
@@ -25,7 +25,7 @@ const Select: React.FC<SelectProps> = ({ value, options, onChange }) => {
             exit={{ y: -5, opacity: [0.5, 0] }}
             transition={{ duration: 0.1 }}
             onMouseLeave={() => setOpen(false)}
-            className="absolute top-[40px] min-w-[156px] max-w-[156px] bg-[#1E1E1E] rounded-b-2xl z-50"
+            className="absolute top-[38px] min-w-[156px] max-w-[156px] bg-[#1E1E1E] rounded-b-2xl z-50"
           >
             {options.map((e, i) => (
               <div

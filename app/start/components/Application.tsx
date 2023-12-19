@@ -14,7 +14,7 @@ const Application: React.FC = () => {
       </div>
     );
   }
-  return userSettings.sideBarAlign ? (
+  return userSettings.sideBarAlign === 'right' ? (
     <div className="flex w-screen h-screen">
       <QueryRequest />
       <LineSeparator />

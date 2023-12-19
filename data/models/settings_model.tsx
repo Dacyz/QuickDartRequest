@@ -2,7 +2,7 @@ import ConfigConvert from "./config_model";
 
 export default interface UserSettings {
   userName: string;
-  sideBarAlign: boolean | "left" | "right";
+  sideBarAlign: "left" | "right";
   toastAlign: "top-left" | "top-right" | "bottom-left" | "bottom-right";
   showExplanation: boolean;
   configConvert: ConfigConvert;

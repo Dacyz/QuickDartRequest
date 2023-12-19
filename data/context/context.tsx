@@ -40,6 +40,7 @@ interface DashboardContextData {
   setRequestName: (newName: string) => void;
   saveRequestModel: () => void;
   updateRequestModel: () => void;
+  clearLocalStorage: () => void;
   setRequestCategory: (newName: string | undefined) => void;
   updateCategoriesStorage: (newData: CategoryType) => void;
   removeCategoriesStorage: (newData: number) => void;
@@ -90,6 +91,18 @@ export const DashboardProvider: React.FC<DashboardContextProps> = ({
   const updateUserSettings = (newData: UserSettings) => {
     localStorage.setItem(listSettings, JSON.stringify(newData));
     setUserSettings(newData);
+  };
+
+  const clearLocalStorage = () => {
+    localStorage.removeItem(listRequest);
+    localStorage.removeItem(listCategories);
+    localStorage.removeItem(listSettings);
+
+    setLocalData([]);
+    setCategoriesData([]);
+    setUserSettings(settings);
+
+    toast.success("LocalStorage limpiado correctamente");
   };
 
   const updateLocalDataIfNotExists = (newDataList: RequestModel[]) => {
@@ -283,6 +296,7 @@ export const DashboardProvider: React.FC<DashboardContextProps> = ({
         updateUserSettings: updateUserSettings,
         updateLocalDataIfNotExists: updateLocalDataIfNotExists,
         updateLocalCategoriesIfNotExists: updateLocalCategoriesIfNotExists,
+        clearLocalStorage: clearLocalStorage,
       }}
     >
       <Toaster theme="dark" richColors position={userSettings.toastAlign} />

@@ -14,7 +14,7 @@ function CategoriesModal() {
     useDashboardContext();
   return (
     <>
-      <button onClick={() => setIsOpen(true)} className="button-icon ">
+      <button onClick={() => setIsOpen(true)} className="button-icon-st ">
         <ControlPointDuplicateIcon fontSize="small" />
       </button>
       <Modal handleClose={() => setIsOpen(false)} isOpen={isOpen}>

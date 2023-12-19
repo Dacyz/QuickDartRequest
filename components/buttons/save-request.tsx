@@ -19,7 +19,7 @@ const SaveRequestButton: React.FC = () => {
         onClick={saveRequestModel}
         color="primary"
         aria-label="save"
-        className="button-icon rounded-r-2xl"
+        className="button-icon-st rounded-r-2xl"
       >
         <Save fontSize="small" />
       </button>
