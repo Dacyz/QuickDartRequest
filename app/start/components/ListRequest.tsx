@@ -65,6 +65,7 @@ function ListRequest() {
   const {
     localData: data,
     removeLocalStorage,
+    requestModel,
     setRequestModel,
     setResponseModel,
   } = useDashboardContext();
@@ -151,6 +152,12 @@ function ListRequest() {
                 key={item.timeStamp.toString()}
                 layoutId={item.timeStamp.toString()}
                 className="flex px-[10px] py-[6px] hover:bg-[#1E1E1E] cursor-pointer rounded-[16px] items-center transition-colors"
+                style={{
+                  background:
+                    item.timeStamp === requestModel.timeStamp
+                      ? "#1E1E1E"
+                      : "",
+                }}
                 onClick={() => {
                   setRequestModel(new RequestModel().copyWith(item));
                   setResponseModel(null);
@@ -204,7 +211,7 @@ function ListRequest() {
               }}
             >
               <span className="absolute  rounded-[16px]"></span>
-               Create new request
+              Create new request
               <EditNote fontSize="small" className="ml-auto" />
             </button>
             {groupsAndItemsJSX}
