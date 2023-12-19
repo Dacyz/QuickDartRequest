@@ -4,20 +4,21 @@ import { regex } from "../../utils/helpers/validation_extension";
 import { MethodClass } from "./method-model";
 import { ParameterRow, HeaderRow } from "./parameter";
 
-interface RequestInterface {
-  name: string;
-  host: string | "";
-  query: string | "";
-  mode: string | "Params";
-  module: number;
-  timeStamp: number;
-  group?: string;
-  method: MethodClass;
-  params: ParameterRow[];
-  headers: HeaderRow[];
+interface Body {
+  mode: number;
+  contentFormData: ParameterRow[];
+  contentRaw: string;
+  contentBinary: undefined;
 }
 
-class RequestModel implements RequestInterface {
+function bodyCopyWith(body: Body, changes: Partial<Body>): Body {
+  return {
+    ...body,
+    ...changes,
+  };
+}
+
+class RequestModel {
   public name: string;
   public host: string;
   public query: string;
@@ -28,6 +29,9 @@ class RequestModel implements RequestInterface {
   public method: MethodClass;
   public params: ParameterRow[];
   public headers: HeaderRow[];
+  public jsonObject: string;
+  public nameObject: string;
+  public body: Body;
 
   constructor(
     method?: number,
@@ -39,7 +43,10 @@ class RequestModel implements RequestInterface {
     timeStamp?: number,
     group?: string,
     name?: string,
-    mode?: string
+    mode?: string,
+    jsonObject?: string,
+    nameObject?: string,
+    body?: Body
   ) {
     this.host = host ?? "";
     this.query = query ?? "";
@@ -52,6 +59,26 @@ class RequestModel implements RequestInterface {
     this.group = group;
     this.mode = mode ?? "Params";
     this.name = name ?? "New request";
+    this.jsonObject = jsonObject ?? "";
+    this.nameObject = nameObject ?? "";
+    this.body = body ?? {
+      mode: 0,
+      contentFormData: defaultParameters,
+      contentRaw: "",
+      contentBinary: undefined,
+    };
+  }
+
+  get bodyContent(): any {
+    if (this.body.mode === 1) {
+      return this.body.contentFormData;
+    } else if (this.body.mode === 2) {
+      return this.body.contentRaw;
+    } else if (this.body.mode === 3) {
+      return this.body.contentBinary;
+    } else {
+      return undefined;
+    }
   }
 
   get url(): string {
@@ -102,6 +129,9 @@ class RequestModel implements RequestInterface {
     copiedRequest.name = this.name;
     copiedRequest.mode = this.mode;
     copiedRequest.module = this.module;
+    copiedRequest.jsonObject = this.jsonObject;
+    copiedRequest.nameObject = this.nameObject;
+    copiedRequest.body = this.body;
 
     // Aplicamos los cambios proporcionados en el objeto `changes`
     if (changes.host !== undefined) copiedRequest.host = changes.host;
@@ -115,9 +145,15 @@ class RequestModel implements RequestInterface {
     if (changes.name !== undefined) copiedRequest.name = changes.name;
     if (changes.mode !== undefined) copiedRequest.mode = changes.mode;
     if (changes.module !== undefined) copiedRequest.module = changes.module;
+    if (changes.body !== undefined) copiedRequest.body = changes.body;
+    if (changes.jsonObject !== undefined)
+      copiedRequest.jsonObject = changes.jsonObject;
+    if (changes.nameObject !== undefined)
+      copiedRequest.nameObject = changes.nameObject;
 
     return copiedRequest;
   }
 }
 
 export default RequestModel;
+export { bodyCopyWith };

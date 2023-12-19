@@ -12,7 +12,6 @@ import { toast } from "sonner";
 import { CustomDartTargetLanguage } from "@/data/data/quicktype/custom_dart_renderer";
 import ConfigConvert from "@/data/models/config_model";
 import { useDashboardContext } from "@/data/context/context";
-import LineSeparator from "../../../../utils/components/line-separator";
 
 async function quicktypeJSON(
   targetLanguage: string,
@@ -51,24 +50,28 @@ async function quicktypeJSON(
 }
 
 const ConvertRequest: React.FC = () => {
-  const { userSettings } = useDashboardContext();
-  const [set, get] = useState("");
+  const { userSettings, setRequestModel, requestModel } = useDashboardContext();
   const [setv, getv] = useState("");
-  const [className, setClassName] = useState("");
+  const setObject = (value: string) => {
+    setRequestModel(requestModel.copyWith({ jsonObject: value }));
+  };
+  const setClassName = (value: string) => {
+    setRequestModel(requestModel.copyWith({ nameObject: value }));
+  };
   const handleClickGenerate = async () => {
     try {
-      if (set.length == 0) {
+      if (requestModel.jsonObject.length == 0) {
         toast.error("Json Object must to be not empty");
         return;
       }
-      if (className.length == 0) {
+      if (requestModel.nameObject.length == 0) {
         toast.error("ClassName must to be not empty");
         return;
       }
       const { lines: swiftPerson } = await quicktypeJSON(
         "dart",
-        className,
-        set,
+        requestModel.nameObject,
+        requestModel.jsonObject,
         userSettings.configConvert
       );
       getv(swiftPerson.join("\n"));
@@ -86,7 +89,7 @@ const ConvertRequest: React.FC = () => {
           <input
             className="w-full input-text"
             placeholder="Enter classname"
-            value={className}
+            value={requestModel.nameObject}
             onChange={(e) => setClassName(e.target.value)}
             aria-controls=":rq:"
             aria-labelledby=":rr:"
@@ -100,9 +103,9 @@ const ConvertRequest: React.FC = () => {
           </button>
         </div>
         <CodeEditor
-          value={set}
+          value={requestModel.jsonObject}
           onChange={(e) => {
-            get(e.target.value);
+            setObject(e.target.value);
           }}
           language="json"
           data-color-mode="dark"

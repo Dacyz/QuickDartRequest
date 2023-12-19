@@ -46,6 +46,8 @@ interface DashboardContextData {
   handleInputChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   setResponseModel: (newData: ResponseModel | null) => void;
   updateUserSettings: (newData: UserSettings) => void;
+  updateLocalDataIfNotExists: (newDataList: RequestModel[]) => void;
+  updateLocalCategoriesIfNotExists: (newCategoriesList: CategoryType[]) => void;
 }
 
 const DashboardContext = createContext<DashboardContextData | undefined>(
@@ -88,6 +90,42 @@ export const DashboardProvider: React.FC<DashboardContextProps> = ({
   const updateUserSettings = (newData: UserSettings) => {
     localStorage.setItem(listSettings, JSON.stringify(newData));
     setUserSettings(newData);
+  };
+
+  const updateLocalDataIfNotExists = (newDataList: RequestModel[]) => {
+    const updatedData = [...localData];
+
+    newDataList.forEach((newData) => {
+      const exists = localData.some(
+        (item) => item.timeStamp === newData.timeStamp
+      );
+
+      if (!exists) {
+        updatedData.push(newData);
+      }
+    });
+
+    localStorage.setItem(listRequest, JSON.stringify(updatedData));
+    setLocalData(updatedData);
+  };
+
+  const updateLocalCategoriesIfNotExists = (
+    newCategoriesList: CategoryType[]
+  ) => {
+    const updatedCategories = [...categoriesData];
+
+    newCategoriesList.forEach((newCategory) => {
+      const exists = categoriesData.some(
+        (item) => item.timeStamp === newCategory.timeStamp
+      );
+
+      if (!exists) {
+        updatedCategories.push(newCategory);
+      }
+    });
+
+    localStorage.setItem(listCategories, JSON.stringify(updatedCategories));
+    setCategoriesData(updatedCategories);
   };
 
   const setResponseModel = (newData: ResponseModel | null) =>
@@ -243,6 +281,8 @@ export const DashboardProvider: React.FC<DashboardContextProps> = ({
         handleInputChange: handleInputChange,
         setResponseModel: setResponseModel,
         updateUserSettings: updateUserSettings,
+        updateLocalDataIfNotExists: updateLocalDataIfNotExists,
+        updateLocalCategoriesIfNotExists: updateLocalCategoriesIfNotExists,
       }}
     >
       <Toaster theme="dark" richColors position={userSettings.toastAlign} />

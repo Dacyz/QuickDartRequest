@@ -14,14 +14,15 @@ import { authModes, bodyModes, modes } from "@/data/data/modes";
 import HostRequestField from "../../../../components/inputs/host-request";
 import { toast } from "sonner";
 import { callInternalEndpoint } from "@/utils/helpers/request_extension";
+import CodeEditor from "@uiw/react-textarea-code-editor";
+import { bodyCopyWith } from "@/data/models/request_model";
 
 const HttpRequest: React.FC = () => {
   const { setRequestModel, requestModel, setResponseModel, responseModel } =
     useDashboardContext();
   const [isAuthMode, setAuthMode] = useState(authModes[0]);
-  const [isBodyMode, setBodyMode] = useState(bodyModes[0]);
   const [asd, setAsd] = useState(false);
-
+  const isBodyMode = bodyModes[requestModel.body.mode];
   const handleClickGenerate = async () => {
     toast.promise(callInternalEndpoint(requestModel), {
       loading: "Loading...",
@@ -148,7 +149,18 @@ const HttpRequest: React.FC = () => {
                   </li>
                 </ul>
               ) : (
-                <>{isAuthMode}</>
+                <ul className="flex flex-col w-full gap-3">
+                  <li className="flex items-center gap-3">
+                    Token{" "}
+                    <input
+                      className="w-full input-text rounded-2xl"
+                      placeholder="Enter or paste token"
+                      aria-controls=":rq:"
+                      aria-labelledby=":rr:"
+                      type="text"
+                    />
+                  </li>
+                </ul>
               )}
             </div>
           </div>
@@ -196,7 +208,16 @@ const HttpRequest: React.FC = () => {
               value={isBodyMode}
               items={bodyModes}
               onChange={(mode) => {
-                setBodyMode(mode);
+                const value = bodyModes.indexOf(mode);
+                if (value != undefined && value != -1) {
+                  setRequestModel(
+                    requestModel.copyWith({
+                      body: bodyCopyWith(requestModel.body, {
+                        mode: value,
+                      }),
+                    })
+                  );
+                }
               }}
             />
             <div className="">
@@ -204,10 +225,34 @@ const HttpRequest: React.FC = () => {
                 "This request does not have a body"
               ) : bodyModes[1] === isBodyMode ? (
                 <ParamsTable
-                  rows={requestModel.params}
+                  rows={[{ id: 0, estado: true, value: "", key: "" }]}
                   addRow={() => {}}
                   deleteRow={(id: number) => {}}
                   setRows={(rows) => {}}
+                />
+              ) : bodyModes[2] === isBodyMode ? (
+                <CodeEditor
+                  value={requestModel.body.contentRaw}
+                  onChange={(e) => {
+                    setRequestModel(
+                      requestModel.copyWith({
+                        body: bodyCopyWith(requestModel.body, {
+                          contentRaw: e.target.value,
+                        }),
+                      })
+                    );
+                  }}
+                  language="json"
+                  data-color-mode="dark"
+                  placeholder="Please enter Json Object."
+                  style={{
+                    fontSize: 12,
+                    backgroundColor: "transparent",
+                    borderRadius: "16px",
+                    overflow: "auto",
+                    fontFamily:
+                      "ui-monospace,SFMono-Regular,SF Mono,Consolas,Liberation Mono,Menlo,monospace",
+                  }}
                 />
               ) : (
                 <>{isBodyMode}</>

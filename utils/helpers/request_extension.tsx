@@ -76,9 +76,13 @@ const callInternalEndpoint = async (
     headers: {
       "content-type": "application/json",
     },
-    body: JSON.stringify({ url: url, method: method }),
+    body: JSON.stringify({
+      url: url,
+      method: method,
+      body: requestModel.bodyContent,
+    }),
   });
-  // console.log(await resp.text());
+  console.log(requestModel.bodyContent);
   const gatito = await resp.json();
 
   if (gatito.status !== 200) throw gatito.data;

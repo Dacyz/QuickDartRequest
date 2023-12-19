@@ -12,7 +12,12 @@ import Switch from "../buttons/switch";
 import ButtonExport, { ResetButton } from "../buttons/buttons";
 import FilePicker from "../buttons/file-picker";
 import LineSeparator from "../../utils/components/line-separator";
-import ImportAndExportConfig, { copyWith, findChangedProperties, generateJsonAndDownload, readFileContent } from "@/utils/helpers/data_extension";
+import ImportAndExportConfig, {
+  copyWith,
+  findChangedProperties,
+  generateJsonAndDownload,
+  readFileContent,
+} from "@/utils/helpers/data_extension";
 
 const DropDownSettingsBox: React.FC = () => {
   const [isOpen, setOpen] = useState(false);
@@ -29,8 +34,14 @@ const DropDownSettingsBox: React.FC = () => {
   const [jsonImport, setJsonImport] = useState<any | null>(null);
 
   // const [isInstructionsOpen, setInstructionsModal] = useState(false);
-  const { userSettings, updateUserSettings, localData, categoriesData } =
-    useDashboardContext();
+  const {
+    userSettings,
+    updateUserSettings,
+    localData,
+    categoriesData,
+    updateLocalDataIfNotExists,
+    updateLocalCategoriesIfNotExists,
+  } = useDashboardContext();
   return (
     <>
       <div
@@ -408,7 +419,39 @@ const DropDownSettingsBox: React.FC = () => {
                 <ButtonExport
                   text="Import"
                   onClick={() => {
+                    var load: string[] = [];
+                    // Import request
+                    if (
+                      config.importRequest &&
+                      jsonImport["ListRequest"] != null
+                    ) {
+                      updateLocalDataIfNotExists(jsonImport["ListRequest"]);
+                      load.push("request");
+                    }
+                    // Import settings
+                    if (
+                      config.importSettings &&
+                      jsonImport["Settings"] != null
+                    ) {
+                      updateUserSettings(
+                        copyWithSettings(
+                          userSettings,
+                          jsonImport["Settings"]
+                        )
+                      );
+                      load.push("settings");
+                    }
+                    // Import settings
+                    if (
+                      config.importCategories &&
+                      jsonImport["ListCategories"] != null
+                    ) {
+                      updateLocalCategoriesIfNotExists(jsonImport["ListCategories"]);
+                      load.push("categories");
+                    }
+                    console.log(load.join(','));
                     toast.success("Successful import!");
+                    // setJsonImport(null);
                   }}
                 />
               </div>
