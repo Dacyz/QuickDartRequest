@@ -1,6 +1,6 @@
 import UserSettings from "@/data/models/settings_model";
 
-const generateJsonAndDownload = (jsonData: object) => {
+const generateJsonAndDownload = (jsonData: object, name?: string) => {
   // Convertir el objeto a formato JSON
   const jsonString = JSON.stringify(jsonData, null, 2);
 
@@ -10,7 +10,7 @@ const generateJsonAndDownload = (jsonData: object) => {
   // Crear un enlace de descarga
   const a = document.createElement("a");
   a.href = URL.createObjectURL(blob);
-  a.download = "datos.json";
+  a.download = (name ?? `QDR${Date.now()}`) + ".json";
 
   // Agregar el enlace al documento y hacer clic en él para iniciar la descarga
   document.body.appendChild(a);

@@ -1,7 +1,8 @@
 "use client";
 import React from "react";
-import { Save, SaveAs, Delete } from "@mui/icons-material";
+import { Save, SaveAs, Close, Upload } from "@mui/icons-material";
 import { useDashboardContext } from "@/data/context/context";
+import { generateJsonAndDownload } from "@/utils/helpers/data_extension";
 
 const SaveRequestButton: React.FC = () => {
   const { saveRequestModel, updateRequestModel, requestModel } =
@@ -24,17 +25,29 @@ const SaveRequestButton: React.FC = () => {
         onClick={updateRequestModel}
         color="primary"
         aria-label="save"
-        className="button-icon"
+        className="button-icon-st"
       >
         <SaveAs fontSize="small" />
       </button>
       <button
-        
+        onClick={() => {
+          const jsonData: { [key: string]: any } = {
+            ListRequest: [requestModel],
+          };
+          generateJsonAndDownload(jsonData, requestModel.name);
+        }}
         color="primary"
         aria-label="save"
-        className="button-icon rounded-r-2xl"
+        className="button-icon-st"
       >
-        <Delete fontSize="small" />
+        <Upload fontSize="small" />
+      </button>
+      <button
+        color="primary"
+        aria-label="save"
+        className="button-icon-st rounded-r-2xl"
+      >
+        <Close fontSize="small" />
       </button>
     </>
   );

@@ -2,8 +2,8 @@
 "use client";
 import React, { useState } from "react";
 import moment from "moment";
+import { EditNote } from "@mui/icons-material";
 import "moment/locale/es";
-import BorderClearIcon from "@mui/icons-material/BorderClear";
 import {
   GetLabel,
   PostLabel,
@@ -139,18 +139,18 @@ function ListRequest() {
   const groupsAndItemsJSX = Object.keys(sortedGroupedItem).map((groupKey) => {
     const group = sortedGroupedItem[groupKey];
     return (
-      <div key={groupKey} className="flex flex-col gap-2">
+      <div key={groupKey} className="flex flex-col gap-1">
         {groupKey === "" ? <></> : <Subtitle text={groupKey} />}
         <LayoutGroup id="">
           <motion.ul
-            className="flex flex-col gap-2"
+            className="flex flex-col gap-1"
             transition={{ duration: 0.3, repeat: 1 }}
           >
-            {group.map((item, index) => (
+            {group.map((item) => (
               <motion.li
                 key={item.timeStamp.toString()}
                 layoutId={item.timeStamp.toString()}
-                className="flex px-[12px] py-[8px] bg-[#1E1E1E] cursor-pointer  rounded-[16px] items-center"
+                className="flex px-[10px] py-[6px] hover:bg-[#1E1E1E] cursor-pointer rounded-[16px] items-center transition-colors"
                 onClick={() => {
                   setRequestModel(new RequestModel().copyWith(item));
                   setResponseModel(null);
@@ -197,14 +197,15 @@ function ListRequest() {
         ) : (
           <div className="flex flex-col gap-3">
             <button
-              className="bg-[#1E1E1E] text-white py-2 px-4 rounded-[16px] relative w-full text-[12px] font-semibold flex justify-center align-middle gap-1 items-center"
+              className="hover:bg-[#1E1E1E] transition-colors text-white py-2 px-4 rounded-[16px] relative w-full text-[12px] font-semibold flex justify-start align-middle gap-1 items-center"
               onClick={() => {
                 setRequestModel(new RequestModel());
                 setResponseModel(null);
               }}
             >
-              <span className="absolute inset-0 border border-white border-dashed rounded-[16px]"></span>
-              <BorderClearIcon fontSize="small" /> New Request
+              <span className="absolute  rounded-[16px]"></span>
+               Create new request
+              <EditNote fontSize="small" className="ml-auto" />
             </button>
             {groupsAndItemsJSX}
           </div>
