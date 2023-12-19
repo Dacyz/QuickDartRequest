@@ -86,13 +86,11 @@ const callInternalEndpoint = async (
   const gatito = await resp.json();
 
   if (gatito.status !== 200) throw gatito.data;
-  const item: ResponseModel = {
-    Name: url,
-    Enlace: requestModel.url,
-    contentType: gatito.contentType,
-    jsonResponse: gatito.data,
-    TimeStamp: Date.now(),
-  };
+  const item = new ResponseModel(
+    requestModel.url,
+    gatito.contentType,
+    gatito.data
+  );
   return item;
 };
 

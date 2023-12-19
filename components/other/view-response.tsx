@@ -5,7 +5,7 @@ import CodeEditor from "@uiw/react-textarea-code-editor";
 import React from "react";
 
 interface ResponseProps {
-  item: ResponseModel | null;
+  item: ResponseModel;
 }
 
 function convertValue(response: ResponseModel): React.ReactNode {
@@ -100,7 +100,7 @@ function convertValue(response: ResponseModel): React.ReactNode {
 }
 
 const ViewResponse: React.FC<ResponseProps> = ({ item }) => {
-  if (item == null) {
+  if (item.Enlace == '') {
     return (
       <div className="flex flex-col items-center gap-2 h-[40vh] min-h-[40vh] bg-[#1E1E1E] rounded-[16px] justify-center">
         <svg

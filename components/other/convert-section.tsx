@@ -3,7 +3,7 @@
 "use client";
 import CopyAllIcon from "@mui/icons-material/CopyAll";
 import CodeEditor from "@uiw/react-textarea-code-editor";
-import React, { useState } from "react";
+import React from "react";
 import ConvertModal from "../modals/convert-modal";
 import { useDashboardContext } from "@/data/context/context";
 import LineSeparator from "../../utils/components/line-separator";
@@ -54,30 +54,38 @@ async function quicktypeJSON(
 }
 
 const ConvertSection: React.FC = () => {
-  const { responseModel, userSettings } = useDashboardContext();
-  const [className, setClassName] = useState("");
-  const [convert, setConvert] = useState("");
+  const { responseModel, userSettings, setResponseModel } =
+    useDashboardContext();
 
   const handleClickGenerate = async () => {
     try {
-      if (className.length == 0) {
+      if (!responseModel?.classNameConvert) {
+        return;
+      }
+      if (responseModel?.classNameConvert.length == 0) {
         toast.error("ClassName must to be not empty");
         return;
       }
       const { lines: swiftPerson } = await quicktypeJSON(
         "dart",
-        className,
+        responseModel?.classNameConvert,
         JSON.stringify(responseModel?.jsonResponse) ?? "",
         userSettings.configConvert
       );
-      setConvert(swiftPerson.join("\n"));
+      setResponseModel(
+        responseModel.copyWith({ convertConvert: swiftPerson.join("\n") })
+      );
     } catch (error: any) {
       toast.error(`${error.message}`);
-      console.error(error, className, responseModel?.jsonResponse?.toString());
+      console.error(
+        error,
+        responseModel?.classNameConvert,
+        responseModel?.jsonResponse?.toString()
+      );
     }
   };
 
-  if (responseModel === null) {
+  if (responseModel.Enlace === "") {
     return <></>;
   }
   const type = responseModel.contentType;
@@ -422,8 +430,12 @@ if (response.statusCode == 200) {
         <div className="flex items-center">
           <ConvertModal />
           <input
-            value={className}
-            onChange={(e) => setClassName(e.target.value)}
+            value={responseModel?.classNameConvert}
+            onChange={(e) => {
+              setResponseModel(
+                responseModel.copyWith({ classNameConvert: e.target.value })
+              );
+            }}
             className="w-full input-text"
             placeholder="Enter classname"
             aria-controls=":rq:"
@@ -438,7 +450,7 @@ if (response.statusCode == 200) {
           </button>
         </div>
         <CodeEditor
-          value={convert}
+          value={responseModel?.convertConvert}
           onChange={() => false}
           language="dart"
           data-color-mode="dark"

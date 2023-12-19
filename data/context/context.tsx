@@ -31,7 +31,7 @@ interface DashboardContextData {
   localData: RequestModel[];
   categoriesData: CategoryType[];
   requestModel: RequestModel;
-  responseModel: ResponseModel | null;
+  responseModel: ResponseModel;
   userSettings: UserSettings;
   loadingData: boolean;
   setRequestModel: React.Dispatch<React.SetStateAction<RequestModel>>;
@@ -68,7 +68,9 @@ export const DashboardProvider: React.FC<DashboardContextProps> = ({
     getProperties(url, method) ?? new RequestModel()
   );
   const [userSettings, setUserSettings] = useState<UserSettings>(settings);
-  const [responseModel, setResponse] = useState<ResponseModel | null>(null);
+  const [responseModel, setResponse] = useState<ResponseModel>(
+    new ResponseModel()
+  );
 
   const updateRequestStorage = (newData: RequestModel) => {
     const updatedData = [...localData, newData];
@@ -142,7 +144,8 @@ export const DashboardProvider: React.FC<DashboardContextProps> = ({
   };
 
   const setResponseModel = (newData: ResponseModel | null) =>
-    setResponse(newData);
+    setResponse(newData ?? new ResponseModel());
+
   const updateCategoriesStorage = (newData: CategoryType) => {
     const updatedData = [...categoriesData, newData];
     localStorage.setItem(listCategories, JSON.stringify(updatedData));
